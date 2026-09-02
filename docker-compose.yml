@@ -1,0 +1,147 @@
+# Loan Knowledge Assistance — full containerised stack.
+#
+#   browser
+#      │  http://localhost:3000
+#      ▼
+#   frontend (nginx)  ──/api/*──►  app-service :8000        orchestration
+#                                     │  ├──────────────►  retrieval-service :8001   MiniLM + FAISS
+#                                     │  │                        │
+#                                     │  │                        └──►  data-service :8003   documents
+#                                     │  └──────────────►  llm-service :8002
+#                                     │                           │
+#                                     │                           └──►  ollama :11434  Code Llama
+#
+# Every arrow is an HTTP call on the rag-net bridge network; no service shares
+# state with another except through these APIs.
+#
+#   docker compose up --build -d
+#   docker compose exec ollama ollama pull codellama:7b     # one time, ~3.8 GB
+#
+# To use an Ollama already running on the host instead of the container, run:
+#   docker compose up -d --scale ollama=0
+# and set OLLAMA_URL=http://host.docker.internal:11434 in llm-service below.
+
+name: loan-knowledge-assistance
+
+services:
+  # ── Data Service — owns documents, chunking, uploads ──────────────────────
+  data-service:
+    build:
+      context: .
+      dockerfile: services/data_service/Dockerfile
+    container_name: rag-data-service
+    environment:
+      KB_DIR: /app/finance_kb
+      UPLOAD_DIR: /data/uploaded_kb
+    volumes:
+      # Uploaded documents outlive the container.
+      - kb-uploads:/data/uploaded_kb
+    ports:
+      - "8003:8003"   # exposed so each service can be inspected directly
+    networks:
+      - rag-net
+    restart: unless-stopped
+
+  # ── Retrieval Service — owns the embedding model and FAISS index ──────────
+  retrieval-service:
+    build:
+      context: .
+      dockerfile: services/retrieval_service/Dockerfile
+    container_name: rag-retrieval-service
+    environment:
+      DATA_SERVICE_URL: http://data-service:8003
+      EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+    depends_on:
+      data-service:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+    networks:
+      - rag-net
+    restart: unless-stopped
+
+  # ── LLM Service — the only component that talks to Ollama ─────────────────
+  llm-service:
+    build:
+      context: .
+      dockerfile: services/llm_service/Dockerfile
+    container_name: rag-llm-service
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: codellama:7b
+      GENERATE_TIMEOUT: "300"
+    depends_on:
+      - ollama
+    ports:
+      - "8002:8002"
+    networks:
+      - rag-net
+    restart: unless-stopped
+
+  # ── Application Service — orchestration and the public API ────────────────
+  app-service:
+    build:
+      context: .
+      dockerfile: services/app_service/Dockerfile
+    container_name: rag-app-service
+    environment:
+      DATA_SERVICE_URL: http://data-service:8003
+      RETRIEVAL_SERVICE_URL: http://retrieval-service:8001
+      LLM_SERVICE_URL: http://llm-service:8002
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173
+    depends_on:
+      data-service:
+        condition: service_healthy
+      retrieval-service:
+        condition: service_healthy
+      llm-service:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - rag-net
+    restart: unless-stopped
+
+  # ── Ollama — the Code Llama runtime ───────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: rag-ollama
+    volumes:
+      # Pulled models persist, so codellama:7b is downloaded only once.
+      - ollama-models:/root/.ollama
+    ports:
+      - "11435:11434"   # 11435 on the host to avoid clashing with a host Ollama
+    networks:
+      - rag-net
+    restart: unless-stopped
+    # Uncomment to give Ollama the GPU (needs the NVIDIA container toolkit):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # ── Frontend — nginx serving the built dashboard ──────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: rag-frontend
+    depends_on:
+      app-service:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    networks:
+      - rag-net
+    restart: unless-stopped
+
+networks:
+  rag-net:
+    driver: bridge
+
+volumes:
+  kb-uploads:
+  ollama-models:

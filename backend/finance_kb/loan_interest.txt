@@ -1,0 +1,5 @@
+Loan interest is the cost of borrowing money. It is usually expressed as an annual percentage rate. A fixed interest rate stays the same during the loan period, while a variable or floating interest rate can change based on a benchmark or lender policy.
+
+Simple interest is calculated on the original principal. Compound interest can add unpaid interest to the balance, causing interest to be charged on interest. Many installment loans use an amortization schedule, where each payment includes both interest and principal repayment.
+
+In the early part of an amortized loan, a larger share of each payment often goes toward interest. Over time, as the outstanding balance falls, more of each payment goes toward reducing principal. Comparing only the monthly payment can be misleading; borrowers should also compare total interest paid and total repayment amount.

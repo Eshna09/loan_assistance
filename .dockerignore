@@ -1,0 +1,11 @@
+**/node_modules
+**/__pycache__
+**/*.pyc
+frontend/dist
+logs/
+*.log
+.git
+.kiro
+.vscode
+backend/uploaded_kb
+*.ipynb

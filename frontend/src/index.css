@@ -1,0 +1,299 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Design tokens
+
+   One surface, one border, one accent. Colour is reserved for meaning:
+   the indigo accent marks the live/interactive path, and green/amber/red
+   carry status only. Everything else is neutral, which is what stops eleven
+   sections from competing with each other.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #0a0a0f;
+  --bg-raised: #0f0f16;
+  --card: #12121a;
+  --card-hover: #16161f;
+  --inset: rgba(255, 255, 255, 0.035);
+
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+
+  --text: #f1f5f9;
+  --text-dim: #a5b0bd;
+  --text-faint: #6b7683;
+
+  --accent: #6366f1;
+  --accent-bright: #818cf8;
+  --accent-wash: rgba(99, 102, 241, 0.12);
+  --accent-line: rgba(99, 102, 241, 0.32);
+
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --bad: #f87171;
+
+  --radius: 12px;
+  --gutter: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky header + nav are ~104px; keep anchored sections clear of them. */
+  scroll-padding-top: 116px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-wash);
+}
+
+/* Numeric columns should never jitter as values update. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  /* The live demo is the product; it gets the only lit border on the page. */
+  .card-lit {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.06), transparent 220px), var(--card);
+    border: 1px solid var(--accent-line);
+    border-radius: var(--radius);
+  }
+
+  /* Nested panels inside a card - one step down, never another full card. */
+  .panel {
+    background: var(--inset);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  .panel-quiet {
+    background: var(--inset);
+    border-radius: 8px;
+  }
+
+  /* ── Typography ───────────────────────────────────────────────────────── */
+  .eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .eyebrow-accent {
+    color: var(--accent-bright);
+  }
+
+  .section-title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .section-sub {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.55;
+    max-width: 68ch;
+  }
+
+  .label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Stats ────────────────────────────────────────────────────────────── */
+  .stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  /* ── Chips ────────────────────────────────────────────────────────────── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--inset);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .chip-accent {
+    border-color: var(--accent-line);
+    background: var(--accent-wash);
+    color: var(--accent-bright);
+  }
+
+  .chip-ok {
+    border-color: rgba(52, 211, 153, 0.3);
+    background: rgba(52, 211, 153, 0.1);
+    color: var(--ok);
+  }
+
+  .chip-bad {
+    border-color: rgba(248, 113, 113, 0.3);
+    background: rgba(248, 113, 113, 0.1);
+    color: var(--bad);
+  }
+
+  /* ── Buttons ──────────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--inset);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  }
+
+  .btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--line-strong);
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-bright);
+    border-color: var(--accent-bright);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+    padding: 5px 9px;
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--inset);
+    color: var(--text);
+    border-color: transparent;
+  }
+
+  /* ── Code ─────────────────────────────────────────────────────────────── */
+  .code-block {
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 13px 15px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+/* ── Focus ────────────────────────────────────────────────────────────────
+   Visible for keyboard users, absent for mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Scrollbars ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Chunking overlap highlight ───────────────────────────────────────── */
+.overlap-highlight {
+  background: rgba(99, 102, 241, 0.22);
+  box-shadow: inset 0 -1px 0 var(--accent-bright);
+  border-radius: 2px;
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────── */
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--accent-line); }
+  50% { border-color: var(--accent-bright); }
+}
+
+.step-active {
+  animation: pulse-border 1.6s ease-in-out infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.rise {
+  animation: rise 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

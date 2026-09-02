@@ -1,0 +1,616 @@
+{
+  "model": "llama3.2:latest",
+  "chunk_size": 300,
+  "overlap": 50,
+  "files_indexed": 37,
+  "chunks_indexed": 817,
+  "files": [
+    "backend/knowledge_base.py",
+    "backend/main.py",
+    "docker-compose.yml",
+    "evaluation/report.py",
+    "evaluation/run_eval.py",
+    "evaluation/score.py",
+    "frontend/nginx.conf",
+    "frontend/src/App.jsx",
+    "frontend/src/components/ApiArchitecture.jsx",
+    "frontend/src/components/ChunkingViewer.jsx",
+    "frontend/src/components/DockerArchitecture.jsx",
+    "frontend/src/components/EmbeddingViewer.jsx",
+    "frontend/src/components/Header.jsx",
+    "frontend/src/components/KnowledgeBase.jsx",
+    "frontend/src/components/PipelineOverview.jsx",
+    "frontend/src/components/PipelineSummary.jsx",
+    "frontend/src/components/QueryHistory.jsx",
+    "frontend/src/components/RAGDemo.jsx",
+    "frontend/src/components/ServiceArchitecture.jsx",
+    "frontend/src/components/VectorDatabase.jsx",
+    "frontend/src/data/staticData.js",
+    "frontend/src/hooks/useBackendStatus.js",
+    "frontend/src/main.jsx",
+    "frontend/src/services/api.js",
+    "frontend/vite.config.js",
+    "services/__init__.py",
+    "services/app_service/__init__.py",
+    "services/app_service/main.py",
+    "services/common/__init__.py",
+    "services/common/chunking.py",
+    "services/common/prompts.py",
+    "services/data_service/__init__.py",
+    "services/data_service/main.py",
+    "services/llm_service/__init__.py",
+    "services/llm_service/main.py",
+    "services/retrieval_service/__init__.py",
+    "services/retrieval_service/main.py"
+  ],
+  "gen_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 400,
+    "top_p": 1.0
+  },
+  "results": [
+    {
+      "id": "R01",
+      "kind": "multi-file feature",
+      "q": "Which files are involved in handling a document upload?",
+      "expect": [
+        "frontend/src/components/KnowledgeBase.jsx",
+        "frontend/src/services/api.js",
+        "services/app_service/main.py",
+        "services/data_service/main.py",
+        "services/retrieval_service/main.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "backend/knowledge_base.py",
+            "backend/main.py",
+            "frontend/src/components/KnowledgeBase.jsx"
+          ],
+          "distances": [
+            0.867,
+            0.956,
+            0.959
+          ],
+          "answer": "The files involved in handling a document upload are:\n\n1. `knowledge_base.py` (specifically the `add_document` function)\n2. `main.py` (mentioned as the file where more documents are uploaded)\n\nNote that `frontend/src/components/KnowledgeBase.jsx` is not directly related to handling a document upload, but rather provides a UI for users to browse and interact with the knowledge base.",
+          "named_files": [
+            "backend/knowledge_base.py",
+            "frontend/src/components/KnowledgeBase.jsx"
+          ],
+          "retrieval_recall": 0.2,
+          "answer_recall": 0.2,
+          "answer_precision": 0.5,
+          "latency_ms": 6421.4
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/knowledge_base.py",
+            "backend/main.py",
+            "frontend/src/components/KnowledgeBase.jsx",
+            "services/data_service/main.py"
+          ],
+          "distances": [
+            0.867,
+            0.956,
+            0.959,
+            1.028,
+            1.042,
+            1.046,
+            1.047,
+            1.066
+          ],
+          "answer": "The files involved in handling a document upload are:\n\n1. `backend/main.py`\n2. `backend/knowledge_base.py`\n\nThese two files contain the logic for processing uploaded documents, including validation, text extraction, chunking, embedding with MiniLM, and indexing in FAISS.",
+          "named_files": [
+            "backend/knowledge_base.py",
+            "backend/main.py"
+          ],
+          "retrieval_recall": 0.4,
+          "answer_recall": 0.0,
+          "answer_precision": 0.0,
+          "latency_ms": 8246.5
+        }
+      }
+    },
+    {
+      "id": "R02",
+      "kind": "call relationship",
+      "q": "Which service calls the LLM service, and from which file?",
+      "expect": [
+        "services/app_service/main.py",
+        "services/llm_service/main.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "services/app_service/main.py"
+          ],
+          "distances": [
+            0.661,
+            0.825,
+            0.846
+          ],
+          "answer": "The service that calls the LLM service is the `app_service` service.\n\nThis information can be found in the `main.py` file of the `services/app_service` directory. Specifically, line 4 states:\n\n`LLM Service         POST /generate   prompt  -> Code Llama answer`\n\nSo, the specific file path involved is `services/app_service/main.py`.",
+          "named_files": [
+            "services/app_service/main.py"
+          ],
+          "retrieval_recall": 0.5,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 6010.7
+        },
+        "8": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "frontend/src/components/DockerArchitecture.jsx",
+            "services/app_service/main.py",
+            "services/llm_service/main.py"
+          ],
+          "distances": [
+            0.661,
+            0.825,
+            0.846,
+            0.86,
+            0.887,
+            0.903,
+            1.033,
+            1.036
+          ],
+          "answer": "The retrieval-service calls the LLM service. This information can be found in the docker-compose.yml file, specifically in the \"depends_on\" section of the \"retrieval-service\" service.\n\nThe specific line is:\n\n```\nretrieval-service:\n    ...\n    depends_on:\n      data-service:\n        condition: service_healthy\n      retrieval-service:\n        condition: service_healthy\n```\n\nHowever, it's not clear which service calls the LLM service from which file. The question asks for the service that calls the LLM service and the file where this information can be found.\n\nThe answer to the first part is \"retrieval-service\". \n\nAs for the second part, I couldn't find any information in the provided code context about a specific file that contains the call from another service.",
+          "named_files": [
+            "docker-compose.yml"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.0,
+          "answer_precision": 0.0,
+          "latency_ms": 16118.6
+        }
+      }
+    },
+    {
+      "id": "R03",
+      "kind": "cross-component flow",
+      "q": "What happens, step by step and across which files, after a user submits a question in the dashboard?",
+      "expect": [
+        "frontend/src/components/RAGDemo.jsx",
+        "frontend/src/services/api.js",
+        "services/app_service/main.py",
+        "services/retrieval_service/main.py",
+        "services/llm_service/main.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "backend/main.py",
+            "services/app_service/main.py",
+            "services/data_service/main.py"
+          ],
+          "distances": [
+            1.158,
+            1.209,
+            1.247
+          ],
+          "answer": "This information is not available in my knowledge base. The provided code snippet does not contain any details about what happens when a user submits a question in the dashboard. It only provides metadata for the dashboard, document management, and debug services.",
+          "named_files": [],
+          "retrieval_recall": 0.2,
+          "answer_recall": 0.0,
+          "answer_precision": 0.0,
+          "latency_ms": 5561.1
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/main.py",
+            "frontend/src/components/PipelineSummary.jsx",
+            "services/app_service/main.py",
+            "services/data_service/main.py"
+          ],
+          "distances": [
+            1.158,
+            1.209,
+            1.247,
+            1.296,
+            1.311,
+            1.33,
+            1.337,
+            1.34
+          ],
+          "answer": "This information is not available in my knowledge base.",
+          "named_files": [],
+          "retrieval_recall": 0.2,
+          "answer_recall": 0.0,
+          "answer_precision": 0.0,
+          "latency_ms": 4525.9
+        }
+      }
+    },
+    {
+      "id": "R04",
+      "kind": "impact analysis",
+      "q": "Which components would be affected if the build_rag_prompt function were modified?",
+      "expect": [
+        "services/common/prompts.py",
+        "services/app_service/main.py",
+        "evaluation/run_eval.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "backend/main.py",
+            "evaluation/run_eval.py"
+          ],
+          "distances": [
+            1.004,
+            1.011,
+            1.077
+          ],
+          "answer": "The `build_rag_prompt` function is located in `evaluation/run_eval.py`. If this function were modified, it would affect the following components:\n\n1. The RAG prompt template (located in `evaluation/run_eval.py`) - This is because the function uses a fixed template for code-generation tasks.\n2. The evaluation process (located in `evaluation/run_eval.py`) - Specifically, the timeout and generation options.\n\nThese changes would likely impact the performance and output of the model's response to user input.",
+          "named_files": [
+            "evaluation/run_eval.py"
+          ],
+          "retrieval_recall": 0.3333333333333333,
+          "answer_recall": 0.3333333333333333,
+          "answer_precision": 1.0,
+          "latency_ms": 9584.9
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/main.py",
+            "evaluation/report.py",
+            "evaluation/run_eval.py",
+            "frontend/src/components/RAGDemo.jsx",
+            "services/common/prompts.py"
+          ],
+          "distances": [
+            1.004,
+            1.011,
+            1.077,
+            1.193,
+            1.198,
+            1.2,
+            1.218,
+            1.266
+          ],
+          "answer": "The `build_rag_prompt` function is defined in two places:\n\n1. `evaluation/run_eval.py`\n2. `services/common/prompts.py`\n\nIf the `build_rag_prompt` function were modified, it would affect both of these components.\n\nIn particular, any changes to this function would be reflected in the `GEN_OPTIONS` dictionary and the `REQUEST_TIMEOUT` variable in `evaluation/run_eval.py`, as well as the RAG prompt template in `services/common/prompts.py`.",
+          "named_files": [
+            "evaluation/run_eval.py",
+            "services/common/prompts.py"
+          ],
+          "retrieval_recall": 0.6666666666666666,
+          "answer_recall": 0.6666666666666666,
+          "answer_precision": 1.0,
+          "latency_ms": 11223.8
+        }
+      }
+    },
+    {
+      "id": "R05",
+      "kind": "single-file lookup (control)",
+      "q": "In which file is the FAISS index created?",
+      "expect": [
+        "services/retrieval_service/main.py",
+        "backend/knowledge_base.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "frontend/src/data/staticData.js",
+            "services/retrieval_service/main.py"
+          ],
+          "distances": [
+            1.065,
+            1.072,
+            1.118
+          ],
+          "answer": "The FAISS index is created in `services/retrieval_service/main.py` specifically in this line:\n\n```python\nfaiss_index = faiss.IndexFlatL2(EMBEDDING_DIMENSION)\n```\n\nThis indicates that the FAISS index is initialized with a dimension of `EMBEDDING_DIMENSION`, which is not explicitly defined in the provided code snippet, but it's mentioned in another file (`services/retrieval_service/main.py`) as:\n\n```python\nrmer(EMBEDDING_MODEL_NAME)\nprint(f\"[{SERVICE_NAME}] Model ready.\")\n\nfaiss_index_type: 'IndexFlatL2',\n```\n\nThis suggests that `EMBEDDING_DIMENSION` is likely defined elsewhere in the codebase, possibly in a configuration file or another part of the repository.",
+          "named_files": [
+            "services/retrieval_service/main.py"
+          ],
+          "retrieval_recall": 0.5,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 12089.7
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/knowledge_base.py",
+            "docker-compose.yml",
+            "frontend/src/components/ApiArchitecture.jsx",
+            "frontend/src/data/staticData.js",
+            "services/retrieval_service/main.py"
+          ],
+          "distances": [
+            1.065,
+            1.072,
+            1.118,
+            1.133,
+            1.181,
+            1.186,
+            1.215,
+            1.241
+          ],
+          "answer": "The FAISS index is created in `services/retrieval_service/main.py` specifically in the line:\n\n```python\nfaiss_index = faiss.IndexFlatL2(EMBEDDING_DIMENSION)\n```\n\nThis line of code creates a new instance of the `IndexFlatL2` class from the Faiss library, which is used to create the FAISS index.",
+          "named_files": [
+            "services/retrieval_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 10419.8
+        }
+      }
+    },
+    {
+      "id": "R06",
+      "kind": "single-file lookup (control)",
+      "q": "Where is CORS middleware configured?",
+      "expect": [
+        "services/app_service/main.py",
+        "backend/main.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "services/app_service/main.py"
+          ],
+          "distances": [
+            0.711,
+            1.092,
+            1.223
+          ],
+          "answer": "The CORS middleware is configured in the `services/app_service/main.py` file, specifically in this block of code:\n\n```python\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=os.environ.get(\n        \"CORS_ORIGINS\",\n        \"http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000\",\n    ).split(\",\"),\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=*,  # This line seems to be incomplete or incorrect\n)\n```\n\nHowever, the `allow_headers` parameter is not specified in this code snippet.",
+          "named_files": [
+            "services/app_service/main.py"
+          ],
+          "retrieval_recall": 0.5,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 14176.1
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/main.py",
+            "docker-compose.yml",
+            "frontend/src/components/DockerArchitecture.jsx",
+            "frontend/src/components/ServiceArchitecture.jsx",
+            "services/app_service/main.py"
+          ],
+          "distances": [
+            0.711,
+            1.092,
+            1.223,
+            1.284,
+            1.288,
+            1.306,
+            1.376,
+            1.425
+          ],
+          "answer": "The CORS middleware is configured in `services/app_service/main.py`:\n\n```python\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=os.environ.get(\n        \"CORS_ORIGINS\",\n        \"http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000\",\n    ).split(\",\"),\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[],\n)\n```\n\nThis configuration is part of the `app_service` FastAPI application.",
+          "named_files": [
+            "services/app_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 15711.6
+        }
+      }
+    },
+    {
+      "id": "R07",
+      "kind": "test coverage",
+      "q": "Which test cases cover the retrieval logic?",
+      "expect": [],
+      "expect_none": true,
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "evaluation/run_eval.py",
+            "evaluation/score.py"
+          ],
+          "distances": [
+            0.999,
+            1.043,
+            1.078
+          ],
+          "answer": "This information is not available in my knowledge base.",
+          "named_files": [],
+          "retrieval_recall": null,
+          "answer_recall": null,
+          "answer_precision": null,
+          "latency_ms": 3656.2
+        },
+        "8": {
+          "retrieved_files": [
+            "evaluation/report.py",
+            "evaluation/run_eval.py",
+            "evaluation/score.py"
+          ],
+          "distances": [
+            0.999,
+            1.043,
+            1.078,
+            1.103,
+            1.144,
+            1.173,
+            1.18,
+            1.22
+          ],
+          "answer": "This information is not available in my knowledge base.",
+          "named_files": [],
+          "retrieval_recall": null,
+          "answer_recall": null,
+          "answer_precision": null,
+          "latency_ms": 5498.9
+        }
+      }
+    },
+    {
+      "id": "R08",
+      "kind": "reverse call lookup",
+      "q": "Which functions call rebuild_index, and in which files?",
+      "expect": [
+        "services/retrieval_service/main.py",
+        "backend/knowledge_base.py"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "backend/knowledge_base.py",
+            "services/retrieval_service/main.py"
+          ],
+          "distances": [
+            0.936,
+            0.958,
+            1.037
+          ],
+          "answer": "The `rebuild_index` function is called by the following functions:\n\n1. `reindex()` - This function calls `rebuild_index()` when it's invoked at `/reindex`.\n2. The `except requests.RequestException as exc:` block in `reindex()`, which catches any exceptions that occur while rebuilding the index and then calls `rebuild_index()` again if successful.\n\nBoth of these functions are located in the file `services/retrieval_service/main.py`.",
+          "named_files": [
+            "services/retrieval_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 7833.2
+        },
+        "8": {
+          "retrieved_files": [
+            "backend/knowledge_base.py",
+            "services/retrieval_service/main.py"
+          ],
+          "distances": [
+            0.936,
+            0.958,
+            1.037,
+            1.095,
+            1.116,
+            1.248,
+            1.248,
+            1.306
+          ],
+          "answer": "The `rebuild_index` function is called by the following functions:\n\n* `/reindex` endpoint in `services/retrieval_service/main.py`\n* `startup` event handler in `services/retrieval_service/main.py`\n\nBoth of these functions call `rebuild_index` directly.",
+          "named_files": [
+            "services/retrieval_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 8147.7
+        }
+      }
+    },
+    {
+      "id": "R09",
+      "kind": "impact analysis",
+      "q": "Which files would have to change to switch from Ollama to a different LLM runtime?",
+      "expect": [
+        "services/llm_service/main.py",
+        "docker-compose.yml"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "services/llm_service/main.py"
+          ],
+          "distances": [
+            0.679,
+            0.903,
+            0.996
+          ],
+          "answer": "To switch from Ollama to a different LLM runtime, only the `services/llm_service/main.py` file and the corresponding Dockerfile (`services/llm_service/Dockerfile`) would need to be updated.\n\nThis is because the `main.py` file contains the code that wraps the Code Llama runtime behind a stable HTTP contract, and the Dockerfile defines the build process for the `llm-service` container.",
+          "named_files": [
+            "services/llm_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 10418.6
+        },
+        "8": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "evaluation/run_eval.py",
+            "evaluation/score.py",
+            "services/llm_service/main.py"
+          ],
+          "distances": [
+            0.679,
+            0.903,
+            0.996,
+            1.046,
+            1.074,
+            1.115,
+            1.136,
+            1.143
+          ],
+          "answer": "To switch from Ollama to a different LLM runtime, the following files would need to be changed:\n\n1. `services/llm_service/main.py` - This file contains the API endpoints and logic for interacting with the LLM service. It needs to be updated to include the new LLM runtime's API endpoints and any necessary configuration.\n2. `docker-compose.yml` - Specifically, the section related to the `llm-service` container would need to be updated to include the new LLM runtime's image and any necessary environment variables.\n\nNote that the other files mentioned in the context (e.g., `evaluation/run_eval.py`, `evaluation/score.py`) do not appear to be directly related to switching between different LLM runtimes.",
+          "named_files": [
+            "docker-compose.yml",
+            "evaluation/run_eval.py",
+            "evaluation/score.py",
+            "services/llm_service/main.py"
+          ],
+          "retrieval_recall": 1.0,
+          "answer_recall": 1.0,
+          "answer_precision": 0.5,
+          "latency_ms": 16684.2
+        }
+      }
+    },
+    {
+      "id": "R10",
+      "kind": "deployment wiring",
+      "q": "How does the frontend reach the backend when running under Docker, and which files define that?",
+      "expect": [
+        "frontend/nginx.conf",
+        "docker-compose.yml"
+      ],
+      "runs": {
+        "3": {
+          "retrieved_files": [
+            "docker-compose.yml"
+          ],
+          "distances": [
+            0.981,
+            1.013,
+            1.048
+          ],
+          "answer": "The frontend reaches the backend through a network named \"rag-net\". The definition of this network can be found in the `docker-compose.yml` file at line 24.\n\nIn this specific case, the frontend container is connected to the backend container through the `depends_on` directive in the frontend's configuration. This means that the frontend will only start running once the backend service has started and is healthy.\n\nThe definition of the network can be found in the `docker-compose.yml` file at line 26:\n\n```\nnetworks:\n  rag-net:\n    driver: bridge\n```",
+          "named_files": [
+            "docker-compose.yml"
+          ],
+          "retrieval_recall": 0.5,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 11478.5
+        },
+        "8": {
+          "retrieved_files": [
+            "docker-compose.yml",
+            "frontend/src/App.jsx"
+          ],
+          "distances": [
+            0.981,
+            1.013,
+            1.048,
+            1.052,
+            1.154,
+            1.198,
+            1.217,
+            1.245
+          ],
+          "answer": "The frontend reaches the backend when running under Docker through the `DATA_SERVICE_URL` environment variable. This variable is set in the `docker-compose.yml` file for the `app-service` container.\n\nSpecifically, it can be found in the following lines:\n\n```\napp-service:\n  build:\n    context: .\n    dockerfile: services/app_service/Dockerfile\n  container_name: rag-app-service\n  environment:\n    DATA_SERVICE_URL: http://data-service:8003\n    RETRIEVAL_SERVICE_URL: http://retrieval-service:8001\n    LLM_SERVICE_URL: http://l\n```\n\nThe frontend can then use this URL to reach the backend.",
+          "named_files": [
+            "docker-compose.yml"
+          ],
+          "retrieval_recall": 0.5,
+          "answer_recall": 0.5,
+          "answer_precision": 1.0,
+          "latency_ms": 15851.8
+        }
+      }
+    }
+  ]
+}

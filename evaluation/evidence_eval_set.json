@@ -1,0 +1,164 @@
+{
+  "description": "Evidence-aware evaluation cases for the Loan Knowledge Assistance RAG system. Tests grounding validation, conflict detection, version resolution, and out-of-scope boundary behavior.",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "ev-001",
+      "category": "grounding_supported",
+      "question": "What is an EMI?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.60,
+      "notes": "Core loan term — well covered in the knowledge base. Answer should be fully grounded."
+    },
+    {
+      "id": "ev-002",
+      "category": "grounding_supported",
+      "question": "How does compound interest affect a loan?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.55,
+      "notes": "Loan interest document covers compound interest. Should be well-grounded."
+    },
+    {
+      "id": "ev-003",
+      "category": "grounding_supported",
+      "question": "What documents are typically required for a loan application?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "Loan eligibility document covers required documents."
+    },
+    {
+      "id": "ev-004",
+      "category": "grounding_supported",
+      "question": "What is a secured loan?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.55,
+      "notes": "Basic loan type definition — covered in loan_types.txt."
+    },
+    {
+      "id": "ev-005",
+      "category": "grounding_supported",
+      "question": "What are the risks of taking out a loan with a variable interest rate?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "Loan risks document should cover variable rate risk."
+    },
+    {
+      "id": "ev-006",
+      "category": "insufficient_evidence",
+      "question": "Should I invest in mutual funds?",
+      "expected_evidence_status": "insufficient_evidence",
+      "expected_answer_contains": "not available in my knowledge base",
+      "notes": "Out-of-scope question — investments not in the loan KB. Model should decline."
+    },
+    {
+      "id": "ev-007",
+      "category": "insufficient_evidence",
+      "question": "What is the current inflation rate in India?",
+      "expected_evidence_status": "insufficient_evidence",
+      "expected_answer_contains": "not available in my knowledge base",
+      "notes": "Macroeconomic data not in KB. Model should decline."
+    },
+    {
+      "id": "ev-008",
+      "category": "insufficient_evidence",
+      "question": "How do I file my income tax return?",
+      "expected_evidence_status": "insufficient_evidence",
+      "expected_answer_contains": "not available in my knowledge base",
+      "notes": "Tax filing is out of scope. Model should decline."
+    },
+    {
+      "id": "ev-009",
+      "category": "partially_supported",
+      "question": "What is the best loan for buying a house?",
+      "expected_evidence_status_one_of": ["supported", "partially_supported"],
+      "notes": "Home loan info may be partial — depends on KB coverage."
+    },
+    {
+      "id": "ev-010",
+      "category": "partially_supported",
+      "question": "How does a credit score affect loan eligibility?",
+      "expected_evidence_status_one_of": ["supported", "partially_supported"],
+      "notes": "Credit score may be mentioned in eligibility doc but may not be fully detailed."
+    },
+    {
+      "id": "ev-011",
+      "category": "grounding_supported",
+      "question": "What is loan repayment?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.55,
+      "notes": "Core concept in loan_repayment.txt."
+    },
+    {
+      "id": "ev-012",
+      "category": "grounding_supported",
+      "question": "What is an unsecured loan?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "Should be defined in loan_types.txt."
+    },
+    {
+      "id": "ev-013",
+      "category": "boundary",
+      "question": "Can you help me write a Python function?",
+      "expected_evidence_status": "insufficient_evidence",
+      "expected_answer_contains": "not available in my knowledge base",
+      "notes": "Programming question — completely out of scope."
+    },
+    {
+      "id": "ev-014",
+      "category": "boundary",
+      "question": "What is the weather like today?",
+      "expected_evidence_status": "insufficient_evidence",
+      "expected_answer_contains": "not available in my knowledge base",
+      "notes": "Weather — completely out of scope."
+    },
+    {
+      "id": "ev-015",
+      "category": "grounding_supported",
+      "question": "What are the eligibility criteria for a personal loan?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "loan_eligibility.txt should cover this."
+    },
+    {
+      "id": "ev-016",
+      "category": "conflict_detection",
+      "question": "What is the interest rate for a home loan?",
+      "notes": "If multiple documents with different home loan interest rates are uploaded, conflict should be detected.",
+      "expected_evidence_status_one_of": ["supported", "partially_supported", "conflict_detected"],
+      "conflict_expected_when": "Multiple documents with differing home loan rate values are in the KB"
+    },
+    {
+      "id": "ev-017",
+      "category": "version_resolution",
+      "question": "What are the current loan repayment terms?",
+      "notes": "When documents with different effective_dates are present, version resolution should identify the most recent.",
+      "expected_evidence_status_one_of": ["supported", "partially_supported"],
+      "resolution_expected_when": "Multiple docs with different effective_date metadata are indexed"
+    },
+    {
+      "id": "ev-018",
+      "category": "grounding_supported",
+      "question": "How is loan interest calculated?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.55,
+      "notes": "loan_interest.txt should fully cover this."
+    },
+    {
+      "id": "ev-019",
+      "category": "grounding_supported",
+      "question": "What risks are associated with defaulting on a loan?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "loan_risks.txt covers this."
+    },
+    {
+      "id": "ev-020",
+      "category": "metadata_aware",
+      "question": "What loan types are available?",
+      "expected_evidence_status": "supported",
+      "expected_grounding_min": 0.50,
+      "notes": "loan_types.txt covers this comprehensively. Evidence should show correct source attribution."
+    }
+  ]
+}

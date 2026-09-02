@@ -1,0 +1,3585 @@
+{
+  "generated_at": "2026-08-30T15:47:27.718137+00:00",
+  "knowledge_base": {
+    "documents": [
+      "loans.txt",
+      "loan_types.txt",
+      "loan_interest.txt",
+      "loan_repayment.txt",
+      "loan_eligibility.txt",
+      "loan_risks.txt"
+    ],
+    "vectors": 25,
+    "embedding_dimension": 384,
+    "index_type": "IndexFlatL2"
+  },
+  "gen_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 512,
+    "top_p": 1.0
+  },
+  "eval_set": {
+    "total_questions": 29,
+    "by_category": {
+      "factual_retrieval": 10,
+      "multi_doc_synthesis": 4,
+      "conceptual": 5,
+      "out_of_kb": 5,
+      "code_generation": 5
+    }
+  },
+  "retrieval_quality": {
+    "questions_considered": 19,
+    "recall_at_3": 0.8947,
+    "mrr": 0.8947,
+    "per_question": [
+      {
+        "id": "F01",
+        "expected": [
+          "loans.txt"
+        ],
+        "retrieved": [
+          "loans.txt",
+          "loan_eligibility.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F02",
+        "expected": [
+          "loans.txt",
+          "loan_types.txt"
+        ],
+        "retrieved": [
+          "loan_types.txt",
+          "loan_risks.txt",
+          "loans.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F03",
+        "expected": [
+          "loan_risks.txt"
+        ],
+        "retrieved": [
+          "loan_risks.txt",
+          "loans.txt",
+          "loan_repayment.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F04",
+        "expected": [
+          "loan_repayment.txt"
+        ],
+        "retrieved": [
+          "loan_repayment.txt",
+          "loan_types.txt",
+          "loan_risks.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F05",
+        "expected": [
+          "loan_repayment.txt"
+        ],
+        "retrieved": [
+          "loan_repayment.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F06",
+        "expected": [
+          "loan_eligibility.txt"
+        ],
+        "retrieved": [
+          "loan_eligibility.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F07",
+        "expected": [
+          "loan_repayment.txt"
+        ],
+        "retrieved": [
+          "loan_repayment.txt",
+          "loan_interest.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F08",
+        "expected": [
+          "loan_risks.txt"
+        ],
+        "retrieved": [
+          "loan_risks.txt",
+          "loans.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F09",
+        "expected": [
+          "loan_eligibility.txt"
+        ],
+        "retrieved": [
+          "loan_eligibility.txt",
+          "loan_interest.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "F10",
+        "expected": [
+          "loan_interest.txt"
+        ],
+        "retrieved": [
+          "loan_interest.txt",
+          "loan_repayment.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "S01",
+        "expected": [
+          "loans.txt",
+          "loan_risks.txt",
+          "loan_types.txt"
+        ],
+        "retrieved": [
+          "loan_risks.txt",
+          "loans.txt",
+          "loan_types.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "S02",
+        "expected": [
+          "loan_types.txt",
+          "loan_risks.txt"
+        ],
+        "retrieved": [
+          "loans.txt",
+          "loan_eligibility.txt"
+        ],
+        "hit_rank": null
+      },
+      {
+        "id": "S03",
+        "expected": [
+          "loan_eligibility.txt",
+          "loan_repayment.txt"
+        ],
+        "retrieved": [
+          "loan_eligibility.txt",
+          "loan_repayment.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "S04",
+        "expected": [
+          "loan_interest.txt",
+          "loan_types.txt",
+          "loan_risks.txt"
+        ],
+        "retrieved": [
+          "loan_types.txt",
+          "loan_interest.txt",
+          "loan_risks.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "C01",
+        "expected": [
+          "loan_interest.txt"
+        ],
+        "retrieved": [
+          "loan_interest.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "C02",
+        "expected": [
+          "loan_interest.txt"
+        ],
+        "retrieved": [
+          "loan_interest.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "C03",
+        "expected": [
+          "loan_interest.txt"
+        ],
+        "retrieved": [
+          "loan_interest.txt",
+          "loan_repayment.txt",
+          "loan_types.txt"
+        ],
+        "hit_rank": 1
+      },
+      {
+        "id": "C04",
+        "expected": [
+          "loan_types.txt"
+        ],
+        "retrieved": [
+          "loans.txt",
+          "loan_eligibility.txt"
+        ],
+        "hit_rank": null
+      },
+      {
+        "id": "C05",
+        "expected": [
+          "loan_repayment.txt"
+        ],
+        "retrieved": [
+          "loan_repayment.txt",
+          "loan_risks.txt"
+        ],
+        "hit_rank": 1
+      }
+    ]
+  },
+  "models": {
+    "codellama:7b": {
+      "model": "codellama:7b",
+      "residency": [
+        {
+          "name": "codellama:7b",
+          "resident_mb": 5796.6,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        },
+        {
+          "name": "gemma:2b",
+          "resident_mb": 1783.9,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        }
+      ],
+      "quality": {
+        "accuracy": 0.9474,
+        "correct_count": 18,
+        "knowledge_questions": 19,
+        "mean_fact_coverage": 0.9456,
+        "mean_relevance": 0.7593,
+        "mean_groundedness": 0.8107,
+        "refused_answerable_count": 0
+      },
+      "hallucination": {
+        "out_of_kb_questions": 5,
+        "refusals": 0,
+        "soft_declines": 2,
+        "fabrications": 3,
+        "refusal_failure_rate": 1.0,
+        "fabrication_rate": 0.6,
+        "unsupported_number_rate": 0.0
+      },
+      "code": {
+        "tasks": 5,
+        "code_blocks_extracted": 5,
+        "tests_passed": 7,
+        "tests_total": 14,
+        "test_pass_rate": 0.5,
+        "tasks_fully_passed": 2,
+        "task_pass_rate": 0.4
+      },
+      "performance": {
+        "mean_latency_ms": 20500.4,
+        "median_latency_ms": 18417.8,
+        "p95_latency_ms": 39116.1,
+        "min_latency_ms": 6053.5,
+        "max_latency_ms": 56178.6,
+        "total_prompt_tokens": 8157,
+        "total_output_tokens": 2796,
+        "mean_output_tokens": 96.4,
+        "output_tokens_per_sec": 6.05
+      },
+      "resources": {
+        "peak_rss_mb": 7384.2,
+        "mean_peak_rss_mb": 6337.1,
+        "mean_cpu_percent": 959.0,
+        "resident_mb": 5796.6,
+        "vram_mb": 0.0,
+        "gpu_percent": 0.0
+      },
+      "per_question": [
+        {
+          "id": "F01",
+          "category": "factual_retrieval",
+          "latency_ms": 11252.0,
+          "prompt_tokens": 337,
+          "output_tokens": 34,
+          "eval_duration_ms": 4644.2,
+          "resources": {
+            "peak_rss_mb": 5750.1,
+            "mean_rss_mb": 5747.7,
+            "mean_cpu_percent": 963.5,
+            "peak_cpu_percent": 1050.0,
+            "samples": 44
+          },
+          "answer_chars": 130,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8231,
+          "refused_answerable": false
+        },
+        {
+          "id": "F02",
+          "category": "factual_retrieval",
+          "latency_ms": 18901.8,
+          "prompt_tokens": 344,
+          "output_tokens": 105,
+          "eval_duration_ms": 13982.4,
+          "resources": {
+            "peak_rss_mb": 5937.2,
+            "mean_rss_mb": 5934.4,
+            "mean_cpu_percent": 976.3,
+            "peak_cpu_percent": 1062.5,
+            "samples": 73
+          },
+          "answer_chars": 413,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7105,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8814,
+          "refused_answerable": false
+        },
+        {
+          "id": "F03",
+          "category": "factual_retrieval",
+          "latency_ms": 10310.3,
+          "prompt_tokens": 345,
+          "output_tokens": 37,
+          "eval_duration_ms": 4991.3,
+          "resources": {
+            "peak_rss_mb": 6161.6,
+            "mean_rss_mb": 6156.0,
+            "mean_cpu_percent": 965.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 40
+          },
+          "answer_chars": 150,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6702,
+          "refused_answerable": false
+        },
+        {
+          "id": "F04",
+          "category": "factual_retrieval",
+          "latency_ms": 22589.5,
+          "prompt_tokens": 278,
+          "output_tokens": 138,
+          "eval_duration_ms": 18618.2,
+          "resources": {
+            "peak_rss_mb": 6354.0,
+            "mean_rss_mb": 6351.7,
+            "mean_cpu_percent": 970.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 88
+          },
+          "answer_chars": 601,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.614,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.482,
+          "refused_answerable": false
+        },
+        {
+          "id": "F05",
+          "category": "factual_retrieval",
+          "latency_ms": 15371.2,
+          "prompt_tokens": 333,
+          "output_tokens": 70,
+          "eval_duration_ms": 10078.3,
+          "resources": {
+            "peak_rss_mb": 6561.9,
+            "mean_rss_mb": 6558.4,
+            "mean_cpu_percent": 962.8,
+            "peak_cpu_percent": 1062.5,
+            "samples": 60
+          },
+          "answer_chars": 319,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.823,
+          "refused_answerable": false
+        },
+        {
+          "id": "F06",
+          "category": "factual_retrieval",
+          "latency_ms": 10358.6,
+          "prompt_tokens": 281,
+          "output_tokens": 44,
+          "eval_duration_ms": 6021.4,
+          "resources": {
+            "peak_rss_mb": 6761.9,
+            "mean_rss_mb": 6748.5,
+            "mean_cpu_percent": 961.8,
+            "peak_cpu_percent": 1056.2,
+            "samples": 40
+          },
+          "answer_chars": 239,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.92,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8842,
+          "refused_answerable": false
+        },
+        {
+          "id": "F07",
+          "category": "factual_retrieval",
+          "latency_ms": 25368.4,
+          "prompt_tokens": 331,
+          "output_tokens": 136,
+          "eval_duration_ms": 19733.1,
+          "resources": {
+            "peak_rss_mb": 6907.4,
+            "mean_rss_mb": 6905.7,
+            "mean_cpu_percent": 972.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 99
+          },
+          "answer_chars": 640,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8889,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7882,
+          "refused_answerable": false
+        },
+        {
+          "id": "F08",
+          "category": "factual_retrieval",
+          "latency_ms": 27546.3,
+          "prompt_tokens": 344,
+          "output_tokens": 145,
+          "eval_duration_ms": 21290.4,
+          "resources": {
+            "peak_rss_mb": 7143.5,
+            "mean_rss_mb": 7141.1,
+            "mean_cpu_percent": 971.9,
+            "peak_cpu_percent": 1062.5,
+            "samples": 106
+          },
+          "answer_chars": 650,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 6,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7541,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7871,
+          "refused_answerable": false
+        },
+        {
+          "id": "F09",
+          "category": "factual_retrieval",
+          "latency_ms": 37595.3,
+          "prompt_tokens": 336,
+          "output_tokens": 212,
+          "eval_duration_ms": 31491.6,
+          "resources": {
+            "peak_rss_mb": 7369.5,
+            "mean_rss_mb": 7321.5,
+            "mean_cpu_percent": 973.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 145
+          },
+          "answer_chars": 856,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4359,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6813,
+          "refused_answerable": false
+        },
+        {
+          "id": "F10",
+          "category": "factual_retrieval",
+          "latency_ms": 18417.8,
+          "prompt_tokens": 327,
+          "output_tokens": 81,
+          "eval_duration_ms": 12192.9,
+          "resources": {
+            "peak_rss_mb": 7384.2,
+            "mean_rss_mb": 7030.9,
+            "mean_cpu_percent": 959.3,
+            "peak_cpu_percent": 1056.2,
+            "samples": 71
+          },
+          "answer_chars": 389,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4167,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.886,
+          "refused_answerable": false
+        },
+        {
+          "id": "S01",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 31729.8,
+          "prompt_tokens": 355,
+          "output_tokens": 172,
+          "eval_duration_ms": 28548.1,
+          "resources": {
+            "peak_rss_mb": 5366.4,
+            "mean_rss_mb": 5215.2,
+            "mean_cpu_percent": 966.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 123
+          },
+          "answer_chars": 715,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.9863,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7087,
+          "refused_answerable": false
+        },
+        {
+          "id": "S02",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 26624.7,
+          "prompt_tokens": 302,
+          "output_tokens": 119,
+          "eval_duration_ms": 21256.5,
+          "resources": {
+            "peak_rss_mb": 5480.4,
+            "mean_rss_mb": 5477.8,
+            "mean_cpu_percent": 971.9,
+            "peak_cpu_percent": 1062.5,
+            "samples": 103
+          },
+          "answer_chars": 556,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 4,
+          "fact_coverage": 0.8,
+          "correct": true,
+          "missed_facts": [
+            "secured"
+          ],
+          "groundedness": 0.6481,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7375,
+          "refused_answerable": false
+        },
+        {
+          "id": "S03",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 56178.6,
+          "prompt_tokens": 355,
+          "output_tokens": 270,
+          "eval_duration_ms": 49406.4,
+          "resources": {
+            "peak_rss_mb": 5730.4,
+            "mean_rss_mb": 5694.4,
+            "mean_cpu_percent": 976.3,
+            "peak_cpu_percent": 1062.5,
+            "samples": 217
+          },
+          "answer_chars": 1224,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": true,
+          "missed_facts": [
+            "one factor"
+          ],
+          "groundedness": 0.7521,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7057,
+          "refused_answerable": false
+        },
+        {
+          "id": "S04",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 24757.8,
+          "prompt_tokens": 241,
+          "output_tokens": 116,
+          "eval_duration_ms": 20755.0,
+          "resources": {
+            "peak_rss_mb": 6046.9,
+            "mean_rss_mb": 6043.6,
+            "mean_cpu_percent": 963.2,
+            "peak_cpu_percent": 1050.0,
+            "samples": 96
+          },
+          "answer_chars": 562,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.5283,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7931,
+          "refused_answerable": false
+        },
+        {
+          "id": "C01",
+          "category": "conceptual",
+          "latency_ms": 11319.5,
+          "prompt_tokens": 321,
+          "output_tokens": 31,
+          "eval_duration_ms": 5356.7,
+          "resources": {
+            "peak_rss_mb": 6220.3,
+            "mean_rss_mb": 6216.3,
+            "mean_cpu_percent": 957.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 44
+          },
+          "answer_chars": 153,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7987,
+          "refused_answerable": false
+        },
+        {
+          "id": "C02",
+          "category": "conceptual",
+          "latency_ms": 29360.3,
+          "prompt_tokens": 320,
+          "output_tokens": 128,
+          "eval_duration_ms": 23244.1,
+          "resources": {
+            "peak_rss_mb": 6399.8,
+            "mean_rss_mb": 6398.2,
+            "mean_cpu_percent": 971.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 113
+          },
+          "answer_chars": 646,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.9153,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6964,
+          "refused_answerable": false
+        },
+        {
+          "id": "C03",
+          "category": "conceptual",
+          "latency_ms": 15955.3,
+          "prompt_tokens": 287,
+          "output_tokens": 71,
+          "eval_duration_ms": 12495.7,
+          "resources": {
+            "peak_rss_mb": 6399.9,
+            "mean_rss_mb": 6329.1,
+            "mean_cpu_percent": 964.4,
+            "peak_cpu_percent": 1056.2,
+            "samples": 62
+          },
+          "answer_chars": 331,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6539,
+          "refused_answerable": false
+        },
+        {
+          "id": "C04",
+          "category": "conceptual",
+          "latency_ms": 20846.2,
+          "prompt_tokens": 354,
+          "output_tokens": 88,
+          "eval_duration_ms": 15713.7,
+          "resources": {
+            "peak_rss_mb": 6327.9,
+            "mean_rss_mb": 6298.3,
+            "mean_cpu_percent": 966.1,
+            "peak_cpu_percent": 1062.5,
+            "samples": 81
+          },
+          "answer_chars": 369,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 3,
+          "fact_coverage": 0.5,
+          "correct": false,
+          "missed_facts": [
+            "repayment capacity",
+            "cost",
+            "risk"
+          ],
+          "groundedness": 0.8333,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8886,
+          "refused_answerable": false
+        },
+        {
+          "id": "C05",
+          "category": "conceptual",
+          "latency_ms": 11499.9,
+          "prompt_tokens": 330,
+          "output_tokens": 37,
+          "eval_duration_ms": 6522.6,
+          "resources": {
+            "peak_rss_mb": 6577.4,
+            "mean_rss_mb": 6495.0,
+            "mean_cpu_percent": 946.8,
+            "peak_cpu_percent": 1056.2,
+            "samples": 45
+          },
+          "answer_chars": 156,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7381,
+          "refused_answerable": false
+        },
+        {
+          "id": "H01",
+          "category": "out_of_kb",
+          "latency_ms": 40129.9,
+          "prompt_tokens": 274,
+          "output_tokens": 205,
+          "eval_duration_ms": 35237.2,
+          "resources": {
+            "peak_rss_mb": 6506.8,
+            "mean_rss_mb": 6506.5,
+            "mean_cpu_percent": 976.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 156
+          },
+          "answer_chars": 986,
+          "error": null,
+          "outcome": "soft_decline",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": false
+        },
+        {
+          "id": "H02",
+          "category": "out_of_kb",
+          "latency_ms": 7161.5,
+          "prompt_tokens": 222,
+          "output_tokens": 23,
+          "eval_duration_ms": 4003.1,
+          "resources": {
+            "peak_rss_mb": 6568.6,
+            "mean_rss_mb": 6566.4,
+            "mean_cpu_percent": 943.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 28
+          },
+          "answer_chars": 70,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H03",
+          "category": "out_of_kb",
+          "latency_ms": 22056.8,
+          "prompt_tokens": 337,
+          "output_tokens": 88,
+          "eval_duration_ms": 15858.2,
+          "resources": {
+            "peak_rss_mb": 6690.8,
+            "mean_rss_mb": 6689.3,
+            "mean_cpu_percent": 972.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 86
+          },
+          "answer_chars": 426,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H04",
+          "category": "out_of_kb",
+          "latency_ms": 6053.5,
+          "prompt_tokens": 284,
+          "output_tokens": 11,
+          "eval_duration_ms": 1906.5,
+          "resources": {
+            "peak_rss_mb": 7007.5,
+            "mean_rss_mb": 6202.6,
+            "mean_cpu_percent": 822.5,
+            "peak_cpu_percent": 1000.0,
+            "samples": 24
+          },
+          "answer_chars": 42,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H05",
+          "category": "out_of_kb",
+          "latency_ms": 32371.1,
+          "prompt_tokens": 296,
+          "output_tokens": 157,
+          "eval_duration_ms": 28364.3,
+          "resources": {
+            "peak_rss_mb": 5763.7,
+            "mean_rss_mb": 5672.2,
+            "mean_cpu_percent": 971.7,
+            "peak_cpu_percent": 1062.5,
+            "samples": 125
+          },
+          "answer_chars": 715,
+          "error": null,
+          "outcome": "soft_decline",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": false
+        },
+        {
+          "id": "G01",
+          "category": "code_generation",
+          "latency_ms": 14400.8,
+          "prompt_tokens": 118,
+          "output_tokens": 61,
+          "eval_duration_ms": 11189.8,
+          "resources": {
+            "peak_rss_mb": 5898.6,
+            "mean_rss_mb": 5894.5,
+            "mean_cpu_percent": 955.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 56
+          },
+          "answer_chars": 160,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "emi(100000, 12, 12) -> FAIL",
+            "emi(500000, 9, 60) -> FAIL",
+            "emi(250000, 0, 10) -> FAIL"
+          ],
+          "code": "def emi(principal, annual_rate_percent, months):\n    return principal * (annual_rate_percent / 100) / (1 - (1 + annual_rate_percent / 100) ** (-months))"
+        },
+        {
+          "id": "G02",
+          "category": "code_generation",
+          "latency_ms": 10516.6,
+          "prompt_tokens": 125,
+          "output_tokens": 43,
+          "eval_duration_ms": 8719.2,
+          "resources": {
+            "peak_rss_mb": 5987.3,
+            "mean_rss_mb": 5985.1,
+            "mean_cpu_percent": 936.1,
+            "peak_cpu_percent": 1050.0,
+            "samples": 41
+          },
+          "answer_chars": 133,
+          "error": null,
+          "code_extracted": true,
+          "passed": 1,
+          "total": 2,
+          "detail": [
+            "total_interest(100000, 12, 12) -> FAIL",
+            "total_interest(250000, 0, 10) -> PASS"
+          ],
+          "code": "def total_interest(principal, annual_rate_percent, months):\n    return (annual_rate_percent / 100) * principal * months"
+        },
+        {
+          "id": "G03",
+          "category": "code_generation",
+          "latency_ms": 9374.0,
+          "prompt_tokens": 112,
+          "output_tokens": 43,
+          "eval_duration_ms": 8110.4,
+          "resources": {
+            "peak_rss_mb": 6072.1,
+            "mean_rss_mb": 6069.7,
+            "mean_cpu_percent": 947.2,
+            "peak_cpu_percent": 1062.5,
+            "samples": 36
+          },
+          "answer_chars": 132,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "simple_interest(100000, 10, 2) -> PASS",
+            "simple_interest(50000, 7.5, 3) -> PASS",
+            "simple_interest(1000, 0, 5) -> PASS"
+          ],
+          "code": "def simple_interest(principal, annual_rate_percent, years):\n    return principal * (annual_rate_percent / 100) * years"
+        },
+        {
+          "id": "G04",
+          "category": "code_generation",
+          "latency_ms": 14453.5,
+          "prompt_tokens": 138,
+          "output_tokens": 73,
+          "eval_duration_ms": 12487.0,
+          "resources": {
+            "peak_rss_mb": 6148.1,
+            "mean_rss_mb": 6146.7,
+            "mean_cpu_percent": 964.8,
+            "peak_cpu_percent": 1050.0,
+            "samples": 57
+          },
+          "answer_chars": 184,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "dti_ratio(20000, 80000) -> PASS",
+            "dti_ratio(0, 50000) -> PASS",
+            "dti_ratio(10000, 0) -> PASS"
+          ],
+          "code": "def dti_ratio(monthly_debt_payments, monthly_income):\n    if monthly_income == 0:\n        return 0.0\n    else:\n        return monthly_debt_payments / monthly_income * 100"
+        },
+        {
+          "id": "G05",
+          "category": "code_generation",
+          "latency_ms": 12009.9,
+          "prompt_tokens": 130,
+          "output_tokens": 58,
+          "eval_duration_ms": 10297.8,
+          "resources": {
+            "peak_rss_mb": 6252.6,
+            "mean_rss_mb": 6250.4,
+            "mean_cpu_percent": 961.8,
+            "peak_cpu_percent": 1062.6,
+            "samples": 47
+          },
+          "answer_chars": 180,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "outstanding_balance(100000, 12, 12, 0) -> FAIL",
+            "outstanding_balance(100000, 12, 12, 12) -> FAIL",
+            "outstanding_balance(100000, 12, 12, 6) -> FAIL"
+          ],
+          "code": "def outstanding_balance(principal, annual_rate_percent, months, payments_made):\n    return principal * (1 - pow(1 + annual_rate_percent / 12, months * payments_made))"
+        }
+      ]
+    },
+    "wizardlm2:7b": {
+      "model": "wizardlm2:7b",
+      "residency": [
+        {
+          "name": "wizardlm2:7b",
+          "resident_mb": 4550.0,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        },
+        {
+          "name": "codellama:7b",
+          "resident_mb": 5796.6,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        }
+      ],
+      "quality": {
+        "accuracy": 0.9474,
+        "correct_count": 18,
+        "knowledge_questions": 19,
+        "mean_fact_coverage": 0.8772,
+        "mean_relevance": 0.7416,
+        "mean_groundedness": 0.5058,
+        "refused_answerable_count": 0
+      },
+      "hallucination": {
+        "out_of_kb_questions": 5,
+        "refusals": 1,
+        "soft_declines": 0,
+        "fabrications": 4,
+        "refusal_failure_rate": 0.8,
+        "fabrication_rate": 0.8,
+        "unsupported_number_rate": 0.1053
+      },
+      "code": {
+        "tasks": 5,
+        "code_blocks_extracted": 5,
+        "tests_passed": 6,
+        "tests_total": 14,
+        "test_pass_rate": 0.4286,
+        "tasks_fully_passed": 2,
+        "task_pass_rate": 0.4
+      },
+      "performance": {
+        "mean_latency_ms": 36902.2,
+        "median_latency_ms": 32082.7,
+        "p95_latency_ms": 80040.0,
+        "min_latency_ms": 8317.4,
+        "max_latency_ms": 83677.8,
+        "total_prompt_tokens": 8447,
+        "total_output_tokens": 5974,
+        "mean_output_tokens": 206.0,
+        "output_tokens_per_sec": 6.33
+      },
+      "resources": {
+        "peak_rss_mb": 5321.6,
+        "mean_peak_rss_mb": 4892.8,
+        "mean_cpu_percent": 971.0,
+        "resident_mb": 4550.0,
+        "vram_mb": 0.0,
+        "gpu_percent": 0.0
+      },
+      "per_question": [
+        {
+          "id": "F01",
+          "category": "factual_retrieval",
+          "latency_ms": 67389.6,
+          "prompt_tokens": 342,
+          "output_tokens": 297,
+          "eval_duration_ms": 58179.0,
+          "resources": {
+            "peak_rss_mb": 4386.8,
+            "mean_rss_mb": 4382.4,
+            "mean_cpu_percent": 974.7,
+            "peak_cpu_percent": 1062.5,
+            "samples": 259
+          },
+          "answer_chars": 1205,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.581,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.5481,
+          "refused_answerable": false
+        },
+        {
+          "id": "F02",
+          "category": "factual_retrieval",
+          "latency_ms": 30678.4,
+          "prompt_tokens": 345,
+          "output_tokens": 124,
+          "eval_duration_ms": 23801.8,
+          "resources": {
+            "peak_rss_mb": 4467.0,
+            "mean_rss_mb": 4466.2,
+            "mean_cpu_percent": 973.0,
+            "peak_cpu_percent": 1043.8,
+            "samples": 118
+          },
+          "answer_chars": 549,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.6939,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8722,
+          "refused_answerable": false
+        },
+        {
+          "id": "F03",
+          "category": "factual_retrieval",
+          "latency_ms": 35506.7,
+          "prompt_tokens": 353,
+          "output_tokens": 142,
+          "eval_duration_ms": 28336.5,
+          "resources": {
+            "peak_rss_mb": 4527.6,
+            "mean_rss_mb": 4501.2,
+            "mean_cpu_percent": 966.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 137
+          },
+          "answer_chars": 665,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.6452,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7198,
+          "refused_answerable": false
+        },
+        {
+          "id": "F04",
+          "category": "factual_retrieval",
+          "latency_ms": 35087.7,
+          "prompt_tokens": 290,
+          "output_tokens": 112,
+          "eval_duration_ms": 25578.6,
+          "resources": {
+            "peak_rss_mb": 4531.7,
+            "mean_rss_mb": 4518.1,
+            "mean_cpu_percent": 919.6,
+            "peak_cpu_percent": 1050.0,
+            "samples": 134
+          },
+          "answer_chars": 548,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.2857,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.5322,
+          "refused_answerable": false
+        },
+        {
+          "id": "F05",
+          "category": "factual_retrieval",
+          "latency_ms": 24644.1,
+          "prompt_tokens": 339,
+          "output_tokens": 97,
+          "eval_duration_ms": 19056.1,
+          "resources": {
+            "peak_rss_mb": 4556.6,
+            "mean_rss_mb": 4455.3,
+            "mean_cpu_percent": 966.7,
+            "peak_cpu_percent": 1056.2,
+            "samples": 95
+          },
+          "answer_chars": 470,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.619,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7937,
+          "refused_answerable": false
+        },
+        {
+          "id": "F06",
+          "category": "factual_retrieval",
+          "latency_ms": 52497.5,
+          "prompt_tokens": 291,
+          "output_tokens": 268,
+          "eval_duration_ms": 48468.2,
+          "resources": {
+            "peak_rss_mb": 4455.0,
+            "mean_rss_mb": 4454.5,
+            "mean_cpu_percent": 976.7,
+            "peak_cpu_percent": 1068.7,
+            "samples": 202
+          },
+          "answer_chars": 1211,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4874,
+          "unsupported_numbers": [
+            2.0
+          ],
+          "has_unsupported_number": true,
+          "relevance": 0.7536,
+          "refused_answerable": false
+        },
+        {
+          "id": "F07",
+          "category": "factual_retrieval",
+          "latency_ms": 61516.1,
+          "prompt_tokens": 338,
+          "output_tokens": 372,
+          "eval_duration_ms": 56484.8,
+          "resources": {
+            "peak_rss_mb": 4533.1,
+            "mean_rss_mb": 4525.6,
+            "mean_cpu_percent": 976.9,
+            "peak_cpu_percent": 1062.1,
+            "samples": 237
+          },
+          "answer_chars": 1776,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.5125,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7128,
+          "refused_answerable": false
+        },
+        {
+          "id": "F08",
+          "category": "factual_retrieval",
+          "latency_ms": 22743.1,
+          "prompt_tokens": 349,
+          "output_tokens": 118,
+          "eval_duration_ms": 17222.9,
+          "resources": {
+            "peak_rss_mb": 4619.7,
+            "mean_rss_mb": 4618.7,
+            "mean_cpu_percent": 974.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 88
+          },
+          "answer_chars": 561,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 6,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.78,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7564,
+          "refused_answerable": false
+        },
+        {
+          "id": "F09",
+          "category": "factual_retrieval",
+          "latency_ms": 24471.9,
+          "prompt_tokens": 345,
+          "output_tokens": 128,
+          "eval_duration_ms": 19089.0,
+          "resources": {
+            "peak_rss_mb": 4681.5,
+            "mean_rss_mb": 4680.8,
+            "mean_cpu_percent": 973.9,
+            "peak_cpu_percent": 1056.2,
+            "samples": 95
+          },
+          "answer_chars": 641,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4032,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6569,
+          "refused_answerable": false
+        },
+        {
+          "id": "F10",
+          "category": "factual_retrieval",
+          "latency_ms": 25284.3,
+          "prompt_tokens": 337,
+          "output_tokens": 134,
+          "eval_duration_ms": 20150.1,
+          "resources": {
+            "peak_rss_mb": 4739.5,
+            "mean_rss_mb": 4738.8,
+            "mean_cpu_percent": 974.7,
+            "peak_cpu_percent": 1062.5,
+            "samples": 98
+          },
+          "answer_chars": 698,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4603,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8622,
+          "refused_answerable": false
+        },
+        {
+          "id": "S01",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 81092.0,
+          "prompt_tokens": 357,
+          "output_tokens": 512,
+          "eval_duration_ms": 78674.1,
+          "resources": {
+            "peak_rss_mb": 4753.9,
+            "mean_rss_mb": 4740.4,
+            "mean_cpu_percent": 980.5,
+            "peak_cpu_percent": 1062.5,
+            "samples": 313
+          },
+          "answer_chars": 2250,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.5073,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7503,
+          "refused_answerable": false
+        },
+        {
+          "id": "S02",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 78461.9,
+          "prompt_tokens": 309,
+          "output_tokens": 466,
+          "eval_duration_ms": 73317.5,
+          "resources": {
+            "peak_rss_mb": 4862.6,
+            "mean_rss_mb": 4786.2,
+            "mean_cpu_percent": 977.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 301
+          },
+          "answer_chars": 1984,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.3204,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7213,
+          "refused_answerable": false
+        },
+        {
+          "id": "S03",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 48238.1,
+          "prompt_tokens": 359,
+          "output_tokens": 284,
+          "eval_duration_ms": 42510.0,
+          "resources": {
+            "peak_rss_mb": 4808.6,
+            "mean_rss_mb": 4808.3,
+            "mean_cpu_percent": 978.4,
+            "peak_cpu_percent": 1062.5,
+            "samples": 186
+          },
+          "answer_chars": 1399,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 0,
+          "fact_coverage": 0.0,
+          "correct": false,
+          "missed_facts": [
+            "one factor",
+            "repayment risk",
+            "credit score impact|harm credit|affect credit|damage credit|impact on credit|credit history"
+          ],
+          "groundedness": 0.4923,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8167,
+          "refused_answerable": false
+        },
+        {
+          "id": "S04",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 33240.9,
+          "prompt_tokens": 256,
+          "output_tokens": 201,
+          "eval_duration_ms": 29816.5,
+          "resources": {
+            "peak_rss_mb": 4891.6,
+            "mean_rss_mb": 4890.8,
+            "mean_cpu_percent": 977.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 128
+          },
+          "answer_chars": 980,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.4536,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8383,
+          "refused_answerable": false
+        },
+        {
+          "id": "C01",
+          "category": "conceptual",
+          "latency_ms": 30706.5,
+          "prompt_tokens": 337,
+          "output_tokens": 168,
+          "eval_duration_ms": 25618.8,
+          "resources": {
+            "peak_rss_mb": 4949.7,
+            "mean_rss_mb": 4949.1,
+            "mean_cpu_percent": 973.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 119
+          },
+          "answer_chars": 825,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": true,
+          "missed_facts": [
+            "stays the same"
+          ],
+          "groundedness": 0.375,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7971,
+          "refused_answerable": false
+        },
+        {
+          "id": "C02",
+          "category": "conceptual",
+          "latency_ms": 54986.4,
+          "prompt_tokens": 335,
+          "output_tokens": 335,
+          "eval_duration_ms": 49862.2,
+          "resources": {
+            "peak_rss_mb": 5012.2,
+            "mean_rss_mb": 5011.9,
+            "mean_cpu_percent": 980.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 212
+          },
+          "answer_chars": 1547,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": true,
+          "missed_facts": [
+            "unpaid interest"
+          ],
+          "groundedness": 0.5241,
+          "unsupported_numbers": [
+            1.0
+          ],
+          "has_unsupported_number": true,
+          "relevance": 0.7981,
+          "refused_answerable": false
+        },
+        {
+          "id": "C03",
+          "category": "conceptual",
+          "latency_ms": 32082.7,
+          "prompt_tokens": 299,
+          "output_tokens": 197,
+          "eval_duration_ms": 29135.0,
+          "resources": {
+            "peak_rss_mb": 5038.1,
+            "mean_rss_mb": 5037.8,
+            "mean_cpu_percent": 978.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 123
+          },
+          "answer_chars": 1037,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 3,
+          "fact_coverage": 0.75,
+          "correct": true,
+          "missed_facts": [
+            "early"
+          ],
+          "groundedness": 0.5604,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.613,
+          "refused_answerable": false
+        },
+        {
+          "id": "C04",
+          "category": "conceptual",
+          "latency_ms": 83677.8,
+          "prompt_tokens": 353,
+          "output_tokens": 512,
+          "eval_duration_ms": 78121.9,
+          "resources": {
+            "peak_rss_mb": 5101.6,
+            "mean_rss_mb": 5031.0,
+            "mean_cpu_percent": 980.0,
+            "peak_cpu_percent": 1075.0,
+            "samples": 322
+          },
+          "answer_chars": 2209,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 5,
+          "fact_coverage": 0.8333,
+          "correct": true,
+          "missed_facts": [
+            "risk"
+          ],
+          "groundedness": 0.3878,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.765,
+          "refused_answerable": false
+        },
+        {
+          "id": "C05",
+          "category": "conceptual",
+          "latency_ms": 18543.7,
+          "prompt_tokens": 340,
+          "output_tokens": 99,
+          "eval_duration_ms": 14667.5,
+          "resources": {
+            "peak_rss_mb": 5012.4,
+            "mean_rss_mb": 5011.7,
+            "mean_cpu_percent": 970.5,
+            "peak_cpu_percent": 1056.2,
+            "samples": 72
+          },
+          "answer_chars": 516,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 3,
+          "fact_coverage": 0.75,
+          "correct": true,
+          "missed_facts": [
+            "contact the lender|contact your lender|reach out to the lender|speak to the lender|talk to the lender|contact the lender early"
+          ],
+          "groundedness": 0.5208,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7818,
+          "refused_answerable": false
+        },
+        {
+          "id": "H01",
+          "category": "out_of_kb",
+          "latency_ms": 31758.6,
+          "prompt_tokens": 283,
+          "output_tokens": 188,
+          "eval_duration_ms": 27774.8,
+          "resources": {
+            "peak_rss_mb": 5070.9,
+            "mean_rss_mb": 5070.3,
+            "mean_cpu_percent": 977.9,
+            "peak_cpu_percent": 1062.5,
+            "samples": 122
+          },
+          "answer_chars": 1019,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H02",
+          "category": "out_of_kb",
+          "latency_ms": 24290.3,
+          "prompt_tokens": 242,
+          "output_tokens": 148,
+          "eval_duration_ms": 21339.2,
+          "resources": {
+            "peak_rss_mb": 5073.2,
+            "mean_rss_mb": 5073.1,
+            "mean_cpu_percent": 972.8,
+            "peak_cpu_percent": 1056.2,
+            "samples": 94
+          },
+          "answer_chars": 639,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H03",
+          "category": "out_of_kb",
+          "latency_ms": 18400.8,
+          "prompt_tokens": 341,
+          "output_tokens": 105,
+          "eval_duration_ms": 14860.2,
+          "resources": {
+            "peak_rss_mb": 5112.0,
+            "mean_rss_mb": 5111.5,
+            "mean_cpu_percent": 972.3,
+            "peak_cpu_percent": 1062.5,
+            "samples": 73
+          },
+          "answer_chars": 537,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H04",
+          "category": "out_of_kb",
+          "latency_ms": 10880.4,
+          "prompt_tokens": 292,
+          "output_tokens": 60,
+          "eval_duration_ms": 8511.3,
+          "resources": {
+            "peak_rss_mb": 5165.2,
+            "mean_rss_mb": 5164.0,
+            "mean_cpu_percent": 961.7,
+            "peak_cpu_percent": 1062.5,
+            "samples": 43
+          },
+          "answer_chars": 293,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "H05",
+          "category": "out_of_kb",
+          "latency_ms": 39336.2,
+          "prompt_tokens": 307,
+          "output_tokens": 241,
+          "eval_duration_ms": 36557.0,
+          "resources": {
+            "peak_rss_mb": 5165.3,
+            "mean_rss_mb": 5148.2,
+            "mean_cpu_percent": 975.3,
+            "peak_cpu_percent": 1062.5,
+            "samples": 153
+          },
+          "answer_chars": 1061,
+          "error": null,
+          "outcome": "fabricated",
+          "refused": false,
+          "hallucinated": true,
+          "fabricated": true
+        },
+        {
+          "id": "G01",
+          "category": "code_generation",
+          "latency_ms": 13251.5,
+          "prompt_tokens": 136,
+          "output_tokens": 76,
+          "eval_duration_ms": 10946.2,
+          "resources": {
+            "peak_rss_mb": 5220.1,
+            "mean_rss_mb": 5218.6,
+            "mean_cpu_percent": 963.4,
+            "peak_cpu_percent": 1062.5,
+            "samples": 51
+          },
+          "answer_chars": 200,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "emi(100000, 12, 12) -> FAIL",
+            "emi(500000, 9, 60) -> FAIL",
+            "emi(250000, 0, 10) -> FAIL"
+          ],
+          "code": "def emi(principal, annual_rate_percent, months):\n    rate = annual_rate_percent / 12 / 100\n    terms = months\n    emi = (2 * principal * rate) / (1 - (1 + rate)**(-terms))\n    return emi"
+        },
+        {
+          "id": "G02",
+          "category": "code_generation",
+          "latency_ms": 35580.1,
+          "prompt_tokens": 144,
+          "output_tokens": 234,
+          "eval_duration_ms": 34330.7,
+          "resources": {
+            "peak_rss_mb": 5246.0,
+            "mean_rss_mb": 5245.8,
+            "mean_cpu_percent": 978.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 137
+          },
+          "answer_chars": 738,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 2,
+          "detail": [
+            "total_interest(100000, 12, 12) -> FAIL",
+            "total_interest(250000, 0, 10) -> FAIL"
+          ],
+          "code": "from math import sqrt, log10, pow\n\ndef total_interest(principal, annual_rate_percent, months):\n    # Convert annual interest rate to a decimal\n    rate = pow(10, (annual_rate_percent / 100)) - 1\n    \n    # Calculate monthly interest rate\n    monthly_rate = rate / 12 / sqrt(12)\n    \n    # Calculate total number of payments\n    total_payments = months * (12 if months >= 12 else 1)\n    \n    # Calculate the monthly payment\n    monthly_payment = principal * (monthly_rate / (1 - pow(1 + monthly_rate, -total_payments)))\n    \n    # Calculate total interest paid\n    total_interest_paid = principal * (monthly_rate / (1 - pow(1 + monthly_rate, -total_payments))) * total_payments - principal\n    \n    return total_interest_paid"
+        },
+        {
+          "id": "G03",
+          "category": "code_generation",
+          "latency_ms": 8317.4,
+          "prompt_tokens": 130,
+          "output_tokens": 51,
+          "eval_duration_ms": 7286.2,
+          "resources": {
+            "peak_rss_mb": 5293.9,
+            "mean_rss_mb": 5292.4,
+            "mean_cpu_percent": 947.7,
+            "peak_cpu_percent": 1050.0,
+            "samples": 32
+          },
+          "answer_chars": 160,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "simple_interest(100000, 10, 2) -> PASS",
+            "simple_interest(50000, 7.5, 3) -> PASS",
+            "simple_interest(1000, 0, 5) -> PASS"
+          ],
+          "code": "from math import factorial\n\ndef simple_interest(principal, annual_rate_percent, years):\n    return (principal * annual_rate_percent * years) / 100"
+        },
+        {
+          "id": "G04",
+          "category": "code_generation",
+          "latency_ms": 11352.1,
+          "prompt_tokens": 153,
+          "output_tokens": 68,
+          "eval_duration_ms": 9627.1,
+          "resources": {
+            "peak_rss_mb": 5293.9,
+            "mean_rss_mb": 5292.1,
+            "mean_cpu_percent": 962.2,
+            "peak_cpu_percent": 1050.0,
+            "samples": 44
+          },
+          "answer_chars": 173,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "dti_ratio(20000, 80000) -> PASS",
+            "dti_ratio(0, 50000) -> PASS",
+            "dti_ratio(10000, 0) -> PASS"
+          ],
+          "code": "def dti_ratio(monthly_debt_payments, monthly_income):\n    if monthly_income == 0:\n        return 0.0\n    return (monthly_debt_payments / monthly_income) * 100"
+        },
+        {
+          "id": "G05",
+          "category": "code_generation",
+          "latency_ms": 36146.4,
+          "prompt_tokens": 145,
+          "output_tokens": 237,
+          "eval_duration_ms": 34791.8,
+          "resources": {
+            "peak_rss_mb": 5321.6,
+            "mean_rss_mb": 5321.3,
+            "mean_cpu_percent": 975.4,
+            "peak_cpu_percent": 1068.8,
+            "samples": 139
+          },
+          "answer_chars": 811,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "outstanding_balance(100000, 12, 12, 0) -> FAIL",
+            "outstanding_balance(100000, 12, 12, 12) -> FAIL",
+            "outstanding_balance(100000, 12, 12, 6) -> FAIL"
+          ],
+          "code": "from math import sqrt, log, exp, pi\n\ndef outstanding_balance(principal, annual_rate_percent, months, payments_made):\n    # Convert annual rate to monthly rate (as a decimal)\n    monthly_rate = principal * (annual_rate_percent / 12 / 100)\n    \n    # Calculate the total number of payments\n    total_payments = months * 12\n    \n    # Calculate the equivalent annual rate (EAR) for compound interest\n    EAR = (1 + monthly_rate) ** 12 - 1\n    \n    # Calculate the number of payments made in terms of the payment period\n    payments_in_period = min(payments_made, months)\n    \n    # Calculate the remaining balance using the formula for an amortizing loan\n    remaining_balance = principal * ((1 - (exp(-EAR * payments_in_period))) / (1 - exp(-EAR * total_payments)))\n    \n    return remaining_balance"
+        }
+      ]
+    },
+    "llama3.2:latest": {
+      "model": "llama3.2:latest",
+      "residency": [
+        {
+          "name": "llama3.2:latest",
+          "resident_mb": 2442.9,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        },
+        {
+          "name": "wizardlm2:7b",
+          "resident_mb": 4550.0,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        }
+      ],
+      "quality": {
+        "accuracy": 0.8947,
+        "correct_count": 17,
+        "knowledge_questions": 19,
+        "mean_fact_coverage": 0.8675,
+        "mean_relevance": 0.7796,
+        "mean_groundedness": 0.8176,
+        "refused_answerable_count": 1
+      },
+      "hallucination": {
+        "out_of_kb_questions": 5,
+        "refusals": 5,
+        "soft_declines": 0,
+        "fabrications": 0,
+        "refusal_failure_rate": 0.0,
+        "fabrication_rate": 0.0,
+        "unsupported_number_rate": 0.0
+      },
+      "code": {
+        "tasks": 5,
+        "code_blocks_extracted": 5,
+        "tests_passed": 10,
+        "tests_total": 14,
+        "test_pass_rate": 0.7143,
+        "tasks_fully_passed": 3,
+        "task_pass_rate": 0.6
+      },
+      "performance": {
+        "mean_latency_ms": 6115.6,
+        "median_latency_ms": 6286.5,
+        "p95_latency_ms": 9775.3,
+        "min_latency_ms": 2349.6,
+        "max_latency_ms": 16044.6,
+        "total_prompt_tokens": 6920,
+        "total_output_tokens": 1571,
+        "mean_output_tokens": 54.2,
+        "output_tokens_per_sec": 12.67
+      },
+      "resources": {
+        "peak_rss_mb": 6840.0,
+        "mean_peak_rss_mb": 3575.1,
+        "mean_cpu_percent": 890.2,
+        "resident_mb": 2442.9,
+        "vram_mb": 0.0,
+        "gpu_percent": 0.0
+      },
+      "per_question": [
+        {
+          "id": "F01",
+          "category": "factual_retrieval",
+          "latency_ms": 6855.6,
+          "prompt_tokens": 285,
+          "output_tokens": 43,
+          "eval_duration_ms": 3734.1,
+          "resources": {
+            "peak_rss_mb": 6840.0,
+            "mean_rss_mb": 4804.5,
+            "mean_cpu_percent": 896.8,
+            "peak_cpu_percent": 1050.0,
+            "samples": 27
+          },
+          "answer_chars": 138,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8145,
+          "refused_answerable": false
+        },
+        {
+          "id": "F02",
+          "category": "factual_retrieval",
+          "latency_ms": 5337.1,
+          "prompt_tokens": 286,
+          "output_tokens": 35,
+          "eval_duration_ms": 2994.8,
+          "resources": {
+            "peak_rss_mb": 3104.6,
+            "mean_rss_mb": 3100.5,
+            "mean_cpu_percent": 894.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 21
+          },
+          "answer_chars": 143,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7143,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8899,
+          "refused_answerable": false
+        },
+        {
+          "id": "F03",
+          "category": "factual_retrieval",
+          "latency_ms": 5026.9,
+          "prompt_tokens": 286,
+          "output_tokens": 32,
+          "eval_duration_ms": 2667.8,
+          "resources": {
+            "peak_rss_mb": 3146.3,
+            "mean_rss_mb": 3141.9,
+            "mean_cpu_percent": 892.1,
+            "peak_cpu_percent": 1043.8,
+            "samples": 20
+          },
+          "answer_chars": 150,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6702,
+          "refused_answerable": false
+        },
+        {
+          "id": "F04",
+          "category": "factual_retrieval",
+          "latency_ms": 3916.8,
+          "prompt_tokens": 240,
+          "output_tokens": 24,
+          "eval_duration_ms": 1968.8,
+          "resources": {
+            "peak_rss_mb": 3176.9,
+            "mean_rss_mb": 3172.2,
+            "mean_cpu_percent": 868.6,
+            "peak_cpu_percent": 1000.0,
+            "samples": 16
+          },
+          "answer_chars": 113,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8333,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.5293,
+          "refused_answerable": false
+        },
+        {
+          "id": "F05",
+          "category": "factual_retrieval",
+          "latency_ms": 4530.0,
+          "prompt_tokens": 278,
+          "output_tokens": 26,
+          "eval_duration_ms": 2133.3,
+          "resources": {
+            "peak_rss_mb": 3206.7,
+            "mean_rss_mb": 3202.8,
+            "mean_cpu_percent": 874.2,
+            "peak_cpu_percent": 1062.5,
+            "samples": 18
+          },
+          "answer_chars": 141,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 4,
+          "fact_coverage": 0.8,
+          "correct": true,
+          "missed_facts": [
+            "credit score"
+          ],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8256,
+          "refused_answerable": false
+        },
+        {
+          "id": "F06",
+          "category": "factual_retrieval",
+          "latency_ms": 7019.9,
+          "prompt_tokens": 236,
+          "output_tokens": 67,
+          "eval_duration_ms": 5133.6,
+          "resources": {
+            "peak_rss_mb": 3239.8,
+            "mean_rss_mb": 3237.2,
+            "mean_cpu_percent": 920.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 28
+          },
+          "answer_chars": 303,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.9688,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8234,
+          "refused_answerable": false
+        },
+        {
+          "id": "F07",
+          "category": "factual_retrieval",
+          "latency_ms": 6266.1,
+          "prompt_tokens": 279,
+          "output_tokens": 52,
+          "eval_duration_ms": 3961.4,
+          "resources": {
+            "peak_rss_mb": 3273.0,
+            "mean_rss_mb": 3270.0,
+            "mean_cpu_percent": 911.8,
+            "peak_cpu_percent": 1050.0,
+            "samples": 25
+          },
+          "answer_chars": 295,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.9667,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.758,
+          "refused_answerable": false
+        },
+        {
+          "id": "F08",
+          "category": "factual_retrieval",
+          "latency_ms": 8184.6,
+          "prompt_tokens": 290,
+          "output_tokens": 73,
+          "eval_duration_ms": 5704.5,
+          "resources": {
+            "peak_rss_mb": 3309.3,
+            "mean_rss_mb": 3305.7,
+            "mean_cpu_percent": 907.7,
+            "peak_cpu_percent": 1050.0,
+            "samples": 32
+          },
+          "answer_chars": 360,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 5,
+          "fact_coverage": 0.8333,
+          "correct": true,
+          "missed_facts": [
+            "insurance"
+          ],
+          "groundedness": 0.8529,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6481,
+          "refused_answerable": false
+        },
+        {
+          "id": "F09",
+          "category": "factual_retrieval",
+          "latency_ms": 7665.5,
+          "prompt_tokens": 283,
+          "output_tokens": 68,
+          "eval_duration_ms": 5314.6,
+          "resources": {
+            "peak_rss_mb": 3349.8,
+            "mean_rss_mb": 3346.8,
+            "mean_cpu_percent": 917.1,
+            "peak_cpu_percent": 1062.5,
+            "samples": 30
+          },
+          "answer_chars": 330,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7059,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6739,
+          "refused_answerable": false
+        },
+        {
+          "id": "F10",
+          "category": "factual_retrieval",
+          "latency_ms": 6389.5,
+          "prompt_tokens": 278,
+          "output_tokens": 53,
+          "eval_duration_ms": 4134.0,
+          "resources": {
+            "peak_rss_mb": 3392.2,
+            "mean_rss_mb": 3388.7,
+            "mean_cpu_percent": 908.7,
+            "peak_cpu_percent": 1037.5,
+            "samples": 25
+          },
+          "answer_chars": 302,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": false,
+          "missed_facts": [
+            "each payment|every payment|payment includes"
+          ],
+          "groundedness": 0.6333,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.842,
+          "refused_answerable": false
+        },
+        {
+          "id": "S01",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 16044.6,
+          "prompt_tokens": 295,
+          "output_tokens": 186,
+          "eval_duration_ms": 14780.9,
+          "resources": {
+            "peak_rss_mb": 3392.3,
+            "mean_rss_mb": 3389.9,
+            "mean_cpu_percent": 956.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 62
+          },
+          "answer_chars": 898,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7647,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7886,
+          "refused_answerable": false
+        },
+        {
+          "id": "S02",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 7084.7,
+          "prompt_tokens": 251,
+          "output_tokens": 65,
+          "eval_duration_ms": 5092.5,
+          "resources": {
+            "peak_rss_mb": 3449.2,
+            "mean_rss_mb": 3444.9,
+            "mean_cpu_percent": 921.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 28
+          },
+          "answer_chars": 285,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 3,
+          "fact_coverage": 0.6,
+          "correct": true,
+          "missed_facts": [
+            "secured",
+            "vehicle"
+          ],
+          "groundedness": 0.5556,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.846,
+          "refused_answerable": false
+        },
+        {
+          "id": "S03",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 7404.2,
+          "prompt_tokens": 285,
+          "output_tokens": 64,
+          "eval_duration_ms": 5048.7,
+          "resources": {
+            "peak_rss_mb": 3450.2,
+            "mean_rss_mb": 3448.3,
+            "mean_cpu_percent": 915.6,
+            "peak_cpu_percent": 1056.2,
+            "samples": 29
+          },
+          "answer_chars": 357,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": true,
+          "missed_facts": [
+            "one factor"
+          ],
+          "groundedness": 0.8056,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8689,
+          "refused_answerable": false
+        },
+        {
+          "id": "S04",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 7387.2,
+          "prompt_tokens": 207,
+          "output_tokens": 74,
+          "eval_duration_ms": 5769.9,
+          "resources": {
+            "peak_rss_mb": 3486.8,
+            "mean_rss_mb": 3484.1,
+            "mean_cpu_percent": 921.3,
+            "peak_cpu_percent": 1043.8,
+            "samples": 29
+          },
+          "answer_chars": 366,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 3,
+          "fact_coverage": 0.75,
+          "correct": true,
+          "missed_facts": [
+            "total cost"
+          ],
+          "groundedness": 0.6216,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8348,
+          "refused_answerable": false
+        },
+        {
+          "id": "C01",
+          "category": "conceptual",
+          "latency_ms": 4503.8,
+          "prompt_tokens": 281,
+          "output_tokens": 30,
+          "eval_duration_ms": 2230.5,
+          "resources": {
+            "peak_rss_mb": 3518.3,
+            "mean_rss_mb": 3514.4,
+            "mean_cpu_percent": 875.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 18
+          },
+          "answer_chars": 153,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7987,
+          "refused_answerable": false
+        },
+        {
+          "id": "C02",
+          "category": "conceptual",
+          "latency_ms": 7215.0,
+          "prompt_tokens": 279,
+          "output_tokens": 62,
+          "eval_duration_ms": 4828.5,
+          "resources": {
+            "peak_rss_mb": 3553.1,
+            "mean_rss_mb": 3550.2,
+            "mean_cpu_percent": 920.9,
+            "peak_cpu_percent": 1050.0,
+            "samples": 28
+          },
+          "answer_chars": 363,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7273,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8496,
+          "refused_answerable": false
+        },
+        {
+          "id": "C03",
+          "category": "conceptual",
+          "latency_ms": 6423.0,
+          "prompt_tokens": 249,
+          "output_tokens": 64,
+          "eval_duration_ms": 5000.9,
+          "resources": {
+            "peak_rss_mb": 3553.3,
+            "mean_rss_mb": 3552.7,
+            "mean_cpu_percent": 910.2,
+            "peak_cpu_percent": 1056.2,
+            "samples": 25
+          },
+          "answer_chars": 347,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8286,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8823,
+          "refused_answerable": false
+        },
+        {
+          "id": "C04",
+          "category": "conceptual",
+          "latency_ms": 6286.5,
+          "prompt_tokens": 283,
+          "output_tokens": 56,
+          "eval_duration_ms": 4474.1,
+          "resources": {
+            "peak_rss_mb": 3557.8,
+            "mean_rss_mb": 3554.7,
+            "mean_cpu_percent": 908.2,
+            "peak_cpu_percent": 1043.8,
+            "samples": 25
+          },
+          "answer_chars": 291,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 1,
+          "fact_coverage": 0.1667,
+          "correct": false,
+          "missed_facts": [
+            "purpose",
+            "repayment capacity",
+            "cost",
+            "collateral",
+            "risk"
+          ],
+          "groundedness": 0.5556,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7935,
+          "refused_answerable": true
+        },
+        {
+          "id": "C05",
+          "category": "conceptual",
+          "latency_ms": 3750.3,
+          "prompt_tokens": 279,
+          "output_tokens": 25,
+          "eval_duration_ms": 1854.4,
+          "resources": {
+            "peak_rss_mb": 3558.0,
+            "mean_rss_mb": 3557.1,
+            "mean_cpu_percent": 850.0,
+            "peak_cpu_percent": 993.8,
+            "samples": 15
+          },
+          "answer_chars": 124,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6759,
+          "refused_answerable": false
+        },
+        {
+          "id": "H01",
+          "category": "out_of_kb",
+          "latency_ms": 4629.2,
+          "prompt_tokens": 236,
+          "output_tokens": 34,
+          "eval_duration_ms": 2860.0,
+          "resources": {
+            "peak_rss_mb": 3590.7,
+            "mean_rss_mb": 3586.8,
+            "mean_cpu_percent": 873.1,
+            "peak_cpu_percent": 1031.2,
+            "samples": 18
+          },
+          "answer_chars": 203,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H02",
+          "category": "out_of_kb",
+          "latency_ms": 2349.6,
+          "prompt_tokens": 199,
+          "output_tokens": 11,
+          "eval_duration_ms": 958.0,
+          "resources": {
+            "peak_rss_mb": 3597.0,
+            "mean_rss_mb": 3590.6,
+            "mean_cpu_percent": 780.8,
+            "peak_cpu_percent": 1031.2,
+            "samples": 9
+          },
+          "answer_chars": 55,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H03",
+          "category": "out_of_kb",
+          "latency_ms": 2730.1,
+          "prompt_tokens": 281,
+          "output_tokens": 11,
+          "eval_duration_ms": 852.2,
+          "resources": {
+            "peak_rss_mb": 3590.5,
+            "mean_rss_mb": 3579.5,
+            "mean_cpu_percent": 822.7,
+            "peak_cpu_percent": 1050.0,
+            "samples": 11
+          },
+          "answer_chars": 55,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H04",
+          "category": "out_of_kb",
+          "latency_ms": 5389.5,
+          "prompt_tokens": 243,
+          "output_tokens": 48,
+          "eval_duration_ms": 4005.0,
+          "resources": {
+            "peak_rss_mb": 3578.8,
+            "mean_rss_mb": 3574.6,
+            "mean_cpu_percent": 891.3,
+            "peak_cpu_percent": 1056.2,
+            "samples": 21
+          },
+          "answer_chars": 245,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H05",
+          "category": "out_of_kb",
+          "latency_ms": 2374.4,
+          "prompt_tokens": 251,
+          "output_tokens": 11,
+          "eval_duration_ms": 869.4,
+          "resources": {
+            "peak_rss_mb": 3575.8,
+            "mean_rss_mb": 3574.9,
+            "mean_cpu_percent": 800.8,
+            "peak_cpu_percent": 996.5,
+            "samples": 10
+          },
+          "answer_chars": 55,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "G01",
+          "category": "code_generation",
+          "latency_ms": 7041.8,
+          "prompt_tokens": 109,
+          "output_tokens": 71,
+          "eval_duration_ms": 5646.5,
+          "resources": {
+            "peak_rss_mb": 3604.1,
+            "mean_rss_mb": 3602.0,
+            "mean_cpu_percent": 908.1,
+            "peak_cpu_percent": 1062.5,
+            "samples": 27
+          },
+          "answer_chars": 257,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "emi(100000, 12, 12) -> FAIL",
+            "emi(500000, 9, 60) -> FAIL",
+            "emi(250000, 0, 10) -> FAIL"
+          ],
+          "code": "def emi(principal, annual_rate_percent, months):\n    annual_rate = annual_rate_percent / 100 / 12\n    monthly_rate = annual_rate / (1 - (1 + annual_rate) ** (-months))\n    return principal * monthly_rate / (1 - (1 + monthly_rate) ** (-months))"
+        },
+        {
+          "id": "G02",
+          "category": "code_generation",
+          "latency_ms": 6675.4,
+          "prompt_tokens": 113,
+          "output_tokens": 77,
+          "eval_duration_ms": 5807.3,
+          "resources": {
+            "peak_rss_mb": 3623.8,
+            "mean_rss_mb": 3622.2,
+            "mean_cpu_percent": 910.6,
+            "peak_cpu_percent": 1062.5,
+            "samples": 26
+          },
+          "answer_chars": 320,
+          "error": null,
+          "code_extracted": true,
+          "passed": 1,
+          "total": 2,
+          "detail": [
+            "total_interest(100000, 12, 12) -> PASS",
+            "total_interest(250000, 0, 10) -> FAIL"
+          ],
+          "code": "def total_interest(principal, annual_rate_percent, months):\n    monthly_rate = annual_rate_percent / 1200\n    monthly_payment = principal * monthly_rate * (1 + monthly_rate) ** months / ((1 + monthly_rate) ** months - 1)\n    total_repayment = monthly_payment * months\n    return total_repayment - principal"
+        },
+        {
+          "id": "G03",
+          "category": "code_generation",
+          "latency_ms": 3173.9,
+          "prompt_tokens": 103,
+          "output_tokens": 31,
+          "eval_duration_ms": 2378.4,
+          "resources": {
+            "peak_rss_mb": 3645.2,
+            "mean_rss_mb": 3642.1,
+            "mean_cpu_percent": 834.3,
+            "peak_cpu_percent": 1056.2,
+            "samples": 13
+          },
+          "answer_chars": 132,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "simple_interest(100000, 10, 2) -> PASS",
+            "simple_interest(50000, 7.5, 3) -> PASS",
+            "simple_interest(1000, 0, 5) -> PASS"
+          ],
+          "code": "def simple_interest(principal, annual_rate_percent, years):\n    return (principal * annual_rate_percent / 100 * years)"
+        },
+        {
+          "id": "G04",
+          "category": "code_generation",
+          "latency_ms": 4862.3,
+          "prompt_tokens": 118,
+          "output_tokens": 51,
+          "eval_duration_ms": 3942.9,
+          "resources": {
+            "peak_rss_mb": 3650.6,
+            "mean_rss_mb": 3650.1,
+            "mean_cpu_percent": 887.4,
+            "peak_cpu_percent": 1037.5,
+            "samples": 19
+          },
+          "answer_chars": 186,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "dti_ratio(20000, 80000) -> PASS",
+            "dti_ratio(0, 50000) -> PASS",
+            "dti_ratio(10000, 0) -> PASS"
+          ],
+          "code": "def dti_ratio(monthly_debt_payments, monthly_income):\n    if monthly_income == 0:\n        return 0.0\n    else:\n        return (monthly_debt_payments / monthly_income) * 100"
+        },
+        {
+          "id": "G05",
+          "category": "code_generation",
+          "latency_ms": 10835.7,
+          "prompt_tokens": 117,
+          "output_tokens": 127,
+          "eval_duration_ms": 9891.0,
+          "resources": {
+            "peak_rss_mb": 3664.2,
+            "mean_rss_mb": 3663.4,
+            "mean_cpu_percent": 934.9,
+            "peak_cpu_percent": 1062.5,
+            "samples": 42
+          },
+          "answer_chars": 532,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "outstanding_balance(100000, 12, 12, 0) -> PASS",
+            "outstanding_balance(100000, 12, 12, 12) -> PASS",
+            "outstanding_balance(100000, 12, 12, 6) -> PASS"
+          ],
+          "code": "def outstanding_balance(principal, annual_rate_percent, months, payments_made):\n    monthly_rate = (annual_rate_percent / 100) / 12\n    monthly_payment = principal * monthly_rate * (1 + monthly_rate) ** months / ((1 + monthly_rate) ** months - 1)\n    interest_paid = 0\n    balance = principal\n    for _ in range(payments_made):\n        interest = balance * monthly_rate\n        principal_paid = monthly_payment - interest\n        balance -= principal_paid\n        interest_paid += interest\n    return round(balance, 2)"
+        }
+      ]
+    },
+    "gemma:2b": {
+      "model": "gemma:2b",
+      "residency": [
+        {
+          "name": "gemma:2b",
+          "resident_mb": 1783.9,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        },
+        {
+          "name": "llama3.2:latest",
+          "resident_mb": 2442.9,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        },
+        {
+          "name": "wizardlm2:7b",
+          "resident_mb": 4550.0,
+          "vram_mb": 0.0,
+          "gpu_percent": 0.0
+        }
+      ],
+      "quality": {
+        "accuracy": 0.7368,
+        "correct_count": 14,
+        "knowledge_questions": 19,
+        "mean_fact_coverage": 0.743,
+        "mean_relevance": 0.7438,
+        "mean_groundedness": 0.7589,
+        "refused_answerable_count": 3
+      },
+      "hallucination": {
+        "out_of_kb_questions": 5,
+        "refusals": 5,
+        "soft_declines": 0,
+        "fabrications": 0,
+        "refusal_failure_rate": 0.0,
+        "fabrication_rate": 0.0,
+        "unsupported_number_rate": 0.0
+      },
+      "code": {
+        "tasks": 5,
+        "code_blocks_extracted": 5,
+        "tests_passed": 5,
+        "tests_total": 14,
+        "test_pass_rate": 0.3571,
+        "tasks_fully_passed": 1,
+        "task_pass_rate": 0.2
+      },
+      "performance": {
+        "mean_latency_ms": 4245.7,
+        "median_latency_ms": 3577.8,
+        "p95_latency_ms": 8534.1,
+        "min_latency_ms": 2648.1,
+        "max_latency_ms": 10130.7,
+        "total_prompt_tokens": 7209,
+        "total_output_tokens": 1295,
+        "mean_output_tokens": 44.7,
+        "output_tokens_per_sec": 16.01
+      },
+      "resources": {
+        "peak_rss_mb": 5482.5,
+        "mean_peak_rss_mb": 5397.9,
+        "mean_cpu_percent": 850.9,
+        "resident_mb": 1783.9,
+        "vram_mb": 0.0,
+        "gpu_percent": 0.0
+      },
+      "per_question": [
+        {
+          "id": "F01",
+          "category": "factual_retrieval",
+          "latency_ms": 9211.9,
+          "prompt_tokens": 298,
+          "output_tokens": 114,
+          "eval_duration_ms": 6992.6,
+          "resources": {
+            "peak_rss_mb": 5381.4,
+            "mean_rss_mb": 5376.5,
+            "mean_cpu_percent": 924.8,
+            "peak_cpu_percent": 1050.0,
+            "samples": 36
+          },
+          "answer_chars": 479,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.6818,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7221,
+          "refused_answerable": false
+        },
+        {
+          "id": "F02",
+          "category": "factual_retrieval",
+          "latency_ms": 4777.0,
+          "prompt_tokens": 295,
+          "output_tokens": 48,
+          "eval_duration_ms": 2929.4,
+          "resources": {
+            "peak_rss_mb": 5398.2,
+            "mean_rss_mb": 5396.3,
+            "mean_cpu_percent": 854.1,
+            "peak_cpu_percent": 1050.0,
+            "samples": 19
+          },
+          "answer_chars": 220,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7445,
+          "refused_answerable": false
+        },
+        {
+          "id": "F03",
+          "category": "factual_retrieval",
+          "latency_ms": 3399.6,
+          "prompt_tokens": 297,
+          "output_tokens": 29,
+          "eval_duration_ms": 1711.9,
+          "resources": {
+            "peak_rss_mb": 5405.6,
+            "mean_rss_mb": 5403.8,
+            "mean_cpu_percent": 832.0,
+            "peak_cpu_percent": 1056.2,
+            "samples": 14
+          },
+          "answer_chars": 139,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7108,
+          "refused_answerable": false
+        },
+        {
+          "id": "F04",
+          "category": "factual_retrieval",
+          "latency_ms": 2716.2,
+          "prompt_tokens": 244,
+          "output_tokens": 22,
+          "eval_duration_ms": 1291.1,
+          "resources": {
+            "peak_rss_mb": 5412.1,
+            "mean_rss_mb": 5410.1,
+            "mean_cpu_percent": 810.2,
+            "peak_cpu_percent": 1087.5,
+            "samples": 11
+          },
+          "answer_chars": 106,
+          "error": null,
+          "facts_total": 2,
+          "facts_matched": 2,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7273,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.5689,
+          "refused_answerable": false
+        },
+        {
+          "id": "F05",
+          "category": "factual_retrieval",
+          "latency_ms": 3613.8,
+          "prompt_tokens": 287,
+          "output_tokens": 33,
+          "eval_duration_ms": 1971.6,
+          "resources": {
+            "peak_rss_mb": 5417.8,
+            "mean_rss_mb": 5416.2,
+            "mean_cpu_percent": 864.1,
+            "peak_cpu_percent": 1050.0,
+            "samples": 15
+          },
+          "answer_chars": 168,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8889,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8519,
+          "refused_answerable": false
+        },
+        {
+          "id": "F06",
+          "category": "factual_retrieval",
+          "latency_ms": 4439.3,
+          "prompt_tokens": 251,
+          "output_tokens": 50,
+          "eval_duration_ms": 2952.6,
+          "resources": {
+            "peak_rss_mb": 5421.5,
+            "mean_rss_mb": 5420.4,
+            "mean_cpu_percent": 874.2,
+            "peak_cpu_percent": 1012.5,
+            "samples": 18
+          },
+          "answer_chars": 253,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 5,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8677,
+          "refused_answerable": false
+        },
+        {
+          "id": "F07",
+          "category": "factual_retrieval",
+          "latency_ms": 4013.9,
+          "prompt_tokens": 289,
+          "output_tokens": 39,
+          "eval_duration_ms": 2360.8,
+          "resources": {
+            "peak_rss_mb": 5427.0,
+            "mean_rss_mb": 5425.6,
+            "mean_cpu_percent": 873.5,
+            "peak_cpu_percent": 1062.5,
+            "samples": 16
+          },
+          "answer_chars": 188,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8421,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7039,
+          "refused_answerable": false
+        },
+        {
+          "id": "F08",
+          "category": "factual_retrieval",
+          "latency_ms": 4968.2,
+          "prompt_tokens": 297,
+          "output_tokens": 53,
+          "eval_duration_ms": 3206.3,
+          "resources": {
+            "peak_rss_mb": 5434.7,
+            "mean_rss_mb": 5433.3,
+            "mean_cpu_percent": 892.1,
+            "peak_cpu_percent": 1062.5,
+            "samples": 20
+          },
+          "answer_chars": 229,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 6,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.9583,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8091,
+          "refused_answerable": false
+        },
+        {
+          "id": "F09",
+          "category": "factual_retrieval",
+          "latency_ms": 4615.4,
+          "prompt_tokens": 303,
+          "output_tokens": 46,
+          "eval_duration_ms": 2739.5,
+          "resources": {
+            "peak_rss_mb": 5438.8,
+            "mean_rss_mb": 5437.4,
+            "mean_cpu_percent": 873.1,
+            "peak_cpu_percent": 1025.0,
+            "samples": 18
+          },
+          "answer_chars": 204,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.8261,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8597,
+          "refused_answerable": false
+        },
+        {
+          "id": "F10",
+          "category": "factual_retrieval",
+          "latency_ms": 2648.1,
+          "prompt_tokens": 284,
+          "output_tokens": 16,
+          "eval_duration_ms": 949.0,
+          "resources": {
+            "peak_rss_mb": 5446.3,
+            "mean_rss_mb": 5443.5,
+            "mean_cpu_percent": 819.0,
+            "peak_cpu_percent": 1043.8,
+            "samples": 11
+          },
+          "answer_chars": 101,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 2,
+          "fact_coverage": 0.6667,
+          "correct": false,
+          "missed_facts": [
+            "each payment|every payment|payment includes"
+          ],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8534,
+          "refused_answerable": false
+        },
+        {
+          "id": "S01",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 10130.7,
+          "prompt_tokens": 304,
+          "output_tokens": 139,
+          "eval_duration_ms": 9033.9,
+          "resources": {
+            "peak_rss_mb": 5446.3,
+            "mean_rss_mb": 5444.2,
+            "mean_cpu_percent": 922.7,
+            "peak_cpu_percent": 1056.2,
+            "samples": 39
+          },
+          "answer_chars": 678,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 0.7778,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7034,
+          "refused_answerable": false
+        },
+        {
+          "id": "S02",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 5509.6,
+          "prompt_tokens": 263,
+          "output_tokens": 61,
+          "eval_duration_ms": 3915.2,
+          "resources": {
+            "peak_rss_mb": 5452.2,
+            "mean_rss_mb": 5450.9,
+            "mean_cpu_percent": 884.9,
+            "peak_cpu_percent": 1050.0,
+            "samples": 22
+          },
+          "answer_chars": 307,
+          "error": null,
+          "facts_total": 5,
+          "facts_matched": 1,
+          "fact_coverage": 0.2,
+          "correct": false,
+          "missed_facts": [
+            "auto loan",
+            "secured",
+            "interest rate",
+            "fee"
+          ],
+          "groundedness": 0.8182,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6945,
+          "refused_answerable": false
+        },
+        {
+          "id": "S03",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 7517.3,
+          "prompt_tokens": 303,
+          "output_tokens": 87,
+          "eval_duration_ms": 5621.2,
+          "resources": {
+            "peak_rss_mb": 5452.2,
+            "mean_rss_mb": 5451.2,
+            "mean_cpu_percent": 900.7,
+            "peak_cpu_percent": 1050.0,
+            "samples": 29
+          },
+          "answer_chars": 425,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 3,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.6806,
+          "refused_answerable": false
+        },
+        {
+          "id": "S04",
+          "category": "multi_doc_synthesis",
+          "latency_ms": 3132.2,
+          "prompt_tokens": 214,
+          "output_tokens": 30,
+          "eval_duration_ms": 1801.7,
+          "resources": {
+            "peak_rss_mb": 5461.6,
+            "mean_rss_mb": 5459.3,
+            "mean_cpu_percent": 814.9,
+            "peak_cpu_percent": 1002.4,
+            "samples": 12
+          },
+          "answer_chars": 172,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 2,
+          "fact_coverage": 0.5,
+          "correct": true,
+          "missed_facts": [
+            "term",
+            "total cost"
+          ],
+          "groundedness": 0.6471,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.9306,
+          "refused_answerable": false
+        },
+        {
+          "id": "C01",
+          "category": "conceptual",
+          "latency_ms": 3596.9,
+          "prompt_tokens": 291,
+          "output_tokens": 30,
+          "eval_duration_ms": 1779.3,
+          "resources": {
+            "peak_rss_mb": 5465.1,
+            "mean_rss_mb": 5463.5,
+            "mean_cpu_percent": 855.6,
+            "peak_cpu_percent": 1050.0,
+            "samples": 14
+          },
+          "answer_chars": 167,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 0,
+          "fact_coverage": 0.0,
+          "correct": false,
+          "missed_facts": [
+            "stays the same",
+            "change",
+            "benchmark"
+          ],
+          "groundedness": 0.2857,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.8997,
+          "refused_answerable": true
+        },
+        {
+          "id": "C02",
+          "category": "conceptual",
+          "latency_ms": 3234.8,
+          "prompt_tokens": 288,
+          "output_tokens": 23,
+          "eval_duration_ms": 1455.2,
+          "resources": {
+            "peak_rss_mb": 5470.4,
+            "mean_rss_mb": 5468.6,
+            "mean_cpu_percent": 821.4,
+            "peak_cpu_percent": 1002.4,
+            "samples": 13
+          },
+          "answer_chars": 116,
+          "error": null,
+          "facts_total": 3,
+          "facts_matched": 0,
+          "fact_coverage": 0.0,
+          "correct": false,
+          "missed_facts": [
+            "original principal",
+            "unpaid interest",
+            "interest on interest|charged on interest|interest is charged on|added to the balance"
+          ],
+          "groundedness": 0.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.0691,
+          "refused_answerable": true
+        },
+        {
+          "id": "C03",
+          "category": "conceptual",
+          "latency_ms": 3478.6,
+          "prompt_tokens": 253,
+          "output_tokens": 36,
+          "eval_duration_ms": 2229.5,
+          "resources": {
+            "peak_rss_mb": 5470.4,
+            "mean_rss_mb": 5469.5,
+            "mean_cpu_percent": 830.1,
+            "peak_cpu_percent": 998.6,
+            "samples": 14
+          },
+          "answer_chars": 195,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 3,
+          "fact_coverage": 0.75,
+          "correct": true,
+          "missed_facts": [
+            "outstanding balance"
+          ],
+          "groundedness": 0.8,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.9266,
+          "refused_answerable": false
+        },
+        {
+          "id": "C04",
+          "category": "conceptual",
+          "latency_ms": 3250.4,
+          "prompt_tokens": 299,
+          "output_tokens": 28,
+          "eval_duration_ms": 1698.9,
+          "resources": {
+            "peak_rss_mb": 5474.0,
+            "mean_rss_mb": 5469.7,
+            "mean_cpu_percent": 847.0,
+            "peak_cpu_percent": 1062.5,
+            "samples": 13
+          },
+          "answer_chars": 150,
+          "error": null,
+          "facts_total": 6,
+          "facts_matched": 0,
+          "fact_coverage": 0.0,
+          "correct": false,
+          "missed_facts": [
+            "purpose",
+            "repayment capacity",
+            "cost",
+            "term",
+            "collateral",
+            "risk"
+          ],
+          "groundedness": 0.1667,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7974,
+          "refused_answerable": true
+        },
+        {
+          "id": "C05",
+          "category": "conceptual",
+          "latency_ms": 3204.8,
+          "prompt_tokens": 286,
+          "output_tokens": 28,
+          "eval_duration_ms": 1780.6,
+          "resources": {
+            "peak_rss_mb": 5473.0,
+            "mean_rss_mb": 5468.5,
+            "mean_cpu_percent": 831.4,
+            "peak_cpu_percent": 1056.2,
+            "samples": 13
+          },
+          "answer_chars": 156,
+          "error": null,
+          "facts_total": 4,
+          "facts_matched": 4,
+          "fact_coverage": 1.0,
+          "correct": true,
+          "missed_facts": [],
+          "groundedness": 1.0,
+          "unsupported_numbers": [],
+          "has_unsupported_number": false,
+          "relevance": 0.7381,
+          "refused_answerable": false
+        },
+        {
+          "id": "H01",
+          "category": "out_of_kb",
+          "latency_ms": 2881.4,
+          "prompt_tokens": 243,
+          "output_tokens": 22,
+          "eval_duration_ms": 1357.8,
+          "resources": {
+            "peak_rss_mb": 5474.5,
+            "mean_rss_mb": 5469.1,
+            "mean_cpu_percent": 803.8,
+            "peak_cpu_percent": 1062.5,
+            "samples": 11
+          },
+          "answer_chars": 119,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H02",
+          "category": "out_of_kb",
+          "latency_ms": 3268.5,
+          "prompt_tokens": 209,
+          "output_tokens": 31,
+          "eval_duration_ms": 1955.4,
+          "resources": {
+            "peak_rss_mb": 5476.8,
+            "mean_rss_mb": 5471.9,
+            "mean_cpu_percent": 798.2,
+            "peak_cpu_percent": 1062.5,
+            "samples": 13
+          },
+          "answer_chars": 162,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H03",
+          "category": "out_of_kb",
+          "latency_ms": 3577.8,
+          "prompt_tokens": 297,
+          "output_tokens": 33,
+          "eval_duration_ms": 2054.8,
+          "resources": {
+            "peak_rss_mb": 5477.4,
+            "mean_rss_mb": 5474.8,
+            "mean_cpu_percent": 856.8,
+            "peak_cpu_percent": 1025.0,
+            "samples": 14
+          },
+          "answer_chars": 182,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H04",
+          "category": "out_of_kb",
+          "latency_ms": 2767.8,
+          "prompt_tokens": 254,
+          "output_tokens": 25,
+          "eval_duration_ms": 1520.1,
+          "resources": {
+            "peak_rss_mb": 5476.8,
+            "mean_rss_mb": 5473.3,
+            "mean_cpu_percent": 756.6,
+            "peak_cpu_percent": 990.6,
+            "samples": 11
+          },
+          "answer_chars": 137,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "H05",
+          "category": "out_of_kb",
+          "latency_ms": 3489.6,
+          "prompt_tokens": 265,
+          "output_tokens": 35,
+          "eval_duration_ms": 2176.3,
+          "resources": {
+            "peak_rss_mb": 5474.1,
+            "mean_rss_mb": 5471.9,
+            "mean_cpu_percent": 832.3,
+            "peak_cpu_percent": 998.6,
+            "samples": 14
+          },
+          "answer_chars": 187,
+          "error": null,
+          "outcome": "proper_refusal",
+          "refused": true,
+          "hallucinated": false,
+          "fabricated": false
+        },
+        {
+          "id": "G01",
+          "category": "code_generation",
+          "latency_ms": 3503.2,
+          "prompt_tokens": 113,
+          "output_tokens": 39,
+          "eval_duration_ms": 2374.1,
+          "resources": {
+            "peak_rss_mb": 5477.7,
+            "mean_rss_mb": 5476.6,
+            "mean_cpu_percent": 845.9,
+            "peak_cpu_percent": 1075.0,
+            "samples": 14
+          },
+          "answer_chars": 124,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "emi(100000, 12, 12) -> FAIL",
+            "emi(500000, 9, 60) -> FAIL",
+            "emi(250000, 0, 10) -> FAIL"
+          ],
+          "code": "def emi(principal, annual_rate_percent, months):\n    return principal * (annual_rate_percent / 1200) ** months"
+        },
+        {
+          "id": "G02",
+          "category": "code_generation",
+          "latency_ms": 4011.2,
+          "prompt_tokens": 120,
+          "output_tokens": 50,
+          "eval_duration_ms": 3232.7,
+          "resources": {
+            "peak_rss_mb": 5482.5,
+            "mean_rss_mb": 5203.4,
+            "mean_cpu_percent": 866.1,
+            "peak_cpu_percent": 1050.0,
+            "samples": 16
+          },
+          "answer_chars": 170,
+          "error": null,
+          "code_extracted": true,
+          "passed": 1,
+          "total": 2,
+          "detail": [
+            "total_interest(100000, 12, 12) -> FAIL",
+            "total_interest(250000, 0, 10) -> PASS"
+          ],
+          "code": "def total_interest(principal, annual_rate_percent, months):\n    total_interest = principal * (annual_rate_percent / 1200) * months\n    return total_interest"
+        },
+        {
+          "id": "G03",
+          "category": "code_generation",
+          "latency_ms": 3574.2,
+          "prompt_tokens": 110,
+          "output_tokens": 42,
+          "eval_duration_ms": 2833.4,
+          "resources": {
+            "peak_rss_mb": 4949.1,
+            "mean_rss_mb": 4946.7,
+            "mean_cpu_percent": 845.6,
+            "peak_cpu_percent": 1037.5,
+            "samples": 14
+          },
+          "answer_chars": 137,
+          "error": null,
+          "code_extracted": true,
+          "passed": 0,
+          "total": 3,
+          "detail": [
+            "simple_interest(100000, 10, 2) -> FAIL",
+            "simple_interest(50000, 7.5, 3) -> FAIL",
+            "simple_interest(1000, 0, 5) -> FAIL"
+          ],
+          "code": "def simple_interest(principal, annual_rate_percent, years):\n    return principal * (1 + annual_rate_percent / 100) ** years"
+        },
+        {
+          "id": "G04",
+          "category": "code_generation",
+          "latency_ms": 4089.5,
+          "prompt_tokens": 128,
+          "output_tokens": 50,
+          "eval_duration_ms": 3266.9,
+          "resources": {
+            "peak_rss_mb": 4950.2,
+            "mean_rss_mb": 4949.4,
+            "mean_cpu_percent": 868.0,
+            "peak_cpu_percent": 1024.7,
+            "samples": 16
+          },
+          "answer_chars": 152,
+          "error": null,
+          "code_extracted": true,
+          "passed": 3,
+          "total": 3,
+          "detail": [
+            "dti_ratio(20000, 80000) -> PASS",
+            "dti_ratio(0, 50000) -> PASS",
+            "dti_ratio(10000, 0) -> PASS"
+          ],
+          "code": "def dti_ratio(monthly_debt_payments, monthly_income):\n    return (monthly_debt_payments / monthly_income) * 100 if monthly_income else 0.0"
+        },
+        {
+          "id": "G05",
+          "category": "code_generation",
+          "latency_ms": 4503.3,
+          "prompt_tokens": 124,
+          "output_tokens": 56,
+          "eval_duration_ms": 3686.1,
+          "resources": {
+            "peak_rss_mb": 4952.1,
+            "mean_rss_mb": 4943.6,
+            "mean_cpu_percent": 877.7,
+            "peak_cpu_percent": 1031.2,
+            "samples": 18
+          },
+          "answer_chars": 203,
+          "error": null,
+          "code_extracted": true,
+          "passed": 1,
+          "total": 3,
+          "detail": [
+            "outstanding_balance(100000, 12, 12, 0) -> PASS",
+            "outstanding_balance(100000, 12, 12, 12) -> FAIL",
+            "outstanding_balance(100000, 12, 12, 6) -> FAIL"
+          ],
+          "code": "def outstanding_balance(principal, annual_rate_percent, months, payments_made):\n    remaining_balance = principal - (payments_made * annual_rate_percent / 1200)\n    return remaining_balance"
+        }
+      ]
+    }
+  }
+}

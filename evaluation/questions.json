@@ -1,0 +1,218 @@
+{
+  "name": "Week 4 — Loan Knowledge Assistant Evaluation Dataset",
+  "version": "1.0",
+  "description": "25 representative loan-related questions covering all required categories. Ground-truth answers and source documents are based on the actual knowledge base.",
+  "categories": {
+    "factual": "Single-document lookup — the answer is in one KB document.",
+    "eligibility": "Questions about loan eligibility requirements.",
+    "policy": "Questions about loan policies stated in the documents.",
+    "document_retrieval": "Which document contains the information.",
+    "numerical": "Questions about loan amounts, rates, or numerical values.",
+    "comparison": "Comparison between loan types or concepts.",
+    "multi_doc": "Questions requiring information from multiple documents.",
+    "contextual": "Questions about scenarios or consequences.",
+    "unanswerable": "Deliberately outside the knowledge base — model should refuse."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "What documents are required for a personal loan application?",
+      "category": "factual",
+      "expected_answer": "Identity proof, address proof, income proof, bank statements, tax documents, employment details.",
+      "source_documents": ["loan_eligibility.txt"],
+      "key_facts": ["identity proof", "address proof", "income proof", "bank statement", "tax document"]
+    },
+    {
+      "id": 2,
+      "question": "What are the main parts of a loan?",
+      "category": "factual",
+      "expected_answer": "Principal, interest rate, term, repayment frequency, fees, and collateral (if secured).",
+      "source_documents": ["loans.txt"],
+      "key_facts": ["principal", "interest rate", "term", "fee", "collateral"]
+    },
+    {
+      "id": 3,
+      "question": "What is a secured loan?",
+      "category": "factual",
+      "expected_answer": "A secured loan is backed by collateral such as a house, car, deposit, or other asset. If the borrower does not repay, the lender may have a legal claim on the collateral.",
+      "source_documents": ["loans.txt", "loan_types.txt"],
+      "key_facts": ["collateral", "asset", "legal claim"]
+    },
+    {
+      "id": 4,
+      "question": "What are the eligibility requirements mentioned in the documents?",
+      "category": "eligibility",
+      "expected_answer": "Lenders review income, employment stability, existing debt, credit history, repayment track record, age, residence, loan amount, loan purpose, and available collateral.",
+      "source_documents": ["loan_eligibility.txt"],
+      "key_facts": ["income", "employment", "credit history", "debt", "collateral"]
+    },
+    {
+      "id": 5,
+      "question": "What does the policy state about repayment of loans?",
+      "category": "policy",
+      "expected_answer": "Many loans are repaid through EMIs. Missing a repayment can lead to late fees, penalty interest, credit score impact, collection activity, or legal consequences. Borrowers should contact the lender early if repayment becomes difficult.",
+      "source_documents": ["loan_repayment.txt"],
+      "key_facts": ["EMI", "late fee", "penalty interest", "credit score", "contact the lender"]
+    },
+    {
+      "id": 6,
+      "question": "Which document contains the eligibility requirements for loans?",
+      "category": "document_retrieval",
+      "expected_answer": "loan_eligibility.txt contains the eligibility requirements, including income, credit score, debt-to-income ratio, and required documents.",
+      "source_documents": ["loan_eligibility.txt"],
+      "key_facts": ["loan_eligibility.txt"]
+    },
+    {
+      "id": 7,
+      "question": "Which document describes the risks of taking a loan?",
+      "category": "document_retrieval",
+      "expected_answer": "loan_risks.txt describes loan risks including collateral risk, hidden costs, and the importance of reading the sanction letter.",
+      "source_documents": ["loan_risks.txt"],
+      "key_facts": ["loan_risks.txt", "collateral risk", "cost"]
+    },
+    {
+      "id": 8,
+      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
+      "category": "factual",
+      "expected_answer": "The debt-to-income ratio compares monthly debt payments with monthly income. A lower ratio generally leaves more room for a new loan payment.",
+      "source_documents": ["loan_eligibility.txt"],
+      "key_facts": ["monthly debt", "monthly income", "lower", "room"]
+    },
+    {
+      "id": 9,
+      "question": "What costs should a borrower review before signing a loan?",
+      "category": "policy",
+      "expected_answer": "Interest rate, processing fee, insurance cost, late payment fee, penalty interest, foreclosure or prepayment fee, documentation charge, and taxes.",
+      "source_documents": ["loan_risks.txt"],
+      "key_facts": ["interest rate", "processing fee", "insurance", "late payment fee", "penalty interest"]
+    },
+    {
+      "id": 10,
+      "question": "What is an amortization schedule?",
+      "category": "factual",
+      "expected_answer": "An amortization schedule is where each payment includes both interest and principal repayment. In early payments, a larger share goes toward interest; over time more goes toward principal as the outstanding balance falls.",
+      "source_documents": ["loan_interest.txt"],
+      "key_facts": ["each payment", "interest", "principal", "outstanding balance"]
+    },
+    {
+      "id": 11,
+      "question": "What is the difference between a fixed and a variable interest rate?",
+      "category": "comparison",
+      "expected_answer": "A fixed interest rate stays the same during the loan period. A variable or floating interest rate can change based on a benchmark or lender policy.",
+      "source_documents": ["loan_interest.txt"],
+      "key_facts": ["stays the same", "change", "benchmark"]
+    },
+    {
+      "id": 12,
+      "question": "How do the requirements differ between secured and unsecured loans?",
+      "category": "comparison",
+      "expected_answer": "Secured loans require collateral such as property or vehicle. Unsecured loans do not use collateral but lenders rely more on credit history and repayment capacity. Default on secured loans can lead to asset repossession; on unsecured loans it harms credit and may lead to collections.",
+      "source_documents": ["loans.txt", "loan_types.txt", "loan_risks.txt"],
+      "key_facts": ["collateral", "credit history", "repossess", "unsecured"]
+    },
+    {
+      "id": 13,
+      "question": "Which requirements are common across the available loan documents?",
+      "category": "multi_doc",
+      "expected_answer": "Credit history, collateral requirements, interest rates, fees, and repayment capacity appear across multiple documents. All documents emphasise reviewing total cost rather than just EMI.",
+      "source_documents": ["loans.txt", "loan_types.txt", "loan_eligibility.txt", "loan_risks.txt"],
+      "key_facts": ["credit", "collateral", "fees", "repayment", "total cost"]
+    },
+    {
+      "id": 14,
+      "question": "What happens if a borrower misses a repayment?",
+      "category": "contextual",
+      "expected_answer": "Missing a repayment can lead to late fees, penalty interest, credit score impact, collection activity, or legal consequences depending on the loan agreement.",
+      "source_documents": ["loan_repayment.txt"],
+      "key_facts": ["late fee", "penalty interest", "credit score", "collection", "legal"]
+    },
+    {
+      "id": 15,
+      "question": "What should a borrower do if repayment becomes difficult?",
+      "category": "contextual",
+      "expected_answer": "Borrowers should contact the lender early to ask about restructuring, deferment, revised payment dates, or hardship options.",
+      "source_documents": ["loan_repayment.txt"],
+      "key_facts": ["contact the lender", "restructuring", "deferment", "hardship"]
+    },
+    {
+      "id": 16,
+      "question": "What is prepayment and how does it affect total interest?",
+      "category": "factual",
+      "expected_answer": "Prepayment means paying extra toward the loan before it is due. It can reduce total interest because the outstanding principal falls sooner. Some lenders charge prepayment fees.",
+      "source_documents": ["loan_repayment.txt"],
+      "key_facts": ["before it is due", "reduce", "total interest", "principal", "prepayment fee"]
+    },
+    {
+      "id": 17,
+      "question": "Why can comparing only the monthly EMI be misleading when choosing between loan offers?",
+      "category": "policy",
+      "expected_answer": "A low EMI may still be expensive if the loan term is very long. Borrowers should compare total interest paid and total repayment amount, not only the EMI.",
+      "source_documents": ["loan_interest.txt", "loan_types.txt", "loan_risks.txt"],
+      "key_facts": ["total interest", "total repayment", "term", "total cost"]
+    },
+    {
+      "id": 18,
+      "question": "What happens if a borrower defaults on a secured loan?",
+      "category": "contextual",
+      "expected_answer": "The lender may be able to repossess or sell the pledged asset according to the agreement and applicable law.",
+      "source_documents": ["loan_risks.txt"],
+      "key_facts": ["repossess", "sell", "pledged asset"]
+    },
+    {
+      "id": 19,
+      "question": "What factors determine which loan type is suitable for a borrower?",
+      "category": "factual",
+      "expected_answer": "The suitable loan type depends on purpose, repayment capacity, cost, term, collateral requirement, and risk.",
+      "source_documents": ["loan_types.txt"],
+      "key_facts": ["purpose", "repayment capacity", "cost", "term", "collateral", "risk"]
+    },
+    {
+      "id": 20,
+      "question": "What is the difference between simple interest and compound interest?",
+      "category": "comparison",
+      "expected_answer": "Simple interest is calculated on the original principal. Compound interest adds unpaid interest to the balance, causing interest to be charged on interest.",
+      "source_documents": ["loan_interest.txt"],
+      "key_facts": ["original principal", "unpaid interest", "interest on interest"]
+    },
+    {
+      "id": 21,
+      "question": "Should I buy Bitcoin or cryptocurrency as an investment?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not available in my knowledge base.",
+      "source_documents": [],
+      "expect_refusal": true
+    },
+    {
+      "id": 22,
+      "question": "What is the current interest rate offered by State Bank of India for home loans?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not available in my knowledge base.",
+      "source_documents": [],
+      "expect_refusal": true
+    },
+    {
+      "id": 23,
+      "question": "Based on my salary of 80,000 rupees per month, exactly how much loan will I be approved for?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not available in my knowledge base.",
+      "source_documents": [],
+      "expect_refusal": true
+    },
+    {
+      "id": 24,
+      "question": "What is the stock market performance of HDFC Bank this year?",
+      "category": "unanswerable",
+      "expected_answer": "This information is not available in my knowledge base.",
+      "source_documents": [],
+      "expect_refusal": true
+    },
+    {
+      "id": 25,
+      "question": "How does credit score influence both loan eligibility and the consequences of missing payments?",
+      "category": "multi_doc",
+      "expected_answer": "A higher credit score indicates lower repayment risk and helps with eligibility. Missing payments can impact credit score, which then affects future loan eligibility — creating a compounding effect.",
+      "source_documents": ["loan_eligibility.txt", "loan_repayment.txt"],
+      "key_facts": ["credit score", "repayment risk", "eligibility", "impact", "credit history"]
+    }
+  ]
+}

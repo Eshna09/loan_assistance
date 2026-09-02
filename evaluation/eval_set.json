@@ -1,0 +1,451 @@
+{
+  "name": "Loan Knowledge Assistance — evaluation set",
+  "version": "1.0",
+  "description": "29 representative tasks covering the real work of the application: grounded factual lookup, multi-document synthesis, conceptual explanation, out-of-knowledge-base refusal, and in-domain loan-math code generation. The identical set is used for every model. A key fact containing '|' is satisfied by any one of its alternatives.",
+  "categories": {
+    "factual_retrieval": "Single-document lookup — the answer sits in one KB document.",
+    "multi_doc_synthesis": "The answer requires combining two or more KB documents.",
+    "conceptual": "Explanation or comparison of a concept described in the KB.",
+    "out_of_kb": "Deliberately outside the knowledge base — the assistant must refuse rather than invent.",
+    "code_generation": "In-domain loan mathematics, executed against unit tests."
+  },
+  "fallback_phrase": "This information is not available in my knowledge base.",
+  "questions": [
+    {
+      "id": "F01",
+      "category": "factual_retrieval",
+      "question": "What are the main parts of a loan?",
+      "expected_sources": [
+        "loans.txt"
+      ],
+      "key_facts": [
+        "principal",
+        "interest rate",
+        "term",
+        "fee",
+        "collateral"
+      ],
+      "min_facts": 4
+    },
+    {
+      "id": "F02",
+      "category": "factual_retrieval",
+      "question": "What is a secured loan?",
+      "expected_sources": [
+        "loans.txt",
+        "loan_types.txt"
+      ],
+      "key_facts": [
+        "collateral",
+        "asset"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "F03",
+      "category": "factual_retrieval",
+      "question": "What happens if a borrower defaults on a secured loan?",
+      "expected_sources": [
+        "loan_risks.txt"
+      ],
+      "key_facts": [
+        "repossess|repossession|seize|take possession|recover the asset",
+        "sell",
+        "pledged asset"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "F04",
+      "category": "factual_retrieval",
+      "question": "What does an EMI consist of?",
+      "expected_sources": [
+        "loan_repayment.txt"
+      ],
+      "key_facts": [
+        "interest",
+        "principal"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "F05",
+      "category": "factual_retrieval",
+      "question": "What can happen if I miss a loan repayment?",
+      "expected_sources": [
+        "loan_repayment.txt"
+      ],
+      "key_facts": [
+        "late fee|late payment fee",
+        "penalty interest",
+        "credit score",
+        "collection|collections agency|debt collection",
+        "legal|lawsuit|court"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "F06",
+      "category": "factual_retrieval",
+      "question": "Which documents are usually requested for a loan application?",
+      "expected_sources": [
+        "loan_eligibility.txt"
+      ],
+      "key_facts": [
+        "identity proof",
+        "address proof",
+        "income proof",
+        "bank statement|bank account statement",
+        "tax document|tax return|tax"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "F07",
+      "category": "factual_retrieval",
+      "question": "What is prepayment and how does it affect total interest?",
+      "expected_sources": [
+        "loan_repayment.txt"
+      ],
+      "key_facts": [
+        "before it is due|ahead of schedule|early|extra payment|additional payment",
+        "reduce",
+        "total interest",
+        "principal"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "F08",
+      "category": "factual_retrieval",
+      "question": "What costs should a borrower review before signing a loan?",
+      "expected_sources": [
+        "loan_risks.txt"
+      ],
+      "key_facts": [
+        "interest rate",
+        "processing fee",
+        "insurance",
+        "late payment fee",
+        "penalty interest",
+        "documentation charge"
+      ],
+      "min_facts": 4
+    },
+    {
+      "id": "F09",
+      "category": "factual_retrieval",
+      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
+      "expected_sources": [
+        "loan_eligibility.txt"
+      ],
+      "key_facts": [
+        "monthly debt",
+        "monthly income",
+        "lower",
+        "room|capacity|afford|leaves more"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "F10",
+      "category": "factual_retrieval",
+      "question": "What is an amortization schedule?",
+      "expected_sources": [
+        "loan_interest.txt"
+      ],
+      "key_facts": [
+        "each payment|every payment|payment includes",
+        "interest",
+        "principal"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "S01",
+      "category": "multi_doc_synthesis",
+      "question": "Compare secured and unsecured loans, including how default is handled for each.",
+      "expected_sources": [
+        "loans.txt",
+        "loan_risks.txt",
+        "loan_types.txt"
+      ],
+      "key_facts": [
+        "collateral",
+        "repossess|repossession|seize|claim on the collateral|legal claim",
+        "credit history",
+        "unsecured"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "S02",
+      "category": "multi_doc_synthesis",
+      "question": "I want to borrow money for a car. Which loan type applies and what should I check before accepting it?",
+      "expected_sources": [
+        "loan_types.txt",
+        "loan_risks.txt"
+      ],
+      "key_facts": [
+        "auto loan",
+        "secured",
+        "vehicle",
+        "interest rate",
+        "fee"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "S03",
+      "category": "multi_doc_synthesis",
+      "question": "How does a borrower's credit score influence both loan eligibility and the consequences of missing payments?",
+      "expected_sources": [
+        "loan_eligibility.txt",
+        "loan_repayment.txt"
+      ],
+      "key_facts": [
+        "one factor",
+        "repayment risk",
+        "credit score impact|harm credit|affect credit|damage credit|impact on credit|credit history"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "S04",
+      "category": "multi_doc_synthesis",
+      "question": "Why can comparing only the monthly EMI be misleading when choosing between loan offers?",
+      "expected_sources": [
+        "loan_interest.txt",
+        "loan_types.txt",
+        "loan_risks.txt"
+      ],
+      "key_facts": [
+        "total interest",
+        "total repayment",
+        "term",
+        "total cost"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "C01",
+      "category": "conceptual",
+      "question": "What is the difference between a fixed and a variable interest rate?",
+      "expected_sources": [
+        "loan_interest.txt"
+      ],
+      "key_facts": [
+        "stays the same",
+        "change",
+        "benchmark"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "C02",
+      "category": "conceptual",
+      "question": "Explain the difference between simple interest and compound interest.",
+      "expected_sources": [
+        "loan_interest.txt"
+      ],
+      "key_facts": [
+        "original principal",
+        "unpaid interest",
+        "interest on interest|charged on interest|interest is charged on|added to the balance"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "C03",
+      "category": "conceptual",
+      "question": "Why does more of an early EMI payment go toward interest than principal?",
+      "expected_sources": [
+        "loan_interest.txt"
+      ],
+      "key_facts": [
+        "early",
+        "larger share|larger portion|more of|greater part|bigger share",
+        "outstanding balance",
+        "principal"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "C04",
+      "category": "conceptual",
+      "question": "What factors determine which loan type is suitable for a borrower?",
+      "expected_sources": [
+        "loan_types.txt"
+      ],
+      "key_facts": [
+        "purpose",
+        "repayment capacity",
+        "cost",
+        "term",
+        "collateral",
+        "risk"
+      ],
+      "min_facts": 4
+    },
+    {
+      "id": "C05",
+      "category": "conceptual",
+      "question": "What should a borrower do if repayment becomes difficult?",
+      "expected_sources": [
+        "loan_repayment.txt"
+      ],
+      "key_facts": [
+        "contact the lender|contact your lender|reach out to the lender|speak to the lender|talk to the lender|contact the lender early",
+        "restructuring",
+        "deferment",
+        "hardship"
+      ],
+      "min_facts": 3
+    },
+    {
+      "id": "H01",
+      "category": "out_of_kb",
+      "question": "Should I buy Bitcoin?",
+      "expected_sources": [],
+      "expect_refusal": true
+    },
+    {
+      "id": "H02",
+      "category": "out_of_kb",
+      "question": "What is the current repo rate set by the Reserve Bank of India?",
+      "expected_sources": [],
+      "expect_refusal": true
+    },
+    {
+      "id": "H03",
+      "category": "out_of_kb",
+      "question": "Which specific bank offers the lowest home loan interest rate right now?",
+      "expected_sources": [],
+      "expect_refusal": true
+    },
+    {
+      "id": "H04",
+      "category": "out_of_kb",
+      "question": "What is the capital city of Australia?",
+      "expected_sources": [],
+      "expect_refusal": true
+    },
+    {
+      "id": "H05",
+      "category": "out_of_kb",
+      "question": "Based on my salary of 50000 rupees, exactly how much home loan will I be approved for?",
+      "expected_sources": [],
+      "expect_refusal": true
+    },
+    {
+      "id": "G01",
+      "category": "code_generation",
+      "question": "Write a Python function named emi(principal, annual_rate_percent, months) that returns the monthly EMI for an amortized loan using the standard formula. Return only the function.",
+      "function_name": "emi",
+      "tests": [
+        {
+          "call": "emi(100000, 12, 12)",
+          "expected": 8884.88,
+          "tolerance": 0.05
+        },
+        {
+          "call": "emi(500000, 9, 60)",
+          "expected": 10379.18,
+          "tolerance": 0.05
+        },
+        {
+          "call": "emi(250000, 0, 10)",
+          "expected": 25000.0,
+          "tolerance": 0.05
+        }
+      ]
+    },
+    {
+      "id": "G02",
+      "category": "code_generation",
+      "question": "Write a Python function named total_interest(principal, annual_rate_percent, months) that returns the total interest paid over the life of an amortized loan (total repayment minus principal). Return only the function.",
+      "function_name": "total_interest",
+      "tests": [
+        {
+          "call": "total_interest(100000, 12, 12)",
+          "expected": 6618.55,
+          "tolerance": 0.5
+        },
+        {
+          "call": "total_interest(250000, 0, 10)",
+          "expected": 0.0,
+          "tolerance": 0.05
+        }
+      ]
+    },
+    {
+      "id": "G03",
+      "category": "code_generation",
+      "question": "Write a Python function named simple_interest(principal, annual_rate_percent, years) that returns simple interest calculated on the original principal. Return only the function.",
+      "function_name": "simple_interest",
+      "tests": [
+        {
+          "call": "simple_interest(100000, 10, 2)",
+          "expected": 20000.0,
+          "tolerance": 0.01
+        },
+        {
+          "call": "simple_interest(50000, 7.5, 3)",
+          "expected": 11250.0,
+          "tolerance": 0.01
+        },
+        {
+          "call": "simple_interest(1000, 0, 5)",
+          "expected": 0.0,
+          "tolerance": 0.01
+        }
+      ]
+    },
+    {
+      "id": "G04",
+      "category": "code_generation",
+      "question": "Write a Python function named dti_ratio(monthly_debt_payments, monthly_income) that returns the debt-to-income ratio as a percentage, and returns 0.0 when monthly_income is 0. Return only the function.",
+      "function_name": "dti_ratio",
+      "tests": [
+        {
+          "call": "dti_ratio(20000, 80000)",
+          "expected": 25.0,
+          "tolerance": 0.01
+        },
+        {
+          "call": "dti_ratio(0, 50000)",
+          "expected": 0.0,
+          "tolerance": 0.01
+        },
+        {
+          "call": "dti_ratio(10000, 0)",
+          "expected": 0.0,
+          "tolerance": 0.01
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "category": "code_generation",
+      "question": "Write a Python function named outstanding_balance(principal, annual_rate_percent, months, payments_made) that returns the remaining principal balance of an amortized loan after a number of payments have been made. Return only the function.",
+      "function_name": "outstanding_balance",
+      "tests": [
+        {
+          "call": "outstanding_balance(100000, 12, 12, 0)",
+          "expected": 100000.0,
+          "tolerance": 1.0
+        },
+        {
+          "call": "outstanding_balance(100000, 12, 12, 12)",
+          "expected": 0.0,
+          "tolerance": 1.0
+        },
+        {
+          "call": "outstanding_balance(100000, 12, 12, 6)",
+          "expected": 51492.11,
+          "tolerance": 5.0
+        }
+      ]
+    }
+  ]
+}
