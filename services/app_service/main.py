@@ -37,6 +37,7 @@ from services.app_service.evidence import (
     validate_grounding,
     determine_evidence_status,
 )
+from services.app_service.source_graph import build_source_graph
 
 SERVICE_NAME = "app-service"
 
@@ -348,6 +349,17 @@ def debug_service(data: QuestionRequest):
         "version_resolution": ver_res,
         "grounding": grounding,
         "evidence_status": ev_status,
+        # Provenance graph: question -> chunks -> documents, plus the
+        # conflict / supersedes relations between documents.
+        "source_graph": build_source_graph(
+            question=question,
+            chunks=all_chunks,
+            distances=all_dists,
+            llm_chunk_count=len(llm_chunks),
+            answer=answer,
+            conflict=conflict,
+            version_resolution=ver_res,
+        ),
     }
 
 
@@ -427,6 +439,15 @@ def evidence_service(data: QuestionRequest):
         "version_resolution": version_res,
         "grounding": grounding,
         "evidence_status": ev_status,
+        "source_graph": build_source_graph(
+            question=question,
+            chunks=all_chunks,
+            distances=all_dists,
+            llm_chunk_count=len(llm_chunks),
+            answer=answer,
+            conflict=conflict,
+            version_resolution=version_res,
+        ),
         "evidence_summary": {
             "total_sources": len(set(c["source"] for c in all_chunks)),
             "chunks_retrieved": len(all_chunks),

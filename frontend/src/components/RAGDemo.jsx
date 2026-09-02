@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { askDebug } from '../services/api'
 import Section from './ui/Section'
 import EvidencePanel from './EvidencePanel'
+import SourceGraph from './SourceGraph'
 
 const SUGGESTED = [
   'What is a secured loan?',
@@ -369,6 +370,11 @@ export default function RAGDemo({ backendStatus, onQueryComplete, onEmbeddingRec
 
             {/* Ollama setup guide — shown below pipeline when Ollama is missing */}
             {isDone && result?.ollama_error && <OllamaSetupGuide />}
+
+            {/* Source graph — provenance of the answer across chunks and documents */}
+            {isDone && result?.source_graph && (
+              <SourceGraph result={result} defaultOpen={false} />
+            )}
 
             {/* Evidence & Sources — shown when result has evidence data */}
             {isDone && result?.evidence && (
