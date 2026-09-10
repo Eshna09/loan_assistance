@@ -1,7 +1,7 @@
 {
   "name": "Loan Knowledge Assistance — Week 5 Evaluation Set",
-  "version": "2.0",
-  "description": "30 questions covering all 17 required categories: 10 loan/AI application categories and 7 repository/codebase categories. Based on the actual knowledge base and real codebase. Used for both Week 4 model comparison and Week 5 guardrail testing.",
+  "version": "2.1",
+  "description": "55 questions covering all 17 categories. Codebase categories have 5 questions each. Loan/AI categories retain existing questions. All codebase questions reference actual files, functions, and endpoints.",
   "categories": {
     "policy_explanation": "Explain a policy or rule stated in the loan documents.",
     "information_retrieval": "Single-document lookup — the answer sits in one KB document.",
@@ -28,14 +28,7 @@
       "category": "policy_explanation",
       "question": "Explain the eligibility criteria mentioned in the loan documents.",
       "expected_sources": ["loan_eligibility.txt"],
-      "key_facts": [
-        "income",
-        "employment",
-        "credit history",
-        "debt-to-income|debt to income|dti",
-        "collateral",
-        "age"
-      ],
+      "key_facts": ["income", "employment", "credit history", "debt-to-income|debt to income|dti", "collateral", "age"],
       "min_facts": 4,
       "evidence_expected": true
     },
@@ -58,6 +51,51 @@
       "evidence_expected": true
     },
     {
+      "id": "S01",
+      "category": "information_retrieval",
+      "question": "What happens if a borrower defaults on a secured loan?",
+      "expected_sources": ["loan_risks.txt"],
+      "key_facts": ["repossess|repossession|seize|take possession|recover the asset", "sell", "pledged asset"],
+      "min_facts": 2,
+      "evidence_expected": true
+    },
+    {
+      "id": "S02",
+      "category": "information_retrieval",
+      "question": "What does an EMI consist of?",
+      "expected_sources": ["loan_repayment.txt"],
+      "key_facts": ["interest", "principal"],
+      "min_facts": 2,
+      "evidence_expected": true
+    },
+    {
+      "id": "S03",
+      "category": "information_retrieval",
+      "question": "What can happen if I miss a loan repayment?",
+      "expected_sources": ["loan_repayment.txt"],
+      "key_facts": ["late fee|late payment fee", "penalty interest", "credit score", "collection|collections agency|debt collection", "legal|lawsuit|court"],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
+      "id": "S04",
+      "category": "information_retrieval",
+      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
+      "expected_sources": ["loan_eligibility.txt"],
+      "key_facts": ["monthly debt", "monthly income", "lower", "room|capacity|afford|leaves more"],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
+      "id": "S05",
+      "category": "information_retrieval",
+      "question": "What is an amortization schedule?",
+      "expected_sources": ["loan_interest.txt"],
+      "key_facts": ["each payment|every payment|payment includes", "interest", "principal"],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
       "id": "C01",
       "category": "comparison",
       "question": "What is the difference between a fixed and a variable interest rate?",
@@ -71,11 +109,7 @@
       "category": "comparison",
       "question": "Explain the difference between simple interest and compound interest.",
       "expected_sources": ["loan_interest.txt"],
-      "key_facts": [
-        "original principal",
-        "unpaid interest",
-        "interest on interest|charged on interest|interest is charged on|added to the balance"
-      ],
+      "key_facts": ["original principal", "unpaid interest", "interest on interest|charged on interest|interest is charged on|added to the balance"],
       "min_facts": 2,
       "evidence_expected": true
     },
@@ -84,7 +118,7 @@
       "category": "conflict_detection",
       "question": "Do any of the loan documents contain conflicting information about fees or interest rates?",
       "expected_sources": [],
-      "expected_behavior": "The assistant should check across documents for conflicting fee or rate claims. If no conflict exists in the base KB, it should say so clearly without inventing a conflict.",
+      "expected_behavior": "The assistant should check across documents for conflicting fee or rate claims. If no conflict exists in the base KB, it should say so clearly.",
       "evidence_expected": true,
       "refusal_expected": false
     },
@@ -93,7 +127,7 @@
       "category": "version_resolution",
       "question": "If two loan policy documents have different processing fee values, which one should be treated as current and why?",
       "expected_sources": [],
-      "expected_behavior": "The assistant should explain that the document with the later effective date or higher version number should be treated as the current policy.",
+      "expected_behavior": "The document with the later effective date or higher version number should be treated as current.",
       "key_facts": ["effective date|version number|most recent|latest"],
       "min_facts": 1,
       "evidence_expected": false
@@ -103,12 +137,7 @@
       "category": "eligibility_analysis",
       "question": "Is a borrower with a stable income but no prior credit history likely to be eligible for a loan based on the documents?",
       "expected_sources": ["loan_eligibility.txt"],
-      "key_facts": [
-        "credit history",
-        "income",
-        "one factor|multiple factors|not the only",
-        "collateral"
-      ],
+      "key_facts": ["credit history", "income", "one factor|multiple factors|not the only", "collateral"],
       "min_facts": 2,
       "evidence_expected": true
     },
@@ -117,7 +146,7 @@
       "category": "fee_calculation",
       "question": "Using the standard EMI formula, what would the monthly instalment be on a loan of 1 lakh rupees at 12% annual interest repaid over 12 months?",
       "expected_sources": [],
-      "expected_behavior": "The assistant should apply the EMI formula: EMI = P * r * (1+r)^n / ((1+r)^n - 1) where r = 12%/12 = 1% per month and n = 12. The correct answer is approximately ₹8,884.88 per month.",
+      "expected_behavior": "EMI = P*r*(1+r)^n / ((1+r)^n - 1) where r=0.01, n=12. Correct answer ≈ ₹8,884.88.",
       "key_facts": ["8884|8885|8,884|8,885"],
       "min_facts": 1,
       "evidence_expected": false
@@ -127,12 +156,7 @@
       "category": "rag_based",
       "question": "What does the loan knowledge base say about repayment tenure and EMI structure?",
       "expected_sources": ["loan_repayment.txt", "loan_interest.txt"],
-      "key_facts": [
-        "emi|equated monthly installment",
-        "principal",
-        "interest",
-        "term|tenure"
-      ],
+      "key_facts": ["emi|equated monthly installment", "principal", "interest", "term|tenure"],
       "min_facts": 3,
       "evidence_expected": true
     },
@@ -181,63 +205,180 @@
       "id": "CE01",
       "category": "code_explanation",
       "question": "What does the /ask/debug endpoint in the application service do?",
-      "expected_sources": [],
       "source_files": ["services/app_service/main.py"],
-      "expected_behavior": "The assistant should explain that /ask/debug runs the full RAG pipeline and returns every intermediate value: query embedding preview, retrieved chunks, distances, context, prompt, answer, evidence, conflict detection, version resolution, grounding, and an orchestration trace of service-to-service calls.",
-      "key_facts": [
-        "embedding|embed",
-        "retrieval|retrieve|chunks",
-        "prompt",
-        "trace|orchestration",
-        "evidence|conflict|grounding"
-      ],
+      "expected_behavior": "Runs the full RAG pipeline and returns every intermediate value: query embedding preview, retrieved chunks, distances, context, prompt, answer, evidence, conflict detection, version resolution, grounding, and a service-to-service orchestration trace.",
+      "key_facts": ["embedding|embed", "retrieval|retrieve|chunks", "prompt", "trace|orchestration", "evidence|conflict|grounding"],
       "min_facts": 3
+    },
+    {
+      "id": "CE02",
+      "category": "code_explanation",
+      "question": "What does the detect_conflicts function in services/app_service/evidence.py do?",
+      "source_files": ["services/app_service/evidence.py"],
+      "expected_behavior": "Extracts percentage-based claims from each retrieved chunk using regex, normalises field labels via FIELD_SYNONYMS, and flags a conflict when two different source documents assert different numeric values for the same normalised field key.",
+      "key_facts": ["claims|claim", "field|label", "conflict|conflicting", "source|document", "numeric|value|percentage"],
+      "min_facts": 3
+    },
+    {
+      "id": "CE03",
+      "category": "code_explanation",
+      "question": "What does the rebuild_index function in services/retrieval_service/main.py do?",
+      "source_files": ["services/retrieval_service/main.py"],
+      "expected_behavior": "Fetches all chunks from the Data Service via GET /chunks, embeds them using MiniLM, adds embeddings to a new FAISS IndexFlatL2, and updates the global faiss_index, chunk_metadata, and indexed_version variables.",
+      "key_facts": ["chunks|data service", "embed|minilm", "faiss|index", "version"],
+      "min_facts": 3
+    },
+    {
+      "id": "CE04",
+      "category": "code_explanation",
+      "question": "What does the validate_grounding function in services/app_service/evidence.py return and how does it classify answers?",
+      "source_files": ["services/app_service/evidence.py"],
+      "expected_behavior": "Computes content-word overlap between the answer and retrieved context. Returns supported (>=60% overlap), partially_supported (>=30%), unsupported (<30%), insufficient_evidence (empty or refusal phrase), or conflict_detected (answer mentions conflict).",
+      "key_facts": ["overlap|content words", "supported|partially_supported|unsupported", "threshold|percent", "grounding"],
+      "min_facts": 2
+    },
+    {
+      "id": "CE05",
+      "category": "code_explanation",
+      "question": "What does the /playground/ask endpoint do and how does it differ from /ask?",
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "Accepts a model parameter in addition to the question, calls Ollama directly with the specified model bypassing the LLM Service default, and returns the same debug fields as /ask/debug. Allows testing different Ollama models without changing service configuration.",
+      "key_facts": ["model|caller-specified", "ollama|direct", "question", "debug|embedding|chunks"],
+      "min_facts": 2
     },
     {
       "id": "CR01",
       "category": "code_retrieval",
       "question": "Which file in the project handles communication with the Ollama LLM runtime?",
-      "expected_sources": [],
       "source_files": ["services/llm_service/main.py"],
-      "expected_behavior": "The assistant should identify services/llm_service/main.py as the file that wraps the Ollama API and exposes /generate, /health, and /models endpoints.",
-      "key_facts": [
-        "llm_service|llm service",
-        "services/llm_service/main.py|llm_service/main.py"
-      ],
+      "expected_behavior": "services/llm_service/main.py wraps the Ollama API and exposes /generate, /health, and /models endpoints.",
+      "key_facts": ["llm_service|llm service", "services/llm_service/main.py|llm_service/main.py"],
       "min_facts": 1
+    },
+    {
+      "id": "CR02",
+      "category": "code_retrieval",
+      "question": "Which file contains the chunk_text function used to split documents into overlapping chunks?",
+      "source_files": ["services/common/chunking.py"],
+      "expected_behavior": "services/common/chunking.py contains chunk_text() with CHUNK_SIZE=300 and OVERLAP=50 constants.",
+      "key_facts": ["chunking.py|common/chunking", "chunk_text", "overlap|chunk_size"],
+      "min_facts": 2
+    },
+    {
+      "id": "CR03",
+      "category": "code_retrieval",
+      "question": "Which file owns the FAISS vector index and the MiniLM embedding model?",
+      "source_files": ["services/retrieval_service/main.py"],
+      "expected_behavior": "services/retrieval_service/main.py owns the FAISS IndexFlatL2 and loads sentence-transformers/all-MiniLM-L6-v2 at startup.",
+      "key_facts": ["retrieval_service|retrieval service", "faiss|indexflat", "minilm|sentence-transformers"],
+      "min_facts": 2
+    },
+    {
+      "id": "CR04",
+      "category": "code_retrieval",
+      "question": "Which file is responsible for storing and serving the knowledge-base documents and handling file uploads?",
+      "source_files": ["services/data_service/main.py"],
+      "expected_behavior": "services/data_service/main.py owns the document store, accepts uploads, extracts text, serves chunks via GET /chunks, and bumps a version counter on every mutation.",
+      "key_facts": ["data_service|data service", "upload|uploaded_kb", "chunks|documents", "version"],
+      "min_facts": 2
+    },
+    {
+      "id": "CR05",
+      "category": "code_retrieval",
+      "question": "Which file contains the build_rag_prompt function and the RAG prompt template?",
+      "source_files": ["services/common/prompts.py"],
+      "expected_behavior": "services/common/prompts.py contains build_rag_prompt(), FALLBACK_PHRASE, and CONTEXT_SEPARATOR constants.",
+      "key_facts": ["prompts.py|common/prompts", "build_rag_prompt", "fallback|context_separator"],
+      "min_facts": 2
     },
     {
       "id": "DU01",
       "category": "dependency_understanding",
       "question": "Which services and components are involved when a user submits a question through the /ask endpoint?",
-      "expected_sources": [],
-      "source_files": [
-        "services/app_service/main.py",
-        "services/retrieval_service/main.py",
-        "services/llm_service/main.py"
-      ],
-      "expected_behavior": "The assistant should describe the chain: App Service receives the request, calls Retrieval Service /retrieve (which uses MiniLM + FAISS), assembles the RAG prompt, then calls LLM Service /generate (which calls Ollama).",
-      "key_facts": [
-        "app service|app-service",
-        "retrieval service|retrieval-service",
-        "llm service|llm-service",
-        "faiss|embedding|minilm",
-        "ollama"
-      ],
+      "source_files": ["services/app_service/main.py", "services/retrieval_service/main.py", "services/llm_service/main.py"],
+      "expected_behavior": "App Service → Retrieval Service /retrieve (MiniLM + FAISS) → RAG prompt assembly → LLM Service /generate (Ollama).",
+      "key_facts": ["app service|app-service", "retrieval service|retrieval-service", "llm service|llm-service", "faiss|embedding|minilm", "ollama"],
       "min_facts": 3
+    },
+    {
+      "id": "DU02",
+      "category": "dependency_understanding",
+      "question": "What happens across services when a document is uploaded via POST /kb/upload?",
+      "source_files": ["services/app_service/main.py", "services/data_service/main.py", "services/retrieval_service/main.py"],
+      "expected_behavior": "App Service forwards the file to Data Service POST /documents (stores, extracts, increments version). App Service then calls Retrieval Service POST /reindex to rebuild the FAISS index.",
+      "key_facts": ["data service|data-service", "reindex|rebuild", "version|stale", "retrieval service"],
+      "min_facts": 3
+    },
+    {
+      "id": "DU03",
+      "category": "dependency_understanding",
+      "question": "How does the Retrieval Service keep its FAISS index fresh without sharing disk with the Data Service?",
+      "source_files": ["services/retrieval_service/main.py", "services/data_service/main.py"],
+      "expected_behavior": "ensure_fresh_index() calls GET /version on the Data Service before every query. If the version changed since the last build, rebuild_index() fetches all chunks from GET /chunks and re-embeds them. No shared filesystem involved.",
+      "key_facts": ["version|get /version", "ensure_fresh_index|rebuild_index", "chunks|get /chunks", "no shared|http"],
+      "min_facts": 2
+    },
+    {
+      "id": "DU04",
+      "category": "dependency_understanding",
+      "question": "What does the App Service do if the LLM Service is unreachable when handling /ask/debug?",
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "Catches the HTTPException from the generate step, sets answer=None, stores the error in ollama_error, and still returns all retrieval results (embedding, chunks, context, prompt) so the dashboard renders all RAG steps except the final answer.",
+      "key_facts": ["answer=null|answer=none", "llm_error|ollama_error", "retrieval|chunks|context|prompt", "catch|exception"],
+      "min_facts": 3
+    },
+    {
+      "id": "DU05",
+      "category": "dependency_understanding",
+      "question": "Which service is the only one that reads documents from disk, and why is this important for the architecture?",
+      "source_files": ["services/data_service/main.py", "ARCHITECTURE.md"],
+      "expected_behavior": "Only the Data Service reads from disk (finance_kb and uploaded_kb). The Retrieval Service has no volume mount and obtains all text via HTTP GET /chunks, so its container can be restarted without filesystem state.",
+      "key_facts": ["data service|data-service", "filesystem|disk|volume", "retrieval|http", "chunks"],
+      "min_facts": 2
     },
     {
       "id": "BA01",
       "category": "bug_analysis",
       "question": "What could cause the /ask endpoint to return answer=null with an ollama_error in the response?",
-      "expected_sources": [],
       "source_files": ["services/app_service/main.py", "services/llm_service/main.py"],
-      "expected_behavior": "The assistant should identify that answer=null with ollama_error means the LLM Service is unreachable or Ollama is not running. The app service catches the HTTPException from call_service and stores the error in llm_error, returning answer=None. The retrieval steps still complete successfully.",
-      "key_facts": [
-        "ollama|llm service",
-        "unreachable|not running|connection",
-        "retrieval|chunks|context"
-      ],
+      "expected_behavior": "answer=null with ollama_error means the LLM Service is unreachable or Ollama is not running. The app service catches the HTTPException and returns answer=None while retrieval steps still complete.",
+      "key_facts": ["ollama|llm service", "unreachable|not running|connection", "retrieval|chunks|context"],
+      "min_facts": 2
+    },
+    {
+      "id": "BA02",
+      "category": "bug_analysis",
+      "question": "What could cause the Retrieval Service to return zero chunks for a valid loan question?",
+      "source_files": ["services/retrieval_service/main.py", "services/data_service/main.py"],
+      "expected_behavior": "Zero chunks occur if the FAISS index was never built (Data Service was down at startup), faiss_index.ntotal is 0 (endpoint returns empty list early), or rebuild_index failed and the service is serving a stale empty index.",
+      "key_facts": ["faiss|index|ntotal", "data service|unreachable", "rebuild|startup", "empty|zero"],
+      "min_facts": 2
+    },
+    {
+      "id": "BA03",
+      "category": "bug_analysis",
+      "question": "What would happen if the CHUNK_SIZE constant in services/common/chunking.py was accidentally changed to 0?",
+      "source_files": ["services/common/chunking.py"],
+      "expected_behavior": "chunk_text would enter an infinite loop because start += (0 - 50) = -50, so start never exceeds len(text). This would hang the Data Service on any /chunks or /documents request.",
+      "key_facts": ["infinite loop|hang", "start|advance", "chunk_size", "zero|empty"],
+      "min_facts": 2
+    },
+    {
+      "id": "BA04",
+      "category": "bug_analysis",
+      "question": "If the /health endpoint on the App Service reports status=degraded, what does that indicate and where is that logic implemented?",
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "status=degraded means at least one downstream service returned a non-ok status or was unreachable. In health() in app_service/main.py, overall status is 'ok' only if all services return status=='ok'; otherwise 'degraded'.",
+      "key_facts": ["degraded", "downstream|service", "health()|app_service/main.py", "status==ok|all services"],
+      "min_facts": 2
+    },
+    {
+      "id": "BA05",
+      "category": "bug_analysis",
+      "question": "What could cause conflict detection to produce false positives — reporting a conflict when none actually exists?",
+      "source_files": ["services/app_service/evidence.py"],
+      "expected_behavior": "False positives can occur if unrelated numbers in two chunks accidentally match the same FIELD_SYNONYMS label pattern. The dedup_key (field_key, value) per chunk prevents the same source reporting two values for the same field, but cross-source false matches are still possible for unlisted field labels.",
+      "key_facts": ["field_synonyms|normalisation", "false positive|unrelated", "label|match", "dedup"],
       "min_facts": 2
     },
     {
@@ -284,97 +425,105 @@
       ]
     },
     {
+      "id": "G05",
+      "category": "code_generation",
+      "question": "Write a Python function named outstanding_balance(principal, annual_rate_percent, months, payments_made) that returns the remaining principal balance after a given number of EMI payments. Return only the function.",
+      "function_name": "outstanding_balance",
+      "tests": [
+        {"call": "outstanding_balance(100000, 12, 12, 0)", "expected": 100000.0, "tolerance": 1.0},
+        {"call": "outstanding_balance(100000, 12, 12, 12)", "expected": 0.0, "tolerance": 1.0},
+        {"call": "outstanding_balance(100000, 12, 12, 6)", "expected": 51492.11, "tolerance": 5.0}
+      ]
+    },
+    {
       "id": "RF01",
       "category": "refactoring",
       "question": "Suggest an improvement to the chunk_text function in services/common/chunking.py to handle the case where the input text is empty or only whitespace.",
-      "expected_sources": [],
       "source_files": ["services/common/chunking.py"],
-      "expected_behavior": "The assistant should suggest adding an early return or guard clause at the start of chunk_text() that returns an empty list when text is empty or whitespace-only, preventing a single empty-string chunk from being returned.",
-      "key_facts": [
-        "empty|whitespace|strip",
-        "return|guard|check",
-        "chunk_text"
-      ],
+      "expected_behavior": "Add an early return guard clause returning [] when text is empty or whitespace-only.",
+      "key_facts": ["empty|whitespace|strip", "return|guard|check", "chunk_text"],
+      "min_facts": 2
+    },
+    {
+      "id": "RF02",
+      "category": "refactoring",
+      "question": "How could the health() endpoint in services/app_service/main.py be improved to avoid blocking when one downstream service is very slow?",
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "Run the three downstream health checks concurrently using threading.Thread or asyncio.gather instead of sequentially. Currently each call blocks for up to 5 seconds, so parallel execution would cap the wait at ~5 s regardless of how many services are checked.",
+      "key_facts": ["concurrent|parallel|threading|asyncio", "sequential|blocking", "5 seconds|timeout", "health"],
+      "min_facts": 2
+    },
+    {
+      "id": "RF03",
+      "category": "refactoring",
+      "question": "The call_service helper in services/app_service/main.py raises an HTTPException for any downstream error. Suggest a way to add optional retry logic for transient failures.",
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "Add a max_retries parameter to call_service() with exponential backoff (time.sleep(2**attempt)). On requests.RequestException retry up to max_retries times before raising.",
+      "key_facts": ["retry|retries", "backoff|sleep", "transient|connection", "call_service"],
+      "min_facts": 2
+    },
+    {
+      "id": "RF04",
+      "category": "refactoring",
+      "question": "The _version counter in services/data_service/main.py is a module-level global integer. What are the risks and how could it be improved?",
+      "source_files": ["services/data_service/main.py"],
+      "expected_behavior": "Risk: counter resets to 0 on service restart so Retrieval won't detect a stale index post-restart. Fix: persist version to a file or use a content hash of the document list so the version is deterministic and survives restarts.",
+      "key_facts": ["reset|restart|lost", "persist|file|database|hash", "_version|counter"],
+      "min_facts": 2
+    },
+    {
+      "id": "RF05",
+      "category": "refactoring",
+      "question": "In services/app_service/evidence.py the FIELD_SYNONYMS list maps label fragments to canonical field keys. Suggest a more maintainable way to define this mapping.",
+      "source_files": ["services/app_service/evidence.py"],
+      "expected_behavior": "Move FIELD_SYNONYMS to a JSON/YAML config file so domain experts can add synonyms without editing Python. Alternatively use a flat dict mapping each synonym string directly to its canonical key for O(1) lookup.",
+      "key_facts": ["config|json|yaml|file", "maintainable|extend|edit", "field_synonyms|synonym", "lookup|dict"],
       "min_facts": 2
     },
     {
       "id": "RD01",
       "category": "rag_based_code_doc",
       "question": "What does the project documentation say about the RAG pipeline and how services communicate?",
-      "expected_sources": [],
       "source_files": ["ARCHITECTURE.md"],
-      "expected_behavior": "The assistant should describe the pipeline documented in ARCHITECTURE.md: Browser -> App Service -> Retrieval Service (MiniLM + FAISS) -> Data Service, and separately App Service -> LLM Service -> Ollama. All communication is via HTTP on the rag-net bridge network.",
-      "key_facts": [
-        "app service|app-service",
-        "retrieval|faiss|minilm",
-        "llm|ollama",
-        "http|network"
-      ],
+      "expected_behavior": "ARCHITECTURE.md: Browser → App Service → Retrieval Service (MiniLM + FAISS) → Data Service, and App Service → LLM Service → Ollama. All communication is HTTP on the rag-net bridge network.",
+      "key_facts": ["app service|app-service", "retrieval|faiss|minilm", "llm|ollama", "http|network"],
       "min_facts": 2
     },
     {
-      "id": "S01",
-      "category": "information_retrieval",
-      "question": "What happens if a borrower defaults on a secured loan?",
-      "expected_sources": ["loan_risks.txt"],
-      "key_facts": [
-        "repossess|repossession|seize|take possession|recover the asset",
-        "sell",
-        "pledged asset"
-      ],
-      "min_facts": 2,
-      "evidence_expected": true
+      "id": "RD02",
+      "category": "rag_based_code_doc",
+      "question": "According to ARCHITECTURE.md, why does only the Retrieval Service container carry the ML stack and what are the image size implications?",
+      "source_files": ["ARCHITECTURE.md"],
+      "expected_behavior": "Only the Retrieval Service carries torch and sentence-transformers (MiniLM baked in), giving it a 2.29 GB image. Other images are slim: app-service 271 MB, llm-service 271 MB, data-service 293 MB. Restarting the orchestrator does not reload the model.",
+      "key_facts": ["retrieval service|retrieval-service", "2.29 gb|size", "slim|271|293", "torch|sentence-transformers|minilm"],
+      "min_facts": 2
     },
     {
-      "id": "S02",
-      "category": "information_retrieval",
-      "question": "What does an EMI consist of?",
-      "expected_sources": ["loan_repayment.txt"],
-      "key_facts": ["interest", "principal"],
-      "min_facts": 2,
-      "evidence_expected": true
+      "id": "RD03",
+      "category": "rag_based_code_doc",
+      "question": "What does the documentation say about keeping the FAISS index fresh without shared state between services?",
+      "source_files": ["ARCHITECTURE.md"],
+      "expected_behavior": "Three mechanisms: App Service triggers POST /reindex after every upload; Retrieval Service checks GET /version before every query and rebuilds if stale; this self-healing means the system recovers even if a document is uploaded directly to the Data Service.",
+      "key_facts": ["reindex|/reindex", "version|/version|stale", "self-heal|self heal", "data service"],
+      "min_facts": 2
     },
     {
-      "id": "S03",
-      "category": "information_retrieval",
-      "question": "What can happen if I miss a loan repayment?",
-      "expected_sources": ["loan_repayment.txt"],
-      "key_facts": [
-        "late fee|late payment fee",
-        "penalty interest",
-        "credit score",
-        "collection|collections agency|debt collection",
-        "legal|lawsuit|court"
-      ],
-      "min_facts": 3,
-      "evidence_expected": true
+      "id": "RD04",
+      "category": "rag_based_code_doc",
+      "question": "What does ARCHITECTURE.md say about failure isolation when the LLM Service is stopped?",
+      "source_files": ["ARCHITECTURE.md"],
+      "expected_behavior": "/ask/debug still returns query embedding, retrieved chunks, context, and prompt with answer=null and trace marking generate as unreachable. /health reports degraded. The RAG pipeline is not coupled to generation being available.",
+      "key_facts": ["answer=null|answer null", "degraded", "trace|unreachable", "rag pipeline|retrieval"],
+      "min_facts": 2
     },
     {
-      "id": "S04",
-      "category": "information_retrieval",
-      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
-      "expected_sources": ["loan_eligibility.txt"],
-      "key_facts": [
-        "monthly debt",
-        "monthly income",
-        "lower",
-        "room|capacity|afford|leaves more"
-      ],
-      "min_facts": 3,
-      "evidence_expected": true
-    },
-    {
-      "id": "S05",
-      "category": "information_retrieval",
-      "question": "What is an amortization schedule?",
-      "expected_sources": ["loan_interest.txt"],
-      "key_facts": [
-        "each payment|every payment|payment includes",
-        "interest",
-        "principal"
-      ],
-      "min_facts": 3,
-      "evidence_expected": true
+      "id": "RD05",
+      "category": "rag_based_code_doc",
+      "question": "According to ARCHITECTURE.md, what is the purpose of the two named Docker volumes and what data does each hold?",
+      "source_files": ["ARCHITECTURE.md"],
+      "expected_behavior": "kb-uploads stores uploaded documents so they outlive data-service container restarts. ollama-models stores pulled Ollama model weights (codellama:7b ~3.8 GB) so the download only happens once.",
+      "key_facts": ["kb-uploads|kb uploads", "ollama-models|ollama models", "uploaded|documents", "codellama|model|3.8"],
+      "min_facts": 2
     }
   ]
 }
