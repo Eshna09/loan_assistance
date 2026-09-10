@@ -29,6 +29,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from services.common.prompts import CONTEXT_SEPARATOR, build_rag_prompt
+from services.app_service.guardrails import (
+    check_input,
+    check_evidence_sufficiency,
+    validate_output,
+    build_guardrail_block,
+    MAX_INPUT_LENGTH,
+)
 from services.app_service.evidence import (
     EVIDENCE_TOP_K,
     build_evidence,
@@ -205,6 +212,29 @@ def llm_service(data: PromptRequest):
 @app.post("/ask")
 def application_service(data: QuestionRequest):
     """Orchestrate retrieval + generation and return the final answer."""
+
+    # ── INPUT GUARDRAIL ──────────────────────────────────────────────────
+    guard_status, guard_reason = check_input(data.question)
+    if guard_status != "pass":
+        return {
+            "question": data.question,
+            "answer": None,
+            "sources": [],
+            "guardrail": {
+                "input_check": guard_status,
+                "input_length": "fail" if guard_status == "reject_length" else "pass",
+                "evidence_sufficient": "n/a",
+                "action": "rejected",
+                "reason": guard_reason,
+            },
+            "controlled_response": guard_reason,
+            "blocked": True,
+            "ollama_error": None,
+            "evidence_status": "blocked",
+            "grounding": {},
+            "trace": [],
+        }
+
     trace = Trace()
 
     retrieval = call_service(
@@ -215,6 +245,28 @@ def application_service(data: QuestionRequest):
         trace=trace,
         json={"question": data.question, "top_k": DEFAULT_TOP_K},
     )
+
+    # ── EVIDENCE GUARDRAIL — abstain when no relevant context exists ──────
+    if not retrieval["chunks"]:
+        return {
+            "question": data.question,
+            "answer": None,
+            "sources": [],
+            "guardrail": {
+                "input_check": "pass",
+                "input_length": "pass",
+                "evidence_sufficient": "insufficient",
+                "action": "abstained",
+            },
+            "controlled_response": (
+                "I couldn't find sufficient information in the knowledge base to answer this question."
+            ),
+            "blocked": True,
+            "ollama_error": None,
+            "evidence_status": "insufficient_evidence",
+            "grounding": {"status": "insufficient_evidence", "groundedness": 0.0},
+            "trace": trace.steps,
+        }
 
     context = "\n".join(c["text"] for c in retrieval["chunks"])
     prompt = build_rag_prompt(context, data.question)
@@ -240,6 +292,9 @@ def application_service(data: QuestionRequest):
     conflict = detect_conflicts(retrieval["chunks"])
     evidence_status = determine_evidence_status(grounding, conflict)
 
+    # Output validation
+    output_validation = validate_output(answer or "", data.question, context)
+
     return {
         "question": data.question,
         "answer": answer,
@@ -248,6 +303,14 @@ def application_service(data: QuestionRequest):
         "evidence_status": evidence_status,
         "grounding": grounding,
         "trace": trace.steps,
+        "guardrail": build_guardrail_block(
+            guard_status, None,
+            evidence_sufficient=True,
+            output_validation=output_validation,
+            action="allow",
+        ),
+        "output_validation": output_validation,
+        "blocked": False,
     }
 
 
@@ -265,6 +328,27 @@ def debug_service(data: QuestionRequest):
     the final answer.
     """
     question = data.question
+
+    # ── INPUT GUARDRAIL ──────────────────────────────────────────────────
+    guard_status, guard_reason = check_input(question)
+    if guard_status != "pass":
+        return {
+            "question": question,
+            "answer": None,
+            "sources": [],
+            "guardrail": {
+                "input_check": guard_status,
+                "input_length": "fail" if guard_status == "reject_length" else "pass",
+                "evidence_sufficient": "n/a",
+                "action": "rejected",
+                "reason": guard_reason,
+            },
+            "controlled_response": guard_reason,
+            "blocked": True,
+            "ollama_error": None,
+            "trace": [],
+        }
+
     trace = Trace()
 
     # Step 1 — query embedding
@@ -360,6 +444,14 @@ def debug_service(data: QuestionRequest):
             conflict=conflict,
             version_resolution=ver_res,
         ),
+        # Guardrail status (all checks passed to reach this point)
+        "guardrail": {
+            "input_check": "pass",
+            "input_length": "pass",
+            "evidence_sufficient": "pass" if all_chunks else "insufficient",
+            "action": "allow",
+        },
+        "blocked": False,
     }
 
 

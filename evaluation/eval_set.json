@@ -1,341 +1,244 @@
 {
-  "name": "Loan Knowledge Assistance — evaluation set",
-  "version": "1.0",
-  "description": "29 representative tasks covering the real work of the application: grounded factual lookup, multi-document synthesis, conceptual explanation, out-of-knowledge-base refusal, and in-domain loan-math code generation. The identical set is used for every model. A key fact containing '|' is satisfied by any one of its alternatives.",
+  "name": "Loan Knowledge Assistance — Week 5 Evaluation Set",
+  "version": "2.0",
+  "description": "30 questions covering all 17 required categories: 10 loan/AI application categories and 7 repository/codebase categories. Based on the actual knowledge base and real codebase. Used for both Week 4 model comparison and Week 5 guardrail testing.",
   "categories": {
-    "factual_retrieval": "Single-document lookup — the answer sits in one KB document.",
-    "multi_doc_synthesis": "The answer requires combining two or more KB documents.",
-    "conceptual": "Explanation or comparison of a concept described in the KB.",
-    "out_of_kb": "Deliberately outside the knowledge base — the assistant must refuse rather than invent.",
-    "code_generation": "In-domain loan mathematics, executed against unit tests."
+    "policy_explanation": "Explain a policy or rule stated in the loan documents.",
+    "information_retrieval": "Single-document lookup — the answer sits in one KB document.",
+    "comparison": "Compare two loan concepts, types, or interest mechanisms.",
+    "conflict_detection": "Ask about conflicting information across documents.",
+    "version_resolution": "Ask which policy version is current and why.",
+    "eligibility_analysis": "Analyse a borrower scenario against eligibility criteria.",
+    "fee_calculation": "Calculate a fee or interest value using loan math.",
+    "rag_based": "Explicitly ask what the knowledge base says about a topic.",
+    "out_of_scope": "Deliberately outside the knowledge base — the assistant must refuse.",
+    "evidence_grounding": "Ask which document or evidence supports a specific answer.",
+    "code_explanation": "Explain what a real endpoint or function in the codebase does.",
+    "code_retrieval": "Identify which real file handles a specific responsibility.",
+    "dependency_understanding": "Describe the real service interaction chain for a user action.",
+    "bug_analysis": "Identify what in the real code could cause a specific problem.",
+    "code_generation": "In-domain loan mathematics, executed against unit tests.",
+    "refactoring": "Suggest an improvement to a real function in the codebase.",
+    "rag_based_code_doc": "Ask what the project documentation says about a pipeline or component."
   },
   "fallback_phrase": "This information is not available in my knowledge base.",
   "questions": [
     {
-      "id": "F01",
-      "category": "factual_retrieval",
-      "question": "What are the main parts of a loan?",
-      "expected_sources": [
-        "loans.txt"
-      ],
+      "id": "P01",
+      "category": "policy_explanation",
+      "question": "Explain the eligibility criteria mentioned in the loan documents.",
+      "expected_sources": ["loan_eligibility.txt"],
       "key_facts": [
-        "principal",
-        "interest rate",
-        "term",
-        "fee",
-        "collateral"
+        "income",
+        "employment",
+        "credit history",
+        "debt-to-income|debt to income|dti",
+        "collateral",
+        "age"
       ],
-      "min_facts": 4
+      "min_facts": 4,
+      "evidence_expected": true
+    },
+    {
+      "id": "F01",
+      "category": "information_retrieval",
+      "question": "What are the main parts of a loan?",
+      "expected_sources": ["loans.txt"],
+      "key_facts": ["principal", "interest rate", "term", "fee", "collateral"],
+      "min_facts": 4,
+      "evidence_expected": true
     },
     {
       "id": "F02",
-      "category": "factual_retrieval",
+      "category": "information_retrieval",
       "question": "What is a secured loan?",
-      "expected_sources": [
-        "loans.txt",
-        "loan_types.txt"
-      ],
-      "key_facts": [
-        "collateral",
-        "asset"
-      ],
-      "min_facts": 2
-    },
-    {
-      "id": "F03",
-      "category": "factual_retrieval",
-      "question": "What happens if a borrower defaults on a secured loan?",
-      "expected_sources": [
-        "loan_risks.txt"
-      ],
-      "key_facts": [
-        "repossess|repossession|seize|take possession|recover the asset",
-        "sell",
-        "pledged asset"
-      ],
-      "min_facts": 2
-    },
-    {
-      "id": "F04",
-      "category": "factual_retrieval",
-      "question": "What does an EMI consist of?",
-      "expected_sources": [
-        "loan_repayment.txt"
-      ],
-      "key_facts": [
-        "interest",
-        "principal"
-      ],
-      "min_facts": 2
-    },
-    {
-      "id": "F05",
-      "category": "factual_retrieval",
-      "question": "What can happen if I miss a loan repayment?",
-      "expected_sources": [
-        "loan_repayment.txt"
-      ],
-      "key_facts": [
-        "late fee|late payment fee",
-        "penalty interest",
-        "credit score",
-        "collection|collections agency|debt collection",
-        "legal|lawsuit|court"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "F06",
-      "category": "factual_retrieval",
-      "question": "Which documents are usually requested for a loan application?",
-      "expected_sources": [
-        "loan_eligibility.txt"
-      ],
-      "key_facts": [
-        "identity proof",
-        "address proof",
-        "income proof",
-        "bank statement|bank account statement",
-        "tax document|tax return|tax"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "F07",
-      "category": "factual_retrieval",
-      "question": "What is prepayment and how does it affect total interest?",
-      "expected_sources": [
-        "loan_repayment.txt"
-      ],
-      "key_facts": [
-        "before it is due|ahead of schedule|early|extra payment|additional payment",
-        "reduce",
-        "total interest",
-        "principal"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "F08",
-      "category": "factual_retrieval",
-      "question": "What costs should a borrower review before signing a loan?",
-      "expected_sources": [
-        "loan_risks.txt"
-      ],
-      "key_facts": [
-        "interest rate",
-        "processing fee",
-        "insurance",
-        "late payment fee",
-        "penalty interest",
-        "documentation charge"
-      ],
-      "min_facts": 4
-    },
-    {
-      "id": "F09",
-      "category": "factual_retrieval",
-      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
-      "expected_sources": [
-        "loan_eligibility.txt"
-      ],
-      "key_facts": [
-        "monthly debt",
-        "monthly income",
-        "lower",
-        "room|capacity|afford|leaves more"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "F10",
-      "category": "factual_retrieval",
-      "question": "What is an amortization schedule?",
-      "expected_sources": [
-        "loan_interest.txt"
-      ],
-      "key_facts": [
-        "each payment|every payment|payment includes",
-        "interest",
-        "principal"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "S01",
-      "category": "multi_doc_synthesis",
-      "question": "Compare secured and unsecured loans, including how default is handled for each.",
-      "expected_sources": [
-        "loans.txt",
-        "loan_risks.txt",
-        "loan_types.txt"
-      ],
-      "key_facts": [
-        "collateral",
-        "repossess|repossession|seize|claim on the collateral|legal claim",
-        "credit history",
-        "unsecured"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "S02",
-      "category": "multi_doc_synthesis",
-      "question": "I want to borrow money for a car. Which loan type applies and what should I check before accepting it?",
-      "expected_sources": [
-        "loan_types.txt",
-        "loan_risks.txt"
-      ],
-      "key_facts": [
-        "auto loan",
-        "secured",
-        "vehicle",
-        "interest rate",
-        "fee"
-      ],
-      "min_facts": 3
-    },
-    {
-      "id": "S03",
-      "category": "multi_doc_synthesis",
-      "question": "How does a borrower's credit score influence both loan eligibility and the consequences of missing payments?",
-      "expected_sources": [
-        "loan_eligibility.txt",
-        "loan_repayment.txt"
-      ],
-      "key_facts": [
-        "one factor",
-        "repayment risk",
-        "credit score impact|harm credit|affect credit|damage credit|impact on credit|credit history"
-      ],
-      "min_facts": 2
-    },
-    {
-      "id": "S04",
-      "category": "multi_doc_synthesis",
-      "question": "Why can comparing only the monthly EMI be misleading when choosing between loan offers?",
-      "expected_sources": [
-        "loan_interest.txt",
-        "loan_types.txt",
-        "loan_risks.txt"
-      ],
-      "key_facts": [
-        "total interest",
-        "total repayment",
-        "term",
-        "total cost"
-      ],
-      "min_facts": 2
+      "expected_sources": ["loans.txt", "loan_types.txt"],
+      "key_facts": ["collateral", "asset"],
+      "min_facts": 2,
+      "evidence_expected": true
     },
     {
       "id": "C01",
-      "category": "conceptual",
+      "category": "comparison",
       "question": "What is the difference between a fixed and a variable interest rate?",
-      "expected_sources": [
-        "loan_interest.txt"
-      ],
-      "key_facts": [
-        "stays the same",
-        "change",
-        "benchmark"
-      ],
-      "min_facts": 2
+      "expected_sources": ["loan_interest.txt"],
+      "key_facts": ["stays the same", "change", "benchmark"],
+      "min_facts": 2,
+      "evidence_expected": true
     },
     {
       "id": "C02",
-      "category": "conceptual",
+      "category": "comparison",
       "question": "Explain the difference between simple interest and compound interest.",
-      "expected_sources": [
-        "loan_interest.txt"
-      ],
+      "expected_sources": ["loan_interest.txt"],
       "key_facts": [
         "original principal",
         "unpaid interest",
         "interest on interest|charged on interest|interest is charged on|added to the balance"
       ],
-      "min_facts": 2
+      "min_facts": 2,
+      "evidence_expected": true
     },
     {
-      "id": "C03",
-      "category": "conceptual",
-      "question": "Why does more of an early EMI payment go toward interest than principal?",
-      "expected_sources": [
-        "loan_interest.txt"
-      ],
-      "key_facts": [
-        "early",
-        "larger share|larger portion|more of|greater part|bigger share",
-        "outstanding balance",
-        "principal"
-      ],
-      "min_facts": 2
+      "id": "CD01",
+      "category": "conflict_detection",
+      "question": "Do any of the loan documents contain conflicting information about fees or interest rates?",
+      "expected_sources": [],
+      "expected_behavior": "The assistant should check across documents for conflicting fee or rate claims. If no conflict exists in the base KB, it should say so clearly without inventing a conflict.",
+      "evidence_expected": true,
+      "refusal_expected": false
     },
     {
-      "id": "C04",
-      "category": "conceptual",
-      "question": "What factors determine which loan type is suitable for a borrower?",
-      "expected_sources": [
-        "loan_types.txt"
-      ],
-      "key_facts": [
-        "purpose",
-        "repayment capacity",
-        "cost",
-        "term",
-        "collateral",
-        "risk"
-      ],
-      "min_facts": 4
+      "id": "VR01",
+      "category": "version_resolution",
+      "question": "If two loan policy documents have different processing fee values, which one should be treated as current and why?",
+      "expected_sources": [],
+      "expected_behavior": "The assistant should explain that the document with the later effective date or higher version number should be treated as the current policy.",
+      "key_facts": ["effective date|version number|most recent|latest"],
+      "min_facts": 1,
+      "evidence_expected": false
     },
     {
-      "id": "C05",
-      "category": "conceptual",
-      "question": "What should a borrower do if repayment becomes difficult?",
-      "expected_sources": [
-        "loan_repayment.txt"
-      ],
+      "id": "EA01",
+      "category": "eligibility_analysis",
+      "question": "Is a borrower with a stable income but no prior credit history likely to be eligible for a loan based on the documents?",
+      "expected_sources": ["loan_eligibility.txt"],
       "key_facts": [
-        "contact the lender|contact your lender|reach out to the lender|speak to the lender|talk to the lender|contact the lender early",
-        "restructuring",
-        "deferment",
-        "hardship"
+        "credit history",
+        "income",
+        "one factor|multiple factors|not the only",
+        "collateral"
+      ],
+      "min_facts": 2,
+      "evidence_expected": true
+    },
+    {
+      "id": "FC01",
+      "category": "fee_calculation",
+      "question": "Using the standard EMI formula, what would the monthly instalment be on a loan of 1 lakh rupees at 12% annual interest repaid over 12 months?",
+      "expected_sources": [],
+      "expected_behavior": "The assistant should apply the EMI formula: EMI = P * r * (1+r)^n / ((1+r)^n - 1) where r = 12%/12 = 1% per month and n = 12. The correct answer is approximately ₹8,884.88 per month.",
+      "key_facts": ["8884|8885|8,884|8,885"],
+      "min_facts": 1,
+      "evidence_expected": false
+    },
+    {
+      "id": "RB01",
+      "category": "rag_based",
+      "question": "What does the loan knowledge base say about repayment tenure and EMI structure?",
+      "expected_sources": ["loan_repayment.txt", "loan_interest.txt"],
+      "key_facts": [
+        "emi|equated monthly installment",
+        "principal",
+        "interest",
+        "term|tenure"
+      ],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
+      "id": "H01",
+      "category": "out_of_scope",
+      "question": "Should I buy Bitcoin?",
+      "expected_sources": [],
+      "expect_refusal": true,
+      "refusal_expected": true
+    },
+    {
+      "id": "H02",
+      "category": "out_of_scope",
+      "question": "What is the current repo rate set by the Reserve Bank of India?",
+      "expected_sources": [],
+      "expect_refusal": true,
+      "refusal_expected": true
+    },
+    {
+      "id": "H03",
+      "category": "out_of_scope",
+      "question": "What is the capital city of Australia?",
+      "expected_sources": [],
+      "expect_refusal": true,
+      "refusal_expected": true
+    },
+    {
+      "id": "H04",
+      "category": "out_of_scope",
+      "question": "Who won yesterday's cricket match?",
+      "expected_sources": [],
+      "expect_refusal": true,
+      "refusal_expected": true
+    },
+    {
+      "id": "EG01",
+      "category": "evidence_grounding",
+      "question": "Which document in the knowledge base contains information about EMI components?",
+      "expected_sources": ["loan_repayment.txt"],
+      "key_facts": ["loan_repayment.txt"],
+      "min_facts": 1,
+      "evidence_expected": true
+    },
+    {
+      "id": "CE01",
+      "category": "code_explanation",
+      "question": "What does the /ask/debug endpoint in the application service do?",
+      "expected_sources": [],
+      "source_files": ["services/app_service/main.py"],
+      "expected_behavior": "The assistant should explain that /ask/debug runs the full RAG pipeline and returns every intermediate value: query embedding preview, retrieved chunks, distances, context, prompt, answer, evidence, conflict detection, version resolution, grounding, and an orchestration trace of service-to-service calls.",
+      "key_facts": [
+        "embedding|embed",
+        "retrieval|retrieve|chunks",
+        "prompt",
+        "trace|orchestration",
+        "evidence|conflict|grounding"
       ],
       "min_facts": 3
     },
     {
-      "id": "H01",
-      "category": "out_of_kb",
-      "question": "Should I buy Bitcoin?",
+      "id": "CR01",
+      "category": "code_retrieval",
+      "question": "Which file in the project handles communication with the Ollama LLM runtime?",
       "expected_sources": [],
-      "expect_refusal": true
+      "source_files": ["services/llm_service/main.py"],
+      "expected_behavior": "The assistant should identify services/llm_service/main.py as the file that wraps the Ollama API and exposes /generate, /health, and /models endpoints.",
+      "key_facts": [
+        "llm_service|llm service",
+        "services/llm_service/main.py|llm_service/main.py"
+      ],
+      "min_facts": 1
     },
     {
-      "id": "H02",
-      "category": "out_of_kb",
-      "question": "What is the current repo rate set by the Reserve Bank of India?",
+      "id": "DU01",
+      "category": "dependency_understanding",
+      "question": "Which services and components are involved when a user submits a question through the /ask endpoint?",
       "expected_sources": [],
-      "expect_refusal": true
+      "source_files": [
+        "services/app_service/main.py",
+        "services/retrieval_service/main.py",
+        "services/llm_service/main.py"
+      ],
+      "expected_behavior": "The assistant should describe the chain: App Service receives the request, calls Retrieval Service /retrieve (which uses MiniLM + FAISS), assembles the RAG prompt, then calls LLM Service /generate (which calls Ollama).",
+      "key_facts": [
+        "app service|app-service",
+        "retrieval service|retrieval-service",
+        "llm service|llm-service",
+        "faiss|embedding|minilm",
+        "ollama"
+      ],
+      "min_facts": 3
     },
     {
-      "id": "H03",
-      "category": "out_of_kb",
-      "question": "Which specific bank offers the lowest home loan interest rate right now?",
+      "id": "BA01",
+      "category": "bug_analysis",
+      "question": "What could cause the /ask endpoint to return answer=null with an ollama_error in the response?",
       "expected_sources": [],
-      "expect_refusal": true
-    },
-    {
-      "id": "H04",
-      "category": "out_of_kb",
-      "question": "What is the capital city of Australia?",
-      "expected_sources": [],
-      "expect_refusal": true
-    },
-    {
-      "id": "H05",
-      "category": "out_of_kb",
-      "question": "Based on my salary of 50000 rupees, exactly how much home loan will I be approved for?",
-      "expected_sources": [],
-      "expect_refusal": true
+      "source_files": ["services/app_service/main.py", "services/llm_service/main.py"],
+      "expected_behavior": "The assistant should identify that answer=null with ollama_error means the LLM Service is unreachable or Ollama is not running. The app service catches the HTTPException from call_service and stores the error in llm_error, returning answer=None. The retrieval steps still complete successfully.",
+      "key_facts": [
+        "ollama|llm service",
+        "unreachable|not running|connection",
+        "retrieval|chunks|context"
+      ],
+      "min_facts": 2
     },
     {
       "id": "G01",
@@ -343,21 +246,9 @@
       "question": "Write a Python function named emi(principal, annual_rate_percent, months) that returns the monthly EMI for an amortized loan using the standard formula. Return only the function.",
       "function_name": "emi",
       "tests": [
-        {
-          "call": "emi(100000, 12, 12)",
-          "expected": 8884.88,
-          "tolerance": 0.05
-        },
-        {
-          "call": "emi(500000, 9, 60)",
-          "expected": 10379.18,
-          "tolerance": 0.05
-        },
-        {
-          "call": "emi(250000, 0, 10)",
-          "expected": 25000.0,
-          "tolerance": 0.05
-        }
+        {"call": "emi(100000, 12, 12)", "expected": 8884.88, "tolerance": 0.05},
+        {"call": "emi(500000, 9, 60)", "expected": 10379.18, "tolerance": 0.05},
+        {"call": "emi(250000, 0, 10)", "expected": 25000.0, "tolerance": 0.05}
       ]
     },
     {
@@ -366,16 +257,8 @@
       "question": "Write a Python function named total_interest(principal, annual_rate_percent, months) that returns the total interest paid over the life of an amortized loan (total repayment minus principal). Return only the function.",
       "function_name": "total_interest",
       "tests": [
-        {
-          "call": "total_interest(100000, 12, 12)",
-          "expected": 6618.55,
-          "tolerance": 0.5
-        },
-        {
-          "call": "total_interest(250000, 0, 10)",
-          "expected": 0.0,
-          "tolerance": 0.05
-        }
+        {"call": "total_interest(100000, 12, 12)", "expected": 6618.55, "tolerance": 0.5},
+        {"call": "total_interest(250000, 0, 10)", "expected": 0.0, "tolerance": 0.05}
       ]
     },
     {
@@ -384,21 +267,9 @@
       "question": "Write a Python function named simple_interest(principal, annual_rate_percent, years) that returns simple interest calculated on the original principal. Return only the function.",
       "function_name": "simple_interest",
       "tests": [
-        {
-          "call": "simple_interest(100000, 10, 2)",
-          "expected": 20000.0,
-          "tolerance": 0.01
-        },
-        {
-          "call": "simple_interest(50000, 7.5, 3)",
-          "expected": 11250.0,
-          "tolerance": 0.01
-        },
-        {
-          "call": "simple_interest(1000, 0, 5)",
-          "expected": 0.0,
-          "tolerance": 0.01
-        }
+        {"call": "simple_interest(100000, 10, 2)", "expected": 20000.0, "tolerance": 0.01},
+        {"call": "simple_interest(50000, 7.5, 3)", "expected": 11250.0, "tolerance": 0.01},
+        {"call": "simple_interest(1000, 0, 5)", "expected": 0.0, "tolerance": 0.01}
       ]
     },
     {
@@ -407,45 +278,103 @@
       "question": "Write a Python function named dti_ratio(monthly_debt_payments, monthly_income) that returns the debt-to-income ratio as a percentage, and returns 0.0 when monthly_income is 0. Return only the function.",
       "function_name": "dti_ratio",
       "tests": [
-        {
-          "call": "dti_ratio(20000, 80000)",
-          "expected": 25.0,
-          "tolerance": 0.01
-        },
-        {
-          "call": "dti_ratio(0, 50000)",
-          "expected": 0.0,
-          "tolerance": 0.01
-        },
-        {
-          "call": "dti_ratio(10000, 0)",
-          "expected": 0.0,
-          "tolerance": 0.01
-        }
+        {"call": "dti_ratio(20000, 80000)", "expected": 25.0, "tolerance": 0.01},
+        {"call": "dti_ratio(0, 50000)", "expected": 0.0, "tolerance": 0.01},
+        {"call": "dti_ratio(10000, 0)", "expected": 0.0, "tolerance": 0.01}
       ]
     },
     {
-      "id": "G05",
-      "category": "code_generation",
-      "question": "Write a Python function named outstanding_balance(principal, annual_rate_percent, months, payments_made) that returns the remaining principal balance of an amortized loan after a number of payments have been made. Return only the function.",
-      "function_name": "outstanding_balance",
-      "tests": [
-        {
-          "call": "outstanding_balance(100000, 12, 12, 0)",
-          "expected": 100000.0,
-          "tolerance": 1.0
-        },
-        {
-          "call": "outstanding_balance(100000, 12, 12, 12)",
-          "expected": 0.0,
-          "tolerance": 1.0
-        },
-        {
-          "call": "outstanding_balance(100000, 12, 12, 6)",
-          "expected": 51492.11,
-          "tolerance": 5.0
-        }
-      ]
+      "id": "RF01",
+      "category": "refactoring",
+      "question": "Suggest an improvement to the chunk_text function in services/common/chunking.py to handle the case where the input text is empty or only whitespace.",
+      "expected_sources": [],
+      "source_files": ["services/common/chunking.py"],
+      "expected_behavior": "The assistant should suggest adding an early return or guard clause at the start of chunk_text() that returns an empty list when text is empty or whitespace-only, preventing a single empty-string chunk from being returned.",
+      "key_facts": [
+        "empty|whitespace|strip",
+        "return|guard|check",
+        "chunk_text"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "RD01",
+      "category": "rag_based_code_doc",
+      "question": "What does the project documentation say about the RAG pipeline and how services communicate?",
+      "expected_sources": [],
+      "source_files": ["ARCHITECTURE.md"],
+      "expected_behavior": "The assistant should describe the pipeline documented in ARCHITECTURE.md: Browser -> App Service -> Retrieval Service (MiniLM + FAISS) -> Data Service, and separately App Service -> LLM Service -> Ollama. All communication is via HTTP on the rag-net bridge network.",
+      "key_facts": [
+        "app service|app-service",
+        "retrieval|faiss|minilm",
+        "llm|ollama",
+        "http|network"
+      ],
+      "min_facts": 2
+    },
+    {
+      "id": "S01",
+      "category": "information_retrieval",
+      "question": "What happens if a borrower defaults on a secured loan?",
+      "expected_sources": ["loan_risks.txt"],
+      "key_facts": [
+        "repossess|repossession|seize|take possession|recover the asset",
+        "sell",
+        "pledged asset"
+      ],
+      "min_facts": 2,
+      "evidence_expected": true
+    },
+    {
+      "id": "S02",
+      "category": "information_retrieval",
+      "question": "What does an EMI consist of?",
+      "expected_sources": ["loan_repayment.txt"],
+      "key_facts": ["interest", "principal"],
+      "min_facts": 2,
+      "evidence_expected": true
+    },
+    {
+      "id": "S03",
+      "category": "information_retrieval",
+      "question": "What can happen if I miss a loan repayment?",
+      "expected_sources": ["loan_repayment.txt"],
+      "key_facts": [
+        "late fee|late payment fee",
+        "penalty interest",
+        "credit score",
+        "collection|collections agency|debt collection",
+        "legal|lawsuit|court"
+      ],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
+      "id": "S04",
+      "category": "information_retrieval",
+      "question": "What is a debt-to-income ratio and why do lenders calculate it?",
+      "expected_sources": ["loan_eligibility.txt"],
+      "key_facts": [
+        "monthly debt",
+        "monthly income",
+        "lower",
+        "room|capacity|afford|leaves more"
+      ],
+      "min_facts": 3,
+      "evidence_expected": true
+    },
+    {
+      "id": "S05",
+      "category": "information_retrieval",
+      "question": "What is an amortization schedule?",
+      "expected_sources": ["loan_interest.txt"],
+      "key_facts": [
+        "each payment|every payment|payment includes",
+        "interest",
+        "principal"
+      ],
+      "min_facts": 3,
+      "evidence_expected": true
     }
   ]
 }

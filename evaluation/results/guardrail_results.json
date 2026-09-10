@@ -1,0 +1,520 @@
+{
+  "generated_at": "2026-09-10T12:57:47.960873+00:00",
+  "mode": "WITH GUARDRAILS",
+  "app_url": "http://127.0.0.1:8000",
+  "metrics": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0,
+    "pass_percentage": 100.0,
+    "guardrail_effectiveness": 100.0,
+    "out_of_scope_rejection_rate": 100.0,
+    "input_validation_pass_rate": 100.0,
+    "supported_question_pass_rate": 100.0,
+    "by_category": {
+      "valid_supported": {
+        "total": 4,
+        "passed": 4,
+        "pass_rate": 100.0
+      },
+      "out_of_scope": {
+        "total": 6,
+        "passed": 6,
+        "pass_rate": 100.0
+      },
+      "unsupported_loan_question": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 100.0
+      },
+      "empty_input": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 100.0
+      },
+      "whitespace_input": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 100.0
+      },
+      "excessive_length": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 100.0
+      },
+      "evidence_supported": {
+        "total": 1,
+        "passed": 1,
+        "pass_rate": 100.0
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "W5_01",
+      "category": "valid_supported",
+      "input": "What are the main parts of a loan?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "The main parts of a loan are the principal, interest rate, term, repayment frequency, fees, and collateral if the loan i",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.833,
+          "grounding_status": "supported",
+          "groundedness": 1.0
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 2356.2
+    },
+    {
+      "id": "W5_02",
+      "category": "out_of_scope",
+      "input": "What is the current price of Bitcoin?",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 3.0
+    },
+    {
+      "id": "W5_03",
+      "category": "unsupported_loan_question",
+      "input": "What is the exact late-payment penalty percentage at HDFC Bank?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "The exact late-payment penalty percentage at HDFC Bank is not specified in the context provided. However, it is generall",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "fail",
+        "unsupported_claims": "fail",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "fail",
+        "failed_checks": [
+          "grounding",
+          "unsupported_claims"
+        ],
+        "details": {
+          "relevance_overlap": 0.889,
+          "grounding_status": "unsupported",
+          "groundedness": 0.271,
+          "grounding": "Only 27% of answer content words appear in the retrieved context. The answer may contain claims not supported by the retrieved documents."
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "fail",
+          "unsupported_claims": "fail",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "fail"
+        }
+      },
+      "latency_ms": 22115.3
+    },
+    {
+      "id": "W5_04",
+      "category": "empty_input",
+      "input": "",
+      "expected_behavior": "validation_error",
+      "guardrail_expected": "reject_empty",
+      "blocked": true,
+      "input_check": "reject_empty",
+      "action": "rejected",
+      "answer_preview": "Please enter a question. The input cannot be empty.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_empty",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "Please enter a question. The input cannot be empty."
+      },
+      "latency_ms": 3.3
+    },
+    {
+      "id": "W5_05",
+      "category": "whitespace_input",
+      "input": "   ",
+      "expected_behavior": "validation_error",
+      "guardrail_expected": "reject_empty",
+      "blocked": true,
+      "input_check": "reject_empty",
+      "action": "rejected",
+      "answer_preview": "Please enter a question. The input cannot be empty.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_empty",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "Please enter a question. The input cannot be empty."
+      },
+      "latency_ms": 17.6
+    },
+    {
+      "id": "W5_06",
+      "category": "excessive_length",
+      "input": "What is a loan? Tell me more about loans and interest rates and repayment option...",
+      "expected_behavior": "validation_error",
+      "guardrail_expected": "reject_length",
+      "blocked": true,
+      "input_check": "reject_length",
+      "action": "rejected",
+      "answer_preview": "Your question is too long (1110 characters). Please keep it under 1000 characters.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_length",
+        "input_length": "fail",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "Your question is too long (1110 characters). Please keep it under 1000 characters."
+      },
+      "latency_ms": 3.4
+    },
+    {
+      "id": "W5_07",
+      "category": "evidence_supported",
+      "input": "What does an EMI consist of?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "An EMI (EMI) is an abbreviation for the word \"EMI,\" which is an acronym for the word \"installment.\" An EMI is an install",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.25,
+          "grounding_status": "partially_supported",
+          "groundedness": 0.471
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 3103.1
+    },
+    {
+      "id": "W5_08",
+      "category": "out_of_scope",
+      "input": "Who won yesterday's cricket match?",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 3.7
+    },
+    {
+      "id": "W5_09",
+      "category": "out_of_scope",
+      "input": "What is the weather today?",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 3.2
+    },
+    {
+      "id": "W5_10",
+      "category": "valid_supported",
+      "input": "What happens if a borrower defaults on a secured loan?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "If a borrower defaults on a secured loan, the lender may repossess the collateral or sell it according to the agreement ",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.667,
+          "grounding_status": "supported",
+          "groundedness": 0.85
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 3433.7
+    },
+    {
+      "id": "W5_11",
+      "category": "out_of_scope",
+      "input": "Write a Python program to sort a list.",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 3.1
+    },
+    {
+      "id": "W5_12",
+      "category": "out_of_scope",
+      "input": "What is the capital city of Australia?",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 2.8
+    },
+    {
+      "id": "W5_13",
+      "category": "valid_supported",
+      "input": "What documents are required for a loan application?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "\nTypical documents requested during application include:\n\n* Government-issued identity proof\n* Address proof\n* Income pr",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.429,
+          "grounding_status": "supported",
+          "groundedness": 1.0
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 2966.1
+    },
+    {
+      "id": "W5_14",
+      "category": "valid_supported",
+      "input": "What is the difference between simple and compound interest?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "\nSimple interest is calculated on the original principal, while compound interest adds unpaid interest to the balance, c",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.5,
+          "grounding_status": "supported",
+          "groundedness": 0.938
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 1669.4
+    },
+    {
+      "id": "W5_15",
+      "category": "out_of_scope",
+      "input": "What is the current repo rate set by the Reserve Bank of India?",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": null,
+      "guardrail_detail": {
+        "input_check": "reject_scope",
+        "input_length": "pass",
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+      },
+      "latency_ms": 3.2
+    }
+  ]
+}

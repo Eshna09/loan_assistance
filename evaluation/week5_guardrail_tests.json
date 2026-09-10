@@ -1,0 +1,142 @@
+{
+  "name": "Week 5 — Guardrail and Output Validation Tests",
+  "version": "1.0",
+  "description": "Test cases for input guardrails, evidence sufficiency, output validation, and without-vs-with guardrail demonstration.",
+  "tests": [
+    {
+      "id": "W5_01",
+      "category": "valid_supported",
+      "input": "What are the main parts of a loan?",
+      "expected_behavior": "answer",
+      "expected_response_type": "factual_answer",
+      "guardrail_expected": "pass",
+      "description": "In-scope loan question — should be allowed and answered"
+    },
+    {
+      "id": "W5_02",
+      "category": "out_of_scope",
+      "input": "What is the current price of Bitcoin?",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "Explicit out-of-scope question — must be rejected by input guardrail"
+    },
+    {
+      "id": "W5_03",
+      "category": "unsupported_loan_question",
+      "input": "What is the exact late-payment penalty percentage at HDFC Bank?",
+      "expected_behavior": "answer",
+      "expected_response_type": "answer_or_abstention",
+      "guardrail_expected": "pass",
+      "description": "In-scope loan question (HDFC-specific) — guardrail allows it; LLM may answer from KB or abstain"
+    },
+    {
+      "id": "W5_04",
+      "category": "empty_input",
+      "input": "",
+      "expected_behavior": "validation_error",
+      "expected_response_type": "empty_rejection",
+      "guardrail_expected": "reject_empty",
+      "description": "Empty input — must be rejected by input guardrail"
+    },
+    {
+      "id": "W5_05",
+      "category": "whitespace_input",
+      "input": "   ",
+      "expected_behavior": "validation_error",
+      "expected_response_type": "empty_rejection",
+      "guardrail_expected": "reject_empty",
+      "description": "Whitespace-only input — must be rejected by input guardrail"
+    },
+    {
+      "id": "W5_06",
+      "category": "excessive_length",
+      "input": "What is a loan? Tell me more about loans and interest rates and repayment options and eligibility requirements and documentation and credit scores and debt-to-income ratios and processing fees and insurance and late payment penalties and foreclosure options and prepayment charges and guarantor requirements and collateral valuation and loan-to-value ratios and fixed versus variable rates and amortization schedules and balloon payments and refinancing options and debt consolidation and credit counselling and bankruptcy implications. What is a loan? Tell me more about loans and interest rates and repayment options and eligibility requirements and documentation and credit scores and debt-to-income ratios and processing fees and insurance and late payment penalties and foreclosure options and prepayment charges and guarantor requirements and collateral valuation and loan-to-value ratios and fixed versus variable rates and amortization schedules. This question is intentionally very long to test the length guardrail and ensure the system rejects inputs that exceed the maximum allowed character limit.",
+      "expected_behavior": "validation_error",
+      "expected_response_type": "length_rejection",
+      "guardrail_expected": "reject_length",
+      "description": "Input exceeding MAX_INPUT_LENGTH — must be rejected by length guardrail"
+    },
+    {
+      "id": "W5_07",
+      "category": "evidence_supported",
+      "input": "What does an EMI consist of?",
+      "expected_behavior": "answer",
+      "expected_response_type": "grounded_answer",
+      "guardrail_expected": "pass",
+      "description": "Well-supported question — EMI info is in loan_repayment.txt"
+    },
+    {
+      "id": "W5_08",
+      "category": "out_of_scope",
+      "input": "Who won yesterday's cricket match?",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "Sports question — must be rejected by input guardrail"
+    },
+    {
+      "id": "W5_09",
+      "category": "out_of_scope",
+      "input": "What is the weather today?",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "Weather question — must be rejected by input guardrail"
+    },
+    {
+      "id": "W5_10",
+      "category": "valid_supported",
+      "input": "What happens if a borrower defaults on a secured loan?",
+      "expected_behavior": "answer",
+      "expected_response_type": "factual_answer",
+      "guardrail_expected": "pass",
+      "description": "Supported loan question — should produce a grounded answer"
+    },
+    {
+      "id": "W5_11",
+      "category": "out_of_scope",
+      "input": "Write a Python program to sort a list.",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "Programming task unrelated to loans — must be rejected"
+    },
+    {
+      "id": "W5_12",
+      "category": "out_of_scope",
+      "input": "What is the capital city of Australia?",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "General knowledge geography question — must be rejected"
+    },
+    {
+      "id": "W5_13",
+      "category": "valid_supported",
+      "input": "What documents are required for a loan application?",
+      "expected_behavior": "answer",
+      "expected_response_type": "factual_answer",
+      "guardrail_expected": "pass",
+      "description": "Common loan question with clear KB support"
+    },
+    {
+      "id": "W5_14",
+      "category": "valid_supported",
+      "input": "What is the difference between simple and compound interest?",
+      "expected_behavior": "answer",
+      "expected_response_type": "factual_answer",
+      "guardrail_expected": "pass",
+      "description": "Comparison question — well covered in loan_interest.txt"
+    },
+    {
+      "id": "W5_15",
+      "category": "out_of_scope",
+      "input": "What is the current repo rate set by the Reserve Bank of India?",
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal",
+      "guardrail_expected": "reject_scope",
+      "description": "RBI repo rate — real-time financial data, should be blocked by scope guardrail"
+    }
+  ]
+}
