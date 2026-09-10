@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T12:57:47.960873+00:00",
+  "generated_at": "2026-09-10T13:43:44.094634+00:00",
   "mode": "WITH GUARDRAILS",
   "app_url": "http://127.0.0.1:8000",
   "metrics": {
@@ -59,7 +59,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "The main parts of a loan are the principal, interest rate, term, repayment frequency, fees, and collateral if the loan i",
+      "answer_preview": "\nThe main parts of a loan are the principal, interest rate, term, repayment frequency, fees, and collateral if the loan ",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -83,6 +83,9 @@
         "input_check": "pass",
         "evidence_sufficient": "pass",
         "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
         "output_validation": {
           "relevance": "pass",
           "grounding": "pass",
@@ -92,7 +95,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 2356.2
+      "latency_ms": 2366.7
     },
     {
       "id": "W5_02",
@@ -114,55 +117,29 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.0
+      "latency_ms": 3.3
     },
     {
       "id": "W5_03",
       "category": "unsupported_loan_question",
       "input": "What is the exact late-payment penalty percentage at HDFC Bank?",
-      "expected_behavior": "answer",
-      "guardrail_expected": "pass",
-      "blocked": false,
-      "input_check": "pass",
-      "action": "allow",
-      "answer_preview": "The exact late-payment penalty percentage at HDFC Bank is not specified in the context provided. However, it is generall",
+      "expected_behavior": "refusal",
+      "guardrail_expected": "reject_scope",
+      "blocked": true,
+      "input_check": "reject_scope",
+      "action": "rejected",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
       "passed": true,
       "reason": "OK",
-      "output_validation": {
-        "relevance": "pass",
-        "grounding": "fail",
-        "unsupported_claims": "fail",
-        "expected_behavior": "pass",
-        "format": "pass",
-        "overall": "fail",
-        "failed_checks": [
-          "grounding",
-          "unsupported_claims"
-        ],
-        "details": {
-          "relevance_overlap": 0.889,
-          "grounding_status": "unsupported",
-          "groundedness": 0.271,
-          "grounding": "Only 27% of answer content words appear in the retrieved context. The answer may contain claims not supported by the retrieved documents."
-        }
-      },
+      "output_validation": null,
       "guardrail_detail": {
-        "input_scope": "pass",
+        "input_check": "reject_scope",
         "input_length": "pass",
-        "input_empty": "pass",
-        "input_check": "pass",
-        "evidence_sufficient": "pass",
-        "action": "allow",
-        "output_validation": {
-          "relevance": "pass",
-          "grounding": "fail",
-          "unsupported_claims": "fail",
-          "expected_behavior": "pass",
-          "format": "pass",
-          "overall": "fail"
-        }
+        "evidence_sufficient": "n/a",
+        "action": "rejected",
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 22115.3
+      "latency_ms": 3.0
     },
     {
       "id": "W5_04",
@@ -184,7 +161,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 3.3
+      "latency_ms": 16.2
     },
     {
       "id": "W5_05",
@@ -206,7 +183,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 17.6
+      "latency_ms": 15.1
     },
     {
       "id": "W5_06",
@@ -228,7 +205,7 @@
         "action": "rejected",
         "reason": "Your question is too long (1110 characters). Please keep it under 1000 characters."
       },
-      "latency_ms": 3.4
+      "latency_ms": 16.2
     },
     {
       "id": "W5_07",
@@ -239,7 +216,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "An EMI (EMI) is an abbreviation for the word \"EMI,\" which is an acronym for the word \"installment.\" An EMI is an install",
+      "answer_preview": "\nAn EMI (Early Repayment Incentive) is an incentive offered by educational institutions to encourage students to repay t",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -252,8 +229,8 @@
         "failed_checks": [],
         "details": {
           "relevance_overlap": 0.25,
-          "grounding_status": "partially_supported",
-          "groundedness": 0.471
+          "grounding_status": "supported",
+          "groundedness": 0.625
         }
       },
       "guardrail_detail": {
@@ -263,6 +240,9 @@
         "input_check": "pass",
         "evidence_sufficient": "pass",
         "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
         "output_validation": {
           "relevance": "pass",
           "grounding": "pass",
@@ -272,7 +252,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 3103.1
+      "latency_ms": 9224.2
     },
     {
       "id": "W5_08",
@@ -294,7 +274,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.7
+      "latency_ms": 18.5
     },
     {
       "id": "W5_09",
@@ -316,7 +296,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.2
+      "latency_ms": 2.8
     },
     {
       "id": "W5_10",
@@ -327,7 +307,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "If a borrower defaults on a secured loan, the lender may repossess the collateral or sell it according to the agreement ",
+      "answer_preview": "If a borrower defaults on a secured loan, the lender may be able to repossess or sell the pledged asset according to the",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -341,7 +321,7 @@
         "details": {
           "relevance_overlap": 0.667,
           "grounding_status": "supported",
-          "groundedness": 0.85
+          "groundedness": 1.0
         }
       },
       "guardrail_detail": {
@@ -351,6 +331,9 @@
         "input_check": "pass",
         "evidence_sufficient": "pass",
         "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
         "output_validation": {
           "relevance": "pass",
           "grounding": "pass",
@@ -360,7 +343,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 3433.7
+      "latency_ms": 1910.4
     },
     {
       "id": "W5_11",
@@ -382,7 +365,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.1
+      "latency_ms": 27.1
     },
     {
       "id": "W5_12",
@@ -404,7 +387,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 2.8
+      "latency_ms": 3.1
     },
     {
       "id": "W5_13",
@@ -415,19 +398,22 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nTypical documents requested during application include:\n\n* Government-issued identity proof\n* Address proof\n* Income pr",
+      "answer_preview": "\nGovernment-issued identity proof, address proof, and proof of income.",
       "passed": true,
       "reason": "OK",
       "output_validation": {
-        "relevance": "pass",
+        "relevance": "fail",
         "grounding": "pass",
         "unsupported_claims": "pass",
         "expected_behavior": "pass",
         "format": "pass",
-        "overall": "pass",
-        "failed_checks": [],
+        "overall": "fail",
+        "failed_checks": [
+          "relevance"
+        ],
         "details": {
-          "relevance_overlap": 0.429,
+          "relevance_overlap": 0.0,
+          "relevance": "Very low word overlap (0.0%) with question.",
           "grounding_status": "supported",
           "groundedness": 1.0
         }
@@ -439,16 +425,19 @@
         "input_check": "pass",
         "evidence_sufficient": "pass",
         "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
         "output_validation": {
-          "relevance": "pass",
+          "relevance": "fail",
           "grounding": "pass",
           "unsupported_claims": "pass",
           "expected_behavior": "pass",
           "format": "pass",
-          "overall": "pass"
+          "overall": "fail"
         }
       },
-      "latency_ms": 2966.1
+      "latency_ms": 1058.3
     },
     {
       "id": "W5_14",
@@ -459,7 +448,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nSimple interest is calculated on the original principal, while compound interest adds unpaid interest to the balance, c",
+      "answer_preview": "Simple interest is calculated on the original principal. Compound interest can add unpaid interest to the balance, causi",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -471,9 +460,9 @@
         "overall": "pass",
         "failed_checks": [],
         "details": {
-          "relevance_overlap": 0.5,
+          "relevance_overlap": 0.875,
           "grounding_status": "supported",
-          "groundedness": 0.938
+          "groundedness": 0.864
         }
       },
       "guardrail_detail": {
@@ -483,6 +472,9 @@
         "input_check": "pass",
         "evidence_sufficient": "pass",
         "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
         "output_validation": {
           "relevance": "pass",
           "grounding": "pass",
@@ -492,7 +484,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 1669.4
+      "latency_ms": 8100.4
     },
     {
       "id": "W5_15",
@@ -514,7 +506,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.2
+      "latency_ms": 3.6
     }
   ]
 }

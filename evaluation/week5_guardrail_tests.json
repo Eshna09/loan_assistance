@@ -25,10 +25,10 @@
       "id": "W5_03",
       "category": "unsupported_loan_question",
       "input": "What is the exact late-payment penalty percentage at HDFC Bank?",
-      "expected_behavior": "answer",
-      "expected_response_type": "answer_or_abstention",
-      "guardrail_expected": "pass",
-      "description": "In-scope loan question (HDFC-specific) — guardrail allows it; LLM may answer from KB or abstain"
+      "expected_behavior": "refusal",
+      "expected_response_type": "scope_refusal_or_kb_abstention",
+      "guardrail_expected": "reject_scope",
+      "description": "HDFC-specific rate not in KB and 'late-payment penalty' without 'loan' keyword — correctly blocked by scope guardrail"
     },
     {
       "id": "W5_04",
