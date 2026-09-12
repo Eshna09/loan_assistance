@@ -34,6 +34,7 @@ from services.app_service.guardrails import (
     check_evidence_sufficiency,
     validate_output,
     build_guardrail_block,
+    classify_intent,
     MAX_INPUT_LENGTH,
 )
 from services.app_service.evidence import (
@@ -45,6 +46,7 @@ from services.app_service.evidence import (
     determine_evidence_status,
 )
 from services.app_service.source_graph import build_source_graph
+from services.app_service.repo_analysis import get_repo_context, build_repo_prompt
 
 SERVICE_NAME = "app-service"
 
@@ -211,9 +213,15 @@ def llm_service(data: PromptRequest):
 
 @app.post("/ask")
 def application_service(data: QuestionRequest):
-    """Orchestrate retrieval + generation and return the final answer."""
+    """
+    Orchestrate retrieval + generation with intent-based routing.
 
-    # ── INPUT GUARDRAIL ──────────────────────────────────────────────────
+    DOMAIN A (LOAN):    question -> Loan FAISS -> evidence check -> LLM
+    DOMAIN B (CODEBASE): question -> repo file analysis -> LLM
+    OUT_OF_SCOPE:       refuse immediately, no retrieval or LLM called
+    """
+
+    # ── INPUT VALIDATION ─────────────────────────────────────────────────
     guard_status, guard_reason = check_input(data.question)
     if guard_status != "pass":
         return {
@@ -222,10 +230,16 @@ def application_service(data: QuestionRequest):
             "sources": [],
             "guardrail": {
                 "input_check": guard_status,
-                "input_length": "fail" if guard_status == "reject_length" else "pass",
+                "input_scope": "fail" if guard_status == "reject_scope" else "pass",
                 "evidence_sufficient": "n/a",
                 "action": "rejected",
                 "reason": guard_reason,
+                "scope_status": "FAIL",
+                "domain": "OUT_OF_SCOPE",
+                "category": "OUT_OF_SCOPE",
+                "route": "NONE",
+                "retrieval_source": "NONE",
+                "llm_called": False,
             },
             "controlled_response": guard_reason,
             "blocked": True,
@@ -235,8 +249,84 @@ def application_service(data: QuestionRequest):
             "trace": [],
         }
 
+    # ── INTENT CLASSIFICATION & ROUTING ─────────────────────────────────
+    domain, category = classify_intent(data.question)
     trace = Trace()
 
+    # ── DOMAIN B: CODEBASE → Repository analysis ──────────────────────────
+    if domain == "CODEBASE":
+        repo = get_repo_context(data.question)
+        context = repo["context"]
+        sources = repo["sources"]
+
+        if not repo["sufficient"]:
+            return {
+                "question": data.question,
+                "answer": None,
+                "sources": sources,
+                "guardrail": {
+                    "input_check": "pass",
+                    "input_scope": "pass",
+                    "evidence_sufficient": "fail",
+                    "action": "abstained",
+                    "scope_status": "PASS",
+                    "domain": "CODEBASE",
+                    "category": category,
+                    "route": "REPOSITORY_ANALYSIS",
+                    "retrieval_source": "REPOSITORY",
+                    "llm_called": False,
+                },
+                "controlled_response": "I couldn't find sufficient repository information to answer this question.",
+                "blocked": True,
+                "evidence_status": "insufficient_evidence",
+                "grounding": {},
+                "trace": [],
+            }
+
+        prompt = build_repo_prompt(context, data.question)
+        answer = None
+        llm_error = None
+        try:
+            generation = call_service(
+                "POST",
+                f"{LLM_SERVICE_URL}/generate",
+                service="LLM Service",
+                step="generate",
+                trace=trace,
+                json={"prompt": prompt},
+                timeout=310,
+            )
+            answer = generation["answer"]
+        except HTTPException as exc:
+            llm_error = exc.detail
+
+        output_validation = validate_output(answer or "", data.question, context)
+
+        return {
+            "question": data.question,
+            "answer": answer,
+            "sources": sources,
+            "ollama_error": llm_error,
+            "evidence_status": "supported",
+            "grounding": {"status": "supported", "groundedness": None},
+            "trace": trace.steps,
+            "guardrail": {
+                "input_check": "pass",
+                "input_scope": "pass",
+                "evidence_sufficient": "pass",
+                "action": "allow",
+                "scope_status": "PASS",
+                "domain": "CODEBASE",
+                "category": category,
+                "route": "REPOSITORY_ANALYSIS",
+                "retrieval_source": "REPOSITORY",
+                "llm_called": True,
+            },
+            "output_validation": output_validation,
+            "blocked": False,
+        }
+
+    # ── DOMAIN A: LOAN → Loan RAG pipeline ───────────────────────────────
     retrieval = call_service(
         "POST",
         f"{RETRIEVAL_SERVICE_URL}/retrieve",
@@ -246,7 +336,6 @@ def application_service(data: QuestionRequest):
         json={"question": data.question, "top_k": DEFAULT_TOP_K},
     )
 
-    # ── EVIDENCE GUARDRAIL — semantic relevance check, NOT just chunk count ─
     ev_sufficient, ev_reason = check_evidence_sufficiency(
         data.question, retrieval["chunks"], retrieval.get("distances", [])
     )
@@ -258,10 +347,13 @@ def application_service(data: QuestionRequest):
             "guardrail": {
                 "input_check": "pass",
                 "input_scope": "pass",
-                "input_length": "pass",
-                "input_empty": "pass",
                 "evidence_sufficient": "fail",
                 "action": "abstained",
+                "scope_status": "PASS",
+                "domain": "LOAN",
+                "category": "LOAN",
+                "route": "LOAN_RAG",
+                "retrieval_source": "LOAN_KB",
                 "embedding_called": True,
                 "retrieval_called": True,
                 "llm_called": False,
@@ -293,12 +385,9 @@ def application_service(data: QuestionRequest):
     except HTTPException as exc:
         llm_error = exc.detail
 
-    # Basic evidence status
     grounding = validate_grounding(answer or "", context)
     conflict = detect_conflicts(retrieval["chunks"])
     evidence_status = determine_evidence_status(grounding, conflict)
-
-    # Output validation
     output_validation = validate_output(answer or "", data.question, context)
 
     return {
@@ -309,12 +398,20 @@ def application_service(data: QuestionRequest):
         "evidence_status": evidence_status,
         "grounding": grounding,
         "trace": trace.steps,
-        "guardrail": build_guardrail_block(
-            guard_status, None,
-            evidence_sufficient=True,
-            output_validation=output_validation,
-            action="allow",
-        ),
+        "guardrail": {
+            "input_check": "pass",
+            "input_scope": "pass",
+            "evidence_sufficient": "pass",
+            "action": "allow",
+            "scope_status": "PASS",
+            "domain": "LOAN",
+            "category": "LOAN",
+            "route": "LOAN_RAG",
+            "retrieval_source": "LOAN_KB",
+            "embedding_called": True,
+            "retrieval_called": True,
+            "llm_called": True,
+        },
         "output_validation": output_validation,
         "blocked": False,
     }

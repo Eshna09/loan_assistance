@@ -313,6 +313,42 @@ def _is_codebase_intent(q_lower: str) -> bool:
     return any(re.search(p, q_lower) for p in ALL_CODEBASE_PATTERNS)
 
 
+def classify_intent(question: str) -> tuple:
+    """
+    Classify the user's question into (domain, category).
+
+    Returns:
+      domain:   "LOAN" | "CODEBASE" | "OUT_OF_SCOPE"
+      category: e.g. "CODE_EXPLANATION", "code_retrieval", "LOAN", "OUT_OF_SCOPE"
+    """
+    q = question.strip().lower()
+
+    # Hard OOS check first
+    for pattern in OUT_OF_SCOPE_PATTERNS:
+        if re.search(pattern, q):
+            return "OUT_OF_SCOPE", "OUT_OF_SCOPE"
+
+    # Check each codebase category (in priority order)
+    category_map = [
+        ("CODE_EXPLANATION",       CODE_EXPLANATION_PATTERNS),
+        ("CODE_RETRIEVAL",         CODE_RETRIEVAL_PATTERNS),
+        ("DEPENDENCY_UNDERSTANDING", DEPENDENCY_PATTERNS),
+        ("BUG_ANALYSIS",           BUG_ANALYSIS_PATTERNS),
+        ("CODE_GENERATION",        CODE_GENERATION_PATTERNS),
+        ("REFACTORING",            REFACTORING_PATTERNS),
+        ("RAG_CODE_DOC",           CODE_DOC_PATTERNS),
+    ]
+    for cat, patterns in category_map:
+        if any(re.search(p, q) for p in patterns):
+            return "CODEBASE", cat
+
+    # Check loan domain
+    if _is_loan_scope(q):
+        return "LOAN", "LOAN"
+
+    return "OUT_OF_SCOPE", "OUT_OF_SCOPE"
+
+
 # ---------------------------------------------------------------------------
 # INPUT GUARDRAIL
 # ---------------------------------------------------------------------------
@@ -346,7 +382,6 @@ def check_input(question: str) -> Tuple[str, str | None]:
         return "pass", None
 
     return "reject_scope", _SCOPE_REFUSAL_MSG
-
 
 # ---------------------------------------------------------------------------
 # EVIDENCE SUFFICIENCY CHECK
