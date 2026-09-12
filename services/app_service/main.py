@@ -246,21 +246,27 @@ def application_service(data: QuestionRequest):
         json={"question": data.question, "top_k": DEFAULT_TOP_K},
     )
 
-    # ── EVIDENCE GUARDRAIL — abstain when no relevant context exists ──────
-    if not retrieval["chunks"]:
+    # ── EVIDENCE GUARDRAIL — semantic relevance check, NOT just chunk count ─
+    ev_sufficient, ev_reason = check_evidence_sufficiency(
+        data.question, retrieval["chunks"], retrieval.get("distances", [])
+    )
+    if not ev_sufficient:
         return {
             "question": data.question,
             "answer": None,
-            "sources": [],
+            "sources": retrieval["sources"],
             "guardrail": {
                 "input_check": "pass",
+                "input_scope": "pass",
                 "input_length": "pass",
-                "evidence_sufficient": "insufficient",
+                "input_empty": "pass",
+                "evidence_sufficient": "fail",
                 "action": "abstained",
+                "embedding_called": True,
+                "retrieval_called": True,
+                "llm_called": False,
             },
-            "controlled_response": (
-                "I couldn't find sufficient information in the knowledge base to answer this question."
-            ),
+            "controlled_response": ev_reason,
             "blocked": True,
             "ollama_error": None,
             "evidence_status": "insufficient_evidence",
@@ -383,7 +389,54 @@ def debug_service(data: QuestionRequest):
     trace.record("build_prompt", "app-service", "local",
                  (time.perf_counter() - started) * 1000, "ok")
 
-    # Step 4 — generation
+    # ── EVIDENCE SUFFICIENCY CHECK — before calling LLM ──────────────────
+    ev_sufficient, ev_reason = check_evidence_sufficiency(
+        question, llm_chunks, llm_distances
+    )
+
+    all_chunks = retrieval_wide["chunks"]
+    all_dists  = retrieval_wide["distances"]
+    conflict   = detect_conflicts(all_chunks)
+    ver_res    = resolve_version(all_chunks, conflict.get("conflicts", []))
+
+    if not ev_sufficient:
+        grounding = {"status": "insufficient_evidence", "groundedness": 0.0,
+                     "explanation": "Evidence guardrail: context does not sufficiently cover the question."}
+        return {
+            "question": question,
+            "query_embedding_preview": embedding["preview"],
+            "query_embedding_dimension": embedding["dimension"],
+            "retrieved_chunks": all_chunks,
+            "distances": all_dists,
+            "llm_chunks": llm_chunks,
+            "llm_distances": llm_distances,
+            "context": context_string,
+            "prompt": prompt,
+            "answer": None,
+            "sources": llm_sources,
+            "model": None,
+            "ollama_error": None,
+            "trace": trace.steps,
+            "evidence": build_evidence(all_chunks, all_dists),
+            "conflict": conflict,
+            "version_resolution": ver_res,
+            "grounding": grounding,
+            "evidence_status": "insufficient_evidence",
+            "source_graph": None,
+            "guardrail": {
+                "input_check": "pass",
+                "input_scope": "pass",
+                "evidence_sufficient": "fail",
+                "action": "abstained",
+                "embedding_called": True,
+                "retrieval_called": True,
+                "llm_called": False,
+            },
+            "controlled_response": ev_reason,
+            "blocked": True,
+        }
+
+    # Step 4 — generation (only reached when evidence is sufficient)
     answer = None
     llm_error = None
     model = None
@@ -402,22 +455,15 @@ def debug_service(data: QuestionRequest):
     except HTTPException as exc:
         llm_error = exc.detail
 
-    # Evidence analysis operates on ALL retrieved chunks (wide retrieval)
-    all_chunks  = retrieval_wide["chunks"]
-    all_dists   = retrieval_wide["distances"]
-    conflict    = detect_conflicts(all_chunks)
-    ver_res     = resolve_version(all_chunks, conflict.get("conflicts", []))
-    grounding   = validate_grounding(answer or "", context_string)
-    ev_status   = determine_evidence_status(grounding, conflict)
+    grounding  = validate_grounding(answer or "", context_string)
+    ev_status  = determine_evidence_status(grounding, conflict)
 
     return {
         "question": question,
         "query_embedding_preview": embedding["preview"],
         "query_embedding_dimension": embedding["dimension"],
-        # UI shows the wide set so users can see all retrieved chunks
         "retrieved_chunks": all_chunks,
         "distances": all_dists,
-        # LLM only saw the top-k subset
         "llm_chunks": llm_chunks,
         "llm_distances": llm_distances,
         "context": context_string,
@@ -427,14 +473,11 @@ def debug_service(data: QuestionRequest):
         "model": model,
         "ollama_error": llm_error,
         "trace": trace.steps,
-        # Evidence block (all additive)
         "evidence": build_evidence(all_chunks, all_dists),
         "conflict": conflict,
         "version_resolution": ver_res,
         "grounding": grounding,
         "evidence_status": ev_status,
-        # Provenance graph: question -> chunks -> documents, plus the
-        # conflict / supersedes relations between documents.
         "source_graph": build_source_graph(
             question=question,
             chunks=all_chunks,
@@ -444,12 +487,14 @@ def debug_service(data: QuestionRequest):
             conflict=conflict,
             version_resolution=ver_res,
         ),
-        # Guardrail status (all checks passed to reach this point)
         "guardrail": {
             "input_check": "pass",
-            "input_length": "pass",
-            "evidence_sufficient": "pass" if all_chunks else "insufficient",
+            "input_scope": "pass",
+            "evidence_sufficient": "pass",
             "action": "allow",
+            "embedding_called": True,
+            "retrieval_called": True,
+            "llm_called": True,
         },
         "blocked": False,
     }

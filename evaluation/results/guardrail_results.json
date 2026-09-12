@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T13:43:44.094634+00:00",
+  "generated_at": "2026-09-12T14:44:56.462849+00:00",
   "mode": "WITH GUARDRAILS",
   "app_url": "http://127.0.0.1:8000",
   "metrics": {
@@ -59,7 +59,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nThe main parts of a loan are the principal, interest rate, term, repayment frequency, fees, and collateral if the loan ",
+      "answer_preview": "The main parts of a loan are the principal, interest rate, term, repayment frequency, fees, and collateral if the loan i",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -95,7 +95,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 2366.7
+      "latency_ms": 4582.7
     },
     {
       "id": "W5_02",
@@ -117,7 +117,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.3
+      "latency_ms": 3.5
     },
     {
       "id": "W5_03",
@@ -139,7 +139,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.0
+      "latency_ms": 3.4
     },
     {
       "id": "W5_04",
@@ -161,7 +161,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 16.2
+      "latency_ms": 3.8
     },
     {
       "id": "W5_05",
@@ -183,7 +183,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 15.1
+      "latency_ms": 5.0
     },
     {
       "id": "W5_06",
@@ -205,7 +205,7 @@
         "action": "rejected",
         "reason": "Your question is too long (1110 characters). Please keep it under 1000 characters."
       },
-      "latency_ms": 16.2
+      "latency_ms": 3.2
     },
     {
       "id": "W5_07",
@@ -216,7 +216,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nAn EMI (Early Repayment Incentive) is an incentive offered by educational institutions to encourage students to repay t",
+      "answer_preview": "An EMI (Equal Monthly Installment) consists of the loan amount to be repaid, interest, processing fee, and other charges",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -230,7 +230,7 @@
         "details": {
           "relevance_overlap": 0.25,
           "grounding_status": "supported",
-          "groundedness": 0.625
+          "groundedness": 0.739
         }
       },
       "guardrail_detail": {
@@ -252,7 +252,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 9224.2
+      "latency_ms": 3383.6
     },
     {
       "id": "W5_08",
@@ -274,7 +274,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 18.5
+      "latency_ms": 17.4
     },
     {
       "id": "W5_09",
@@ -296,7 +296,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 2.8
+      "latency_ms": 3.6
     },
     {
       "id": "W5_10",
@@ -343,7 +343,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 1910.4
+      "latency_ms": 2295.7
     },
     {
       "id": "W5_11",
@@ -365,7 +365,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 27.1
+      "latency_ms": 3.3
     },
     {
       "id": "W5_12",
@@ -398,57 +398,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nGovernment-issued identity proof, address proof, and proof of income.",
-      "passed": true,
-      "reason": "OK",
-      "output_validation": {
-        "relevance": "fail",
-        "grounding": "pass",
-        "unsupported_claims": "pass",
-        "expected_behavior": "pass",
-        "format": "pass",
-        "overall": "fail",
-        "failed_checks": [
-          "relevance"
-        ],
-        "details": {
-          "relevance_overlap": 0.0,
-          "relevance": "Very low word overlap (0.0%) with question.",
-          "grounding_status": "supported",
-          "groundedness": 1.0
-        }
-      },
-      "guardrail_detail": {
-        "input_scope": "pass",
-        "input_length": "pass",
-        "input_empty": "pass",
-        "input_check": "pass",
-        "evidence_sufficient": "pass",
-        "action": "allow",
-        "embedding_called": true,
-        "retrieval_called": true,
-        "llm_called": true,
-        "output_validation": {
-          "relevance": "fail",
-          "grounding": "pass",
-          "unsupported_claims": "pass",
-          "expected_behavior": "pass",
-          "format": "pass",
-          "overall": "fail"
-        }
-      },
-      "latency_ms": 1058.3
-    },
-    {
-      "id": "W5_14",
-      "category": "valid_supported",
-      "input": "What is the difference between simple and compound interest?",
-      "expected_behavior": "answer",
-      "guardrail_expected": "pass",
-      "blocked": false,
-      "input_check": "pass",
-      "action": "allow",
-      "answer_preview": "Simple interest is calculated on the original principal. Compound interest can add unpaid interest to the balance, causi",
+      "answer_preview": "The required documents for a loan application typically include a government-issued identity proof, address proof, and p",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -460,9 +410,9 @@
         "overall": "pass",
         "failed_checks": [],
         "details": {
-          "relevance_overlap": 0.875,
-          "grounding_status": "supported",
-          "groundedness": 0.864
+          "relevance_overlap": 0.714,
+          "grounding_status": "partially_supported",
+          "groundedness": 0.556
         }
       },
       "guardrail_detail": {
@@ -484,7 +434,54 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 8100.4
+      "latency_ms": 4034.3
+    },
+    {
+      "id": "W5_14",
+      "category": "valid_supported",
+      "input": "What is the difference between simple and compound interest?",
+      "expected_behavior": "answer",
+      "guardrail_expected": "pass",
+      "blocked": false,
+      "input_check": "pass",
+      "action": "allow",
+      "answer_preview": "\nSimple interest is calculated on the original principal, while compound interest adds unpaid interest to the balance, c",
+      "passed": true,
+      "reason": "OK",
+      "output_validation": {
+        "relevance": "pass",
+        "grounding": "pass",
+        "unsupported_claims": "pass",
+        "expected_behavior": "pass",
+        "format": "pass",
+        "overall": "pass",
+        "failed_checks": [],
+        "details": {
+          "relevance_overlap": 0.625,
+          "grounding_status": "supported",
+          "groundedness": 0.929
+        }
+      },
+      "guardrail_detail": {
+        "input_scope": "pass",
+        "input_length": "pass",
+        "input_empty": "pass",
+        "input_check": "pass",
+        "evidence_sufficient": "pass",
+        "action": "allow",
+        "embedding_called": true,
+        "retrieval_called": true,
+        "llm_called": true,
+        "output_validation": {
+          "relevance": "pass",
+          "grounding": "pass",
+          "unsupported_claims": "pass",
+          "expected_behavior": "pass",
+          "format": "pass",
+          "overall": "pass"
+        }
+      },
+      "latency_ms": 4574.9
     },
     {
       "id": "W5_15",
@@ -506,7 +503,7 @@
         "action": "rejected",
         "reason": "I can only assist with questions related to the loan information available in the knowledge base."
       },
-      "latency_ms": 3.6
+      "latency_ms": 3.2
     }
   ]
 }

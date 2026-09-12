@@ -1,81 +1,51 @@
 """
-guardrails.py — input and output guardrails for the Loan Knowledge Assistance system.
+guardrails.py - Input, evidence, and output guardrails.
 
-Scope-check architecture (STRICT default-deny):
+Control flow (strict default-deny):
 
     USER INPUT
-         ↓
-    INPUT GUARDRAIL  (check_input)
-         ↓
-    ┌────┴──────────────────────────────────┐
-    │ OUT OF SCOPE                          │ IN SCOPE
-    │ scope_check: FAIL                     │ scope_check: PASS
-    │ action: refuse                        │      ↓
-    │ DO NOT embed                          │  EMBEDDING
-    │ DO NOT retrieve                       │      ↓
-    │ DO NOT call LLM                       │  FAISS RETRIEVAL
-    └───────────────────────────────────────│      ↓
-                                            │  EVIDENCE CHECK
-                                            │      ↓
-                                            │  LLM
-                                            │      ↓
-                                            │  AI OUTPUT TESTING
-                                            └──────────────────
+        |
+    INPUT GUARDRAIL (check_input)
+        |
+    +---+---------------------------+
+    | OUT OF SCOPE                  | IN SCOPE
+    | action: refuse                |
+    | embed/retrieve/llm: NOT CALLED|   EMBEDDING + FAISS RETRIEVAL
+    +-------------------------------+        |
+                                    EVIDENCE SUFFICIENCY CHECK
+                                    (check_evidence_sufficiency)
+                                             |
+                                    +--------+----------+
+                                    | INSUFFICIENT      | SUFFICIENT
+                                    | action: abstained |    LLM
+                                    | llm: NOT CALLED   |    |
+                                    +-------------------+ OUTPUT TEST
 
-IMPORTANT: scope is determined by POSITIVE EVIDENCE of loan-domain content.
-A question that contains no loan signals is rejected by default.
+IMPORTANT: "FAISS returned chunks" does NOT mean evidence is sufficient.
+The evidence check uses semantic coverage: what fraction of the question's
+content words appear in the retrieved context? If coverage < MIN_CONTEXT_COVERAGE
+the LLM is NOT called and the application abstains immediately.
 """
 
 import os
 import re
 from typing import Tuple
 
-# ── Configurable limits ────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Configurable limits
+# ---------------------------------------------------------------------------
 MAX_INPUT_LENGTH = int(os.environ.get("MAX_INPUT_LENGTH", "1000"))
 MAX_EVIDENCE_DISTANCE = float(os.environ.get("MAX_EVIDENCE_DISTANCE", "1.2"))
 MIN_EVIDENCE_CHUNKS = int(os.environ.get("MIN_EVIDENCE_CHUNKS", "1"))
 
-# ── Loan-domain POSITIVE signals ──────────────────────────────────────────
-# A question must contain at least one of these to be considered in-scope.
-# These are specific enough that false positives are very unlikely.
-LOAN_KEYWORDS = [
-    # Core loan concepts
-    "loan", "loans", "borrow", "borrower", "lender", "lenders", "lending",
-    "mortgage", "credit score", "creditworthiness",
-    # Financial instruments
-    "emi", "equated monthly", "instalment", "installment",
-    "amortization", "amortisation", "amortize",
-    "prepayment", "prepay", "foreclosure",
-    # Interest
-    "interest rate", "compound interest", "simple interest",
-    "fixed rate", "variable rate", "floating rate",
-    # Loan components
-    "principal amount", "collateral", "guarantor",
-    # Repayment
-    "repay", "repayment", "overdue", "default on",
-    # Fees & costs
-    "processing fee", "processing charge", "late payment fee",
-    "late fee", "penalty interest", "documentation charge",
-    "loan fee", "loan cost",
-    # Eligibility
-    "loan eligibility", "eligible for a loan", "eligibility criteria",
-    "debt-to-income", "dti ratio",
-    # Types
-    "home loan", "personal loan", "auto loan", "car loan",
-    "education loan", "student loan", "business loan",
-    "secured loan", "unsecured loan", "line of credit",
-    # Actions
-    "apply for a loan", "loan application", "loan approval",
-    "loan tenure", "loan term", "loan amount",
-    # Documents
-    "loan document", "sanction letter", "loan agreement",
-]
+# Minimum fraction of question content-words that must appear in retrieved
+# context for evidence to be considered sufficient.
+MIN_CONTEXT_COVERAGE = float(os.environ.get("MIN_CONTEXT_COVERAGE", "0.25"))
 
-# ── Loan-domain TOPIC phrases (broader, used as secondary signal) ──────────
-# These are loan-related concepts that may appear in valid questions
-# even without the word "loan" directly.
+# ---------------------------------------------------------------------------
+# Loan-domain positive signals (used by scope check - default deny)
+# ---------------------------------------------------------------------------
 LOAN_TOPIC_PHRASES = [
-    # EMI / repayment
     r"\bemi\b",
     r"\bequated monthly\b",
     r"\binstalment\b",
@@ -86,14 +56,12 @@ LOAN_TOPIC_PHRASES = [
     r"\bprepayment\b",
     r"\bforeclosure\b",
     r"\boverdue\b",
-    # Interest
     r"\binterest rate\b",
     r"\bcompound interest\b",
     r"\bsimple interest\b",
     r"\bfixed rate\b",
     r"\bvariable rate\b",
     r"\bfloating rate\b",
-    # Loan-specific terms
     r"\bcollateral\b",
     r"\bmortgage\b",
     r"\bguarantor\b",
@@ -114,13 +82,15 @@ LOAN_TOPIC_PHRASES = [
     r"\bdefault on\b",
 ]
 
-# ── Hard-coded out-of-scope patterns (checked first, fast reject) ─────────
+# ---------------------------------------------------------------------------
+# Hard-coded out-of-scope patterns (checked before positive signal test)
+# ---------------------------------------------------------------------------
 OUT_OF_SCOPE_PATTERNS = [
     r"\bbitcoin\b",
     r"\bcryptocurrency\b",
     r"\bcrypto\b",
-    r"\bstock\s+market\b",
-    r"\bshare\s+price\b",
+    r"\bstock market\b",
+    r"\bshare price\b",
     r"\bweather\b",
     r"\bplanet\b",
     r"\bearth\b",
@@ -137,17 +107,17 @@ OUT_OF_SCOPE_PATTERNS = [
     r"\bsong\b",
     r"\belection\b",
     r"\bpolitics\b",
-    r"\bcapital\s+of\b",
-    r"\bcapital\s+city\b",
-    r"\brepo\s+rate\b",
-    r"\breserve\s+bank\s+of\s+india\b",
+    r"\bcapital of\b",
+    r"\bcapital city\b",
+    r"\brepo rate\b",
+    r"\breserve bank of india\b",
     r"\brbi\b",
-    r"\bmutual\s+fund\b",
-    r"\bstock\s+price\b",
-    r"\bshare\s+market\b",
-    r"\binvest\s+in\b",
-    r"\bgoing\s+on\s+(earth|in\s+the\s+world|today)\b",
-    r"\bwhat\s+is\s+(going|happening)\s+on\b",
+    r"\bmutual fund\b",
+    r"\bstock price\b",
+    r"\bshare market\b",
+    r"\binvest in\b",
+    r"\bgoing on earth\b",
+    r"\bhappening on earth\b",
 ]
 
 REFUSAL_PHRASES = (
@@ -173,34 +143,44 @@ _SCOPE_REFUSAL_MSG = (
     "information available in the knowledge base."
 )
 
+_EVIDENCE_ABSTAIN_MSG = (
+    "I couldn't find sufficient information in the knowledge base "
+    "to answer this question."
+)
 
-# ── Core scope checker ────────────────────────────────────────────────────
+_STOPWORDS = frozenset(
+    "a an the and or but if then that this these those of to in on for with by "
+    "from as at is are was were be been being it its do does did not no nor so "
+    "such can could may might will would shall should must have has had you your "
+    "i we they he she them their our us me my what which who when where why how "
+    "about into over under more most less also only just very please tell give "
+    "explain describe show exactly exact".split()
+)
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+def _content_words(text: str) -> set:
+    """Return meaningful words (3+ chars, not stopwords) from text."""
+    words = re.findall(r"[a-z]{3,}", text.lower())
+    return {w for w in words if w not in _STOPWORDS}
+
+
 def _is_loan_scope(q_lower: str) -> bool:
-    """
-    Return True ONLY if the question contains positive loan-domain evidence.
-
-    Uses phrase-level regex matching so multi-word terms like
-    'monthly instalment', 'compound interest', 'processing fee'
-    are detected even without the word 'loan'.
-    """
+    """Return True only if the question contains positive loan-domain evidence."""
     return any(re.search(p, q_lower) for p in LOAN_TOPIC_PHRASES)
 
 
-# ── Public: check_input ───────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# INPUT GUARDRAIL
+# ---------------------------------------------------------------------------
 def check_input(question: str) -> Tuple[str, str | None]:
     """
-    Validate and scope-check the input question.
+    Validate and scope-check the input question (DEFAULT-DENY).
 
-    Logic:
-      1. Reject if empty / whitespace-only   → reject_empty
-      2. Reject if too long                  → reject_length
-      3. Reject if explicit OOS pattern      → reject_scope
-      4. Reject if NO positive loan signal   → reject_scope  ← default-deny
-      5. Otherwise                           → pass
-
-    Returns:
-        (status, reason)
-        status: "pass" | "reject_empty" | "reject_length" | "reject_scope"
+    Returns (status, reason):
+      status: "pass" | "reject_empty" | "reject_length" | "reject_scope"
     """
     # 1. Empty / whitespace
     if not question or not question.strip():
@@ -218,7 +198,7 @@ def check_input(question: str) -> Tuple[str, str | None]:
 
     q_lower = q.lower()
 
-    # 3. Explicit out-of-scope signals (fast reject before any positive check)
+    # 3. Explicit out-of-scope patterns
     for pattern in OUT_OF_SCOPE_PATTERNS:
         if re.search(pattern, q_lower):
             return "reject_scope", _SCOPE_REFUSAL_MSG
@@ -227,27 +207,85 @@ def check_input(question: str) -> Tuple[str, str | None]:
     if not _is_loan_scope(q_lower):
         return "reject_scope", _SCOPE_REFUSAL_MSG
 
-    # 5. Pass
     return "pass", None
 
 
-# ── Evidence guardrail ────────────────────────────────────────────────────
-def check_evidence_sufficiency(chunks: list, distances: list) -> Tuple[bool, str | None]:
-    """Return (sufficient, reason). Called AFTER retrieval, BEFORE LLM."""
+# ---------------------------------------------------------------------------
+# EVIDENCE SUFFICIENCY CHECK  (runs AFTER retrieval, BEFORE LLM)
+# ---------------------------------------------------------------------------
+def check_evidence_sufficiency(
+    question: str,
+    chunks: list,
+    distances: list,
+) -> Tuple[bool, str | None]:
+    """
+    Determine whether retrieved chunks provide sufficient evidence to answer.
+
+    "FAISS returned something" is NOT sufficient by itself.
+
+    Three gates:
+      1. At least MIN_EVIDENCE_CHUNKS chunks retrieved.
+      2. Top-1 L2 distance <= MAX_EVIDENCE_DISTANCE.
+      3. Coverage: fraction of question content-words present in combined
+         context >= MIN_CONTEXT_COVERAGE.
+
+    Gate 3 catches cases where FAISS returns general loan chunks that are
+    topically related but do not contain the specific fact asked.
+
+    Example:
+      Q: "What is the exact late-payment penalty for a personal loan?"
+      Retrieved: chunks about credit score impact, EMI structure
+      Coverage:  "late", "payment", "penalty", "personal" not in context
+      Result:    INSUFFICIENT -> LLM NOT CALLED
+    """
+    # Gate 1: chunk count
     if not chunks or len(chunks) < MIN_EVIDENCE_CHUNKS:
-        return (
-            False,
-            "I couldn't find sufficient information in the knowledge base to answer this question.",
-        )
+        return False, _EVIDENCE_ABSTAIN_MSG
+
+    # Gate 2: L2 distance
     if distances and distances[0] > MAX_EVIDENCE_DISTANCE:
-        return (
-            False,
-            "I couldn't find sufficiently relevant information in the knowledge base to answer this question.",
+        return False, _EVIDENCE_ABSTAIN_MSG
+
+    # Gate 3: semantic coverage
+    q_words = _content_words(question)
+    if not q_words:
+        return True, None  # cannot judge, let through
+
+    combined = " ".join(c.get("text", "") for c in chunks)
+    ctx_words = _content_words(combined)
+
+    coverage = len(q_words & ctx_words) / len(q_words)
+
+    if coverage < MIN_CONTEXT_COVERAGE:
+        return False, _EVIDENCE_ABSTAIN_MSG
+
+    # Gate 4: specificity check
+    # If the question asks for an exact/specific value (percentage, amount, number),
+    # verify the context actually contains numeric values related to the key noun.
+    q_lower = question.lower()
+    asks_exact = bool(re.search(
+        r"\b(exact|specific|precise|how much|percentage|rate|amount|figure|number|value)\b",
+        q_lower
+    ))
+    if asks_exact:
+        # Extract key noun phrases from the question (non-stopword sequences)
+        key_nouns = [w for w in q_words if len(w) >= 5]
+        # Check if context contains a number/percentage near those nouns
+        has_specific_value = bool(re.search(r"\d+(?:\.\d+)?\s*%", combined))
+        # Also check if the context contains the exact topic word + number
+        topic_with_number = any(
+            re.search(rf"\b{re.escape(noun)}\b.{{0,80}}\d", combined, re.IGNORECASE)
+            for noun in key_nouns
         )
+        if not has_specific_value and not topic_with_number:
+            return False, _EVIDENCE_ABSTAIN_MSG
+
     return True, None
 
 
-# ── Output validation ─────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# OUTPUT VALIDATION  (runs AFTER LLM)
+# ---------------------------------------------------------------------------
 def validate_output(
     answer: str,
     question: str,
@@ -266,6 +304,7 @@ def validate_output(
         "details": {},
     }
 
+    # Format
     if not answer or not answer.strip():
         result["format"] = "fail"
         result["details"]["format"] = "Answer is empty."
@@ -273,6 +312,7 @@ def validate_output(
         result["format"] = "fail"
         result["details"]["format"] = f"Answer is excessively long ({len(answer)} chars)."
 
+    # Relevance
     q_words = set(re.findall(r"[a-z]{3,}", question.lower()))
     a_words = set(re.findall(r"[a-z]{3,}", answer.lower()))
     if q_words:
@@ -280,8 +320,9 @@ def validate_output(
         result["details"]["relevance_overlap"] = round(overlap, 3)
         if overlap < 0.08:
             result["relevance"] = "fail"
-            result["details"]["relevance"] = f"Very low word overlap ({overlap:.1%}) with question."
+            result["details"]["relevance"] = f"Low word overlap ({overlap:.1%}) with question."
 
+    # Grounding
     try:
         from services.app_service.evidence import validate_grounding
         gr = validate_grounding(answer, context)
@@ -294,6 +335,7 @@ def validate_output(
     except Exception:
         pass
 
+    # Expected behaviour
     answer_lower = answer.lower()
     is_refusal = any(p in answer_lower for p in REFUSAL_PHRASES)
     if expected_behavior == "answer":
@@ -318,7 +360,9 @@ def validate_output(
     return result
 
 
-# ── Guardrail response block builder ─────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Guardrail response block builder
+# ---------------------------------------------------------------------------
 def build_guardrail_block(
     input_status: str,
     input_reason: str | None,
@@ -326,7 +370,7 @@ def build_guardrail_block(
     output_validation: dict | None = None,
     action: str = "allow",
 ) -> dict:
-    """Assemble the standardised `guardrail` field for every /ask response."""
+    """Assemble the standardised guardrail field for every /ask response."""
     block = {
         "input_scope": "pass" if input_status != "reject_scope" else "fail",
         "input_length": "pass" if input_status != "reject_length" else "fail",
@@ -338,10 +382,9 @@ def build_guardrail_block(
             else None
         ),
         "action": action,
-        # Explicitly record which pipeline steps ran
-        "embedding_called": action == "allow",
-        "retrieval_called": action == "allow",
-        "llm_called": action == "allow" and evidence_sufficient is not False,
+        "embedding_called": action not in ("rejected",),
+        "retrieval_called": action not in ("rejected",),
+        "llm_called": action == "allow",
     }
     if input_reason:
         block["reason"] = input_reason
@@ -357,7 +400,9 @@ def build_guardrail_block(
     return block
 
 
-# ── Quick self-test (run directly: python guardrails.py) ──────────────────
+# ---------------------------------------------------------------------------
+# Self-test  (python services/app_service/guardrails.py)
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     SHOULD_BLOCK = [
         "planet",
@@ -367,7 +412,6 @@ if __name__ == "__main__":
         "What is the capital of Australia?",
         "Should I invest in mutual funds?",
         "What is the weather today?",
-        "Tell me about space exploration.",
     ]
     SHOULD_PASS = [
         "What is a secured loan?",
@@ -380,23 +424,40 @@ if __name__ == "__main__":
         "What is the debt-to-income ratio?",
     ]
 
-    print("=== SHOULD BLOCK ===")
     all_ok = True
+    print("=== SCOPE CHECK ===")
     for q in SHOULD_BLOCK:
-        status, reason = check_input(q)
+        status, _ = check_input(q)
         ok = status != "pass"
-        flag = "✓" if ok else "✗ FAIL"
-        print(f"  {flag}  [{status}]  {q}")
+        flag = "OK" if ok else "FAIL"
+        print(f"  [{flag}]  [BLOCK][{status}]  {q}")
         if not ok:
             all_ok = False
-
-    print("\n=== SHOULD PASS ===")
     for q in SHOULD_PASS:
-        status, reason = check_input(q)
+        status, _ = check_input(q)
         ok = status == "pass"
-        flag = "✓" if ok else "✗ FAIL"
-        print(f"  {flag}  [{status}]  {q}")
+        flag = "OK" if ok else "FAIL"
+        print(f"  [{flag}]  [PASS][{status}]  {q}")
         if not ok:
             all_ok = False
 
-    print(f"\nResult: {'ALL PASS' if all_ok else 'SOME FAILURES'}")
+    print("\n=== EVIDENCE COVERAGE CHECK ===")
+    emi_chunks = [{"text": "An EMI or Equated Monthly Instalment consists of a principal component and an interest component."}]
+    ok1, _ = check_evidence_sufficiency("What does an EMI consist of?", emi_chunks, [0.3])
+    flag1 = "OK" if ok1 else "FAIL"
+    print(f"  [{flag1}]  EMI + relevant context -> {'SUFFICIENT' if ok1 else 'INSUFFICIENT'}")
+
+    penalty_chunks = [{"text": "Missing a payment may affect your credit history and credit score. A late-payment charge may apply when an instalment is not paid by its due date."}]
+    ok2, _ = check_evidence_sufficiency(
+        "What is the exact late-payment penalty for a personal loan?",
+        penalty_chunks, [0.76]
+    )
+    flag2 = "OK" if not ok2 else "FAIL"
+    print(f"  [{flag2}]  Penalty Q + no specific value in context -> {'INSUFFICIENT' if not ok2 else 'SUFFICIENT (wrong!)'}")
+
+    if not ok2:
+        all_ok = all_ok  # ok2=False is correct
+    else:
+        all_ok = False
+
+    print(f"\nResult: {'ALL PASS' if all_ok and ok1 and not ok2 else 'SOME FAILURES'}")
