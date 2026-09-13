@@ -420,19 +420,15 @@ def application_service(data: QuestionRequest):
 @app.post("/ask/debug")
 def debug_service(data: QuestionRequest):
     """
-    Full pipeline with every intermediate value plus the orchestration trace.
+    Full pipeline with intent-based routing and every intermediate value.
 
-    Retrieval runs at EVIDENCE_TOP_K (default 6) so conflict detection can
-    compare chunks from multiple document versions.  The LLM only receives
-    the top DEFAULT_TOP_K chunks as context to keep the prompt concise.
-
-    If the LLM Service is down the endpoint still returns steps 1-5 with
-    answer=null, so the dashboard can render the whole RAG pipeline except
-    the final answer.
+    CODEBASE questions -> repository file analysis -> LLM (no FAISS)
+    LOAN questions     -> Loan FAISS -> evidence check -> LLM
+    OUT_OF_SCOPE       -> refuse immediately
     """
     question = data.question
 
-    # ── INPUT GUARDRAIL ──────────────────────────────────────────────────
+    # ── INPUT VALIDATION ─────────────────────────────────────────────────
     guard_status, guard_reason = check_input(question)
     if guard_status != "pass":
         return {
@@ -441,10 +437,13 @@ def debug_service(data: QuestionRequest):
             "sources": [],
             "guardrail": {
                 "input_check": guard_status,
-                "input_length": "fail" if guard_status == "reject_length" else "pass",
-                "evidence_sufficient": "n/a",
+                "scope_status": "FAIL",
+                "domain": "OUT_OF_SCOPE",
+                "category": "OUT_OF_SCOPE",
+                "route": "NONE",
                 "action": "rejected",
                 "reason": guard_reason,
+                "llm_called": False,
             },
             "controlled_response": guard_reason,
             "blocked": True,
@@ -452,8 +451,98 @@ def debug_service(data: QuestionRequest):
             "trace": [],
         }
 
+    # ── INTENT CLASSIFICATION ─────────────────────────────────────────────
+    domain, category = classify_intent(question)
     trace = Trace()
 
+    # ── DOMAIN B: CODEBASE → Repository analysis (NO FAISS) ──────────────
+    if domain == "CODEBASE":
+        repo = get_repo_context(question)
+        context = repo["context"]
+        sources = repo["sources"]
+        repo_chunks = repo["chunks"]
+
+        guardrail_base = {
+            "input_check": "pass",
+            "scope_status": "PASS",
+            "domain": "CODEBASE",
+            "category": category,
+            "route": "REPOSITORY_ANALYSIS",
+            "retrieval_source": "REPOSITORY",
+        }
+
+        if not repo["sufficient"]:
+            return {
+                "question": question,
+                "answer": None,
+                "sources": sources,
+                "retrieved_chunks": [],
+                "distances": [],
+                "context": "",
+                "prompt": "",
+                "trace": trace.steps,
+                "guardrail": {
+                    **guardrail_base,
+                    "evidence_sufficient": "fail",
+                    "action": "abstained",
+                    "llm_called": False,
+                },
+                "controlled_response": "I couldn't find sufficient repository information to answer this question.",
+                "blocked": True,
+                "evidence_status": "insufficient_evidence",
+                "grounding": {},
+            }
+
+        prompt = build_repo_prompt(context, question)
+
+        answer = None
+        llm_error = None
+        model = None
+        try:
+            generation = call_service(
+                "POST",
+                f"{LLM_SERVICE_URL}/generate",
+                service="LLM Service",
+                step="generate",
+                trace=trace,
+                json={"prompt": prompt},
+                timeout=310,
+            )
+            answer = generation["answer"]
+            model = generation.get("model")
+        except HTTPException as exc:
+            llm_error = exc.detail
+
+        output_validation = validate_output(answer or "", question, context)
+
+        return {
+            "question": question,
+            "answer": answer,
+            "sources": sources,
+            "retrieved_chunks": repo_chunks,
+            "distances": [],
+            "context": context,
+            "prompt": prompt,
+            "model": model,
+            "ollama_error": llm_error,
+            "trace": trace.steps,
+            "evidence": [],
+            "conflict": {"conflict_detected": False, "conflicts": []},
+            "version_resolution": {"resolution_performed": False},
+            "grounding": {"status": "supported", "groundedness": None},
+            "evidence_status": "supported",
+            "source_graph": None,
+            "output_validation": output_validation,
+            "guardrail": {
+                **guardrail_base,
+                "evidence_sufficient": "pass",
+                "action": "allow",
+                "llm_called": True,
+            },
+            "blocked": False,
+        }
+
+    # ── DOMAIN A: LOAN → Loan FAISS RAG pipeline ─────────────────────────
     # Step 1 — query embedding
     embedding = call_service(
         "POST",
@@ -464,7 +553,7 @@ def debug_service(data: QuestionRequest):
         json={"text": question},
     )
 
-    # Step 2 — retrieve more chunks for evidence analysis
+    # Step 2 — retrieve chunks
     retrieval_wide = call_service(
         "POST",
         f"{RETRIEVAL_SERVICE_URL}/retrieve",
@@ -474,27 +563,26 @@ def debug_service(data: QuestionRequest):
         json={"question": question, "top_k": EVIDENCE_TOP_K},
     )
 
-    # The LLM context uses only the top DEFAULT_TOP_K chunks (best matches)
     llm_chunks = retrieval_wide["chunks"][:DEFAULT_TOP_K]
     llm_distances = retrieval_wide["distances"][:DEFAULT_TOP_K]
     llm_sources = list(dict.fromkeys(c["source"] for c in llm_chunks))
 
-    # Step 3 — context assembly + prompt
+    # Step 3 — context + prompt
     started = time.perf_counter()
     context_string = CONTEXT_SEPARATOR.join(c["text"] for c in llm_chunks)
     prompt = build_rag_prompt(context_string, question)
     trace.record("build_prompt", "app-service", "local",
                  (time.perf_counter() - started) * 1000, "ok")
 
-    # ── EVIDENCE SUFFICIENCY CHECK — before calling LLM ──────────────────
-    ev_sufficient, ev_reason = check_evidence_sufficiency(
-        question, llm_chunks, llm_distances
-    )
-
     all_chunks = retrieval_wide["chunks"]
     all_dists  = retrieval_wide["distances"]
     conflict   = detect_conflicts(all_chunks)
     ver_res    = resolve_version(all_chunks, conflict.get("conflicts", []))
+
+    # Evidence sufficiency check
+    ev_sufficient, ev_reason = check_evidence_sufficiency(
+        question, llm_chunks, llm_distances
+    )
 
     if not ev_sufficient:
         grounding = {"status": "insufficient_evidence", "groundedness": 0.0,
@@ -522,18 +610,20 @@ def debug_service(data: QuestionRequest):
             "source_graph": None,
             "guardrail": {
                 "input_check": "pass",
-                "input_scope": "pass",
+                "scope_status": "PASS",
+                "domain": "LOAN",
+                "category": "LOAN",
+                "route": "LOAN_RAG",
+                "retrieval_source": "LOAN_KB",
                 "evidence_sufficient": "fail",
                 "action": "abstained",
-                "embedding_called": True,
-                "retrieval_called": True,
                 "llm_called": False,
             },
             "controlled_response": ev_reason,
             "blocked": True,
         }
 
-    # Step 4 — generation (only reached when evidence is sufficient)
+    # Step 4 — LLM generation
     answer = None
     llm_error = None
     model = None
@@ -552,8 +642,8 @@ def debug_service(data: QuestionRequest):
     except HTTPException as exc:
         llm_error = exc.detail
 
-    grounding  = validate_grounding(answer or "", context_string)
-    ev_status  = determine_evidence_status(grounding, conflict)
+    grounding = validate_grounding(answer or "", context_string)
+    ev_status = determine_evidence_status(grounding, conflict)
 
     return {
         "question": question,
@@ -586,11 +676,13 @@ def debug_service(data: QuestionRequest):
         ),
         "guardrail": {
             "input_check": "pass",
-            "input_scope": "pass",
+            "scope_status": "PASS",
+            "domain": "LOAN",
+            "category": "LOAN",
+            "route": "LOAN_RAG",
+            "retrieval_source": "LOAN_KB",
             "evidence_sufficient": "pass",
             "action": "allow",
-            "embedding_called": True,
-            "retrieval_called": True,
             "llm_called": True,
         },
         "blocked": False,
