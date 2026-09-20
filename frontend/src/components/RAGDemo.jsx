@@ -97,7 +97,6 @@ export default function RAGDemo({ backendStatus, onQueryComplete, onEmbeddingRec
   const [animStep, setAnimStep] = useState(0)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
-
   const runQuery = useCallback(async (q) => {
     if (loading) return
     if (backendStatus !== 'online') {
@@ -198,6 +197,9 @@ export default function RAGDemo({ backendStatus, onQueryComplete, onEmbeddingRec
           <p className="text-[13px] text-[#f87171]">{error}</p>
         </div>
       )}
+
+      {/* Guardrail status — shown immediately when result arrives */}
+      {result && <GuardrailBanner result={result} />}
 
       {(loading || result) && (
         <div className="flex flex-col gap-2.5 mt-5">
@@ -412,6 +414,60 @@ export default function RAGDemo({ backendStatus, onQueryComplete, onEmbeddingRec
           </div>
         </div>
     </Section>
+  )
+}
+
+// ── Guardrail status banner ────────────────────────────────────────────────
+function GuardrailBanner({ result }) {
+  if (!result) return null
+  const g = result.guardrail
+  if (!g) return null
+
+  // Blocked request
+  if (result.blocked) {
+    const reason = result.controlled_response || g.reason || 'Request blocked by guardrail'
+    const checkLabel = {
+      reject_scope: '🚫 Out of scope',
+      reject_empty: '🚫 Empty input',
+      reject_length: '🚫 Input too long',
+    }[g.input_check] || '🚫 Blocked'
+    return (
+      <div className="mt-4 p-4 rounded-lg border border-red-500/40 bg-red-500/8">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-semibold px-2 py-0.5 border border-red-500/40 bg-red-500/15 text-red-300 rounded">
+            {checkLabel}
+          </span>
+          <span className="text-xs text-[#6b7683]">Guardrail active</span>
+        </div>
+        <p className="text-sm text-red-200">{reason}</p>
+      </div>
+    )
+  }
+
+  // Allowed — show compact guardrail status
+  const action = g.action || 'allow'
+  const ovCheck = g.output_validation?.overall
+  return (
+    <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+      <span className="px-2 py-0.5 border border-emerald-500/30 bg-emerald-500/8 text-emerald-400 rounded font-mono">
+        ✓ input: {g.input_check || 'pass'}
+      </span>
+      <span className="px-2 py-0.5 border border-emerald-500/30 bg-emerald-500/8 text-emerald-400 rounded font-mono">
+        ✓ evidence: {g.evidence_sufficient || 'pass'}
+      </span>
+      {ovCheck && (
+        <span className={`px-2 py-0.5 border rounded font-mono ${
+          ovCheck === 'pass'
+            ? 'border-emerald-500/30 bg-emerald-500/8 text-emerald-400'
+            : 'border-yellow-500/30 bg-yellow-500/8 text-yellow-400'
+        }`}>
+          output: {ovCheck}
+        </span>
+      )}
+      <span className="px-2 py-0.5 border border-indigo-500/30 bg-indigo-500/8 text-indigo-400 rounded font-mono">
+        action: {action}
+      </span>
+    </div>
   )
 }
 
