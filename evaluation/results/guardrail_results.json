@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T14:44:56.462849+00:00",
+  "generated_at": "2026-09-12T18:36:09.648338+00:00",
   "mode": "WITH GUARDRAILS",
   "app_url": "http://127.0.0.1:8000",
   "metrics": {
@@ -95,7 +95,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 4582.7
+      "latency_ms": 11928.0
     },
     {
       "id": "W5_02",
@@ -106,7 +106,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -115,9 +115,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.5
+      "latency_ms": 3.1
     },
     {
       "id": "W5_03",
@@ -128,7 +128,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -137,9 +137,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.4
+      "latency_ms": 12.8
     },
     {
       "id": "W5_04",
@@ -161,7 +161,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 3.8
+      "latency_ms": 3.1
     },
     {
       "id": "W5_05",
@@ -183,7 +183,7 @@
         "action": "rejected",
         "reason": "Please enter a question. The input cannot be empty."
       },
-      "latency_ms": 5.0
+      "latency_ms": 3.4
     },
     {
       "id": "W5_06",
@@ -205,7 +205,7 @@
         "action": "rejected",
         "reason": "Your question is too long (1110 characters). Please keep it under 1000 characters."
       },
-      "latency_ms": 3.2
+      "latency_ms": 3.0
     },
     {
       "id": "W5_07",
@@ -216,7 +216,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "An EMI (Equal Monthly Installment) consists of the loan amount to be repaid, interest, processing fee, and other charges",
+      "answer_preview": "\nAn EMI (Equal Monthly Installment) is an amount borrowed by a borrower, usually a student, over a specific period of ti",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -230,7 +230,7 @@
         "details": {
           "relevance_overlap": 0.25,
           "grounding_status": "supported",
-          "groundedness": 0.739
+          "groundedness": 0.744
         }
       },
       "guardrail_detail": {
@@ -252,7 +252,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 3383.6
+      "latency_ms": 5315.3
     },
     {
       "id": "W5_08",
@@ -263,7 +263,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -272,9 +272,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 17.4
+      "latency_ms": 18.4
     },
     {
       "id": "W5_09",
@@ -285,7 +285,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -294,9 +294,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.6
+      "latency_ms": 3.0
     },
     {
       "id": "W5_10",
@@ -307,7 +307,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "If a borrower defaults on a secured loan, the lender may be able to repossess or sell the pledged asset according to the",
+      "answer_preview": "If a borrower defaults on a secured loan, the lender may repossess the collateral according to the loan agreement and ap",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -343,7 +343,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 2295.7
+      "latency_ms": 1970.6
     },
     {
       "id": "W5_11",
@@ -354,7 +354,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -363,9 +363,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.3
+      "latency_ms": 3.4
     },
     {
       "id": "W5_12",
@@ -376,7 +376,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -385,9 +385,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.1
+      "latency_ms": 13.4
     },
     {
       "id": "W5_13",
@@ -398,7 +398,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "The required documents for a loan application typically include a government-issued identity proof, address proof, and p",
+      "answer_preview": "\nThe required documents for a loan application typically include a government-issued identity proof, proof of address, a",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -411,8 +411,8 @@
         "failed_checks": [],
         "details": {
           "relevance_overlap": 0.714,
-          "grounding_status": "partially_supported",
-          "groundedness": 0.556
+          "grounding_status": "supported",
+          "groundedness": 0.933
         }
       },
       "guardrail_detail": {
@@ -434,7 +434,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 4034.3
+      "latency_ms": 1907.4
     },
     {
       "id": "W5_14",
@@ -445,7 +445,7 @@
       "blocked": false,
       "input_check": "pass",
       "action": "allow",
-      "answer_preview": "\nSimple interest is calculated on the original principal, while compound interest adds unpaid interest to the balance, c",
+      "answer_preview": "Simple interest is calculated on the original principal, while compound interest adds unpaid interest to the balance, ca",
       "passed": true,
       "reason": "OK",
       "output_validation": {
@@ -457,9 +457,9 @@
         "overall": "pass",
         "failed_checks": [],
         "details": {
-          "relevance_overlap": 0.625,
+          "relevance_overlap": 0.5,
           "grounding_status": "supported",
-          "groundedness": 0.929
+          "groundedness": 0.938
         }
       },
       "guardrail_detail": {
@@ -481,7 +481,7 @@
           "overall": "pass"
         }
       },
-      "latency_ms": 4574.9
+      "latency_ms": 1846.1
     },
     {
       "id": "W5_15",
@@ -492,7 +492,7 @@
       "blocked": true,
       "input_check": "reject_scope",
       "action": "rejected",
-      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base.",
+      "answer_preview": "I can only assist with questions related to the loan information available in the knowledge base, or questions about thi",
       "passed": true,
       "reason": "OK",
       "output_validation": null,
@@ -501,9 +501,9 @@
         "input_length": "pass",
         "evidence_sufficient": "n/a",
         "action": "rejected",
-        "reason": "I can only assist with questions related to the loan information available in the knowledge base."
+        "reason": "I can only assist with questions related to the loan information available in the knowledge base, or questions about this project's codebase and documentation."
       },
-      "latency_ms": 3.2
+      "latency_ms": 19.6
     }
   ]
 }
