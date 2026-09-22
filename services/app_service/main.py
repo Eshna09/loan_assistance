@@ -34,6 +34,9 @@ from services.app_service.guardrails import (
     check_evidence_sufficiency,
     validate_output,
     build_guardrail_block,
+    check_injection,
+    check_context_injection,
+    check_numeric_fidelity,
     classify_intent,
     MAX_INPUT_LENGTH,
     MAX_EVIDENCE_DISTANCE,
@@ -46,6 +49,7 @@ from services.app_service.evidence import (
     validate_grounding,
     determine_evidence_status,
 )
+from services.common.injection import BLOCKING_SEVERITY
 from services.app_service.source_graph import build_source_graph
 from services.app_service.repo_analysis import get_repo_context, build_repo_prompt
 
@@ -136,6 +140,41 @@ def call_service(
         raise HTTPException(status_code=res.status_code, detail=f"{service}: {detail}")
 
     return res.json()
+
+
+
+def _sanitise_retrieval(retrieval: dict, trace: Trace | None = None) -> dict:
+    """
+    Drop retrieved chunks that carry instruction-like text, in place.
+
+    The prompt is one flat string, so a chunk saying "ignore previous
+    instructions" arrives with the same authority as the system instructions
+    above it. check_input() cannot catch this -- the user's question is
+    ordinary; the payload rides in through the documents.
+
+    Chunks are removed rather than the request being refused: one poisoned
+    document should not deny service for a legitimate question. `chunks`,
+    `distances` and `sources` are filtered together so every downstream
+    consumer -- evidence, conflict detection, the source graph -- stays
+    aligned.
+    """
+    chunks = list(retrieval.get("chunks") or [])
+    distances = list(retrieval.get("distances") or [])
+    report = check_context_injection(chunks)
+
+    if report["flagged_count"]:
+        dropped = {f["rank"] for f in report["flagged_chunks"]}  # 1-based
+        retrieval["chunks"] = [c for i, c in enumerate(chunks, 1) if i not in dropped]
+        retrieval["distances"] = [d for i, d in enumerate(distances, 1) if i not in dropped]
+        retrieval["sources"] = list(
+            dict.fromkeys(c.get("source") for c in retrieval["chunks"])
+        )
+        if trace:
+            trace.record(
+                "injection_guard", "app-service", "local", 0.0,
+                f"removed_{report['flagged_count']}",
+            )
+    return report
 
 
 # ── Health / discovery ───────────────────────────────────────────────────────
@@ -232,6 +271,9 @@ def application_service(data: QuestionRequest):
             "guardrail": {
                 "input_check": guard_status,
                 "input_scope": "fail" if guard_status == "reject_scope" else "pass",
+                "input_injection": (
+                    "fail" if guard_status == "reject_injection" else "pass"
+                ),
                 "evidence_sufficient": "n/a",
                 "action": "rejected",
                 "reason": guard_reason,
@@ -337,6 +379,8 @@ def application_service(data: QuestionRequest):
         json={"question": data.question, "top_k": DEFAULT_TOP_K},
     )
 
+    injection_report = _sanitise_retrieval(retrieval, trace)
+
     ev_sufficient, ev_reason = check_evidence_sufficiency(
         data.question, retrieval["chunks"], retrieval.get("distances", [])
     )
@@ -390,6 +434,8 @@ def application_service(data: QuestionRequest):
     conflict = detect_conflicts(retrieval["chunks"])
     evidence_status = determine_evidence_status(grounding, conflict)
     output_validation = validate_output(answer or "", data.question, context)
+    # Grounding discards digits, so it cannot tell 2.5% from 25%. This can.
+    numeric = check_numeric_fidelity(answer or "", context)
 
     return {
         "question": data.question,
@@ -412,8 +458,13 @@ def application_service(data: QuestionRequest):
             "embedding_called": True,
             "retrieval_called": True,
             "llm_called": True,
+            "context_injection": "pass" if injection_report["passed"] else "sanitised",
+            "context_chunks_removed": injection_report["flagged_count"],
+            "numeric_fidelity": numeric["status"],
         },
         "output_validation": output_validation,
+        "context_injection": injection_report,
+        "numeric_fidelity": numeric,
         "blocked": False,
     }
 
@@ -438,6 +489,9 @@ def debug_service(data: QuestionRequest):
             "sources": [],
             "guardrail": {
                 "input_check": guard_status,
+                "input_injection": (
+                    "fail" if guard_status == "reject_injection" else "pass"
+                ),
                 "scope_status": "FAIL",
                 "domain": "OUT_OF_SCOPE",
                 "category": "OUT_OF_SCOPE",
@@ -564,6 +618,8 @@ def debug_service(data: QuestionRequest):
         json={"question": question, "top_k": EVIDENCE_TOP_K},
     )
 
+    injection_report = _sanitise_retrieval(retrieval_wide, trace)
+
     llm_chunks = retrieval_wide["chunks"][:DEFAULT_TOP_K]
     llm_distances = retrieval_wide["distances"][:DEFAULT_TOP_K]
     llm_sources = list(dict.fromkeys(c["source"] for c in llm_chunks))
@@ -645,6 +701,7 @@ def debug_service(data: QuestionRequest):
 
     grounding = validate_grounding(answer or "", context_string)
     ev_status = determine_evidence_status(grounding, conflict)
+    numeric = check_numeric_fidelity(answer or "", context_string)
 
     return {
         "question": question,
@@ -666,6 +723,8 @@ def debug_service(data: QuestionRequest):
         "version_resolution": ver_res,
         "grounding": grounding,
         "evidence_status": ev_status,
+        "context_injection": injection_report,
+        "numeric_fidelity": numeric,
         "source_graph": build_source_graph(
             question=question,
             chunks=all_chunks,
@@ -685,6 +744,9 @@ def debug_service(data: QuestionRequest):
             "evidence_sufficient": "pass",
             "action": "allow",
             "llm_called": True,
+            "context_injection": "pass" if injection_report["passed"] else "sanitised",
+            "context_chunks_removed": injection_report["flagged_count"],
+            "numeric_fidelity": numeric["status"],
         },
         "blocked": False,
     }
@@ -715,6 +777,8 @@ def evidence_service(data: QuestionRequest):
         trace=trace,
         json={"question": question, "top_k": EVIDENCE_TOP_K},
     )
+
+    injection_report = _sanitise_retrieval(retrieval_wide, trace)
 
     llm_chunks = retrieval_wide["chunks"][:DEFAULT_TOP_K]
     started = time.perf_counter()
@@ -747,6 +811,7 @@ def evidence_service(data: QuestionRequest):
     version_res = resolve_version(all_chunks, conflict.get("conflicts", []))
     grounding  = validate_grounding(answer or "", context_string)
     ev_status  = determine_evidence_status(grounding, conflict)
+    numeric    = check_numeric_fidelity(answer or "", context_string)
 
     return {
         "question": question,
@@ -766,6 +831,8 @@ def evidence_service(data: QuestionRequest):
         "version_resolution": version_res,
         "grounding": grounding,
         "evidence_status": ev_status,
+        "context_injection": injection_report,
+        "numeric_fidelity": numeric,
         "source_graph": build_source_graph(
             question=question,
             chunks=all_chunks,
@@ -1070,6 +1137,114 @@ class GuardrailInputRequest(BaseModel):
     question: str
 
 
+class InjectionCheckRequest(BaseModel):
+    text: str
+
+
+@app.post("/guardrails/check-injection")
+def guardrail_check_injection(data: InjectionCheckRequest):
+    """
+    Run ONLY the prompt-injection scanner over a piece of document text.
+
+    This is the guardrail that inspects DOCUMENTS rather than the question.
+    The same scanner runs at upload time in the Data Service and again over
+    retrieved chunks here, just before prompt assembly.
+    """
+    verdict = check_injection(data.text)
+    return {
+        "input": data.text[:500],
+        "input_length": len(data.text or ""),
+        "status": verdict["status"],
+        "passed": verdict["passed"],
+        "severity": verdict["severity"],
+        "blocking": verdict["blocking"],
+        "action": verdict["action"],
+        "reason": verdict["reason"],
+        "match_count": verdict["match_count"],
+        "matches": verdict["matches"],
+        "blocking_severity": BLOCKING_SEVERITY,
+    }
+
+
+@app.post("/guardrails/check-numeric")
+def guardrail_check_numeric(data: GuardrailInputRequest):
+    """
+    Run the numeric-fidelity guardrail over a real pipeline result.
+
+    Retrieves context for the question, generates an answer, then verifies
+    every figure the answer asserts actually appears in that context.  The
+    grounding score is returned alongside so the gap is visible: grounding
+    tokenises with [a-z]{3,} and therefore cannot distinguish 2.5% from 25%.
+    """
+    question = data.question
+
+    input_status, input_reason = check_input(question)
+    if input_status != "pass":
+        return {
+            "input": question,
+            "status": "n/a",
+            "passed": None,
+            "reason": input_reason,
+            "action": "rejected",
+            "llm_called": False,
+        }
+
+    retrieval = call_service(
+        "POST",
+        f"{RETRIEVAL_SERVICE_URL}/retrieve",
+        service="Retrieval Service",
+        step="retrieve",
+        json={"question": question, "top_k": DEFAULT_TOP_K},
+    )
+    injection_report = _sanitise_retrieval(retrieval)
+    context = CONTEXT_SEPARATOR.join(c["text"] for c in retrieval["chunks"])
+
+    answer = None
+    llm_error = None
+    try:
+        generation = call_service(
+            "POST",
+            f"{LLM_SERVICE_URL}/generate",
+            service="LLM Service",
+            step="generate",
+            json={"prompt": build_rag_prompt(context, question)},
+            timeout=310,
+        )
+        answer = generation["answer"]
+    except HTTPException as exc:
+        llm_error = exc.detail
+
+    numeric = check_numeric_fidelity(answer or "", context)
+    grounding = validate_grounding(answer or "", context)
+
+    return {
+        "input": question,
+        "answer": answer,
+        "ollama_error": llm_error,
+        "status": numeric["status"],
+        "passed": numeric["passed"],
+        "action": "flagged" if numeric["status"] == "fail" else "allow",
+        "reason": numeric["reason"],
+        "numbers_checked": numeric["numbers_checked"],
+        "verified": numeric["verified"],
+        "unverified": numeric["unverified"],
+        "advisory": numeric["advisory"],
+        "strict_mode": numeric["strict_mode"],
+        "sources": retrieval["sources"],
+        "context_injection": injection_report,
+        # Shown side by side so the blind spot is self-evident.
+        "grounding_comparison": {
+            "grounding_status": grounding["status"],
+            "groundedness": grounding.get("groundedness"),
+            "note": (
+                "Grounding counts word overlap and discards digits, so it "
+                "cannot detect an altered figure. Numeric fidelity can."
+            ),
+        },
+        "llm_called": True,
+    }
+
+
 @app.post("/guardrails/check-input")
 def guardrail_check_input(data: GuardrailInputRequest):
     """
@@ -1089,6 +1264,7 @@ def guardrail_check_input(data: GuardrailInputRequest):
         "checks": {
             "empty": "fail" if status == "reject_empty" else "pass",
             "length": "fail" if status == "reject_length" else "pass",
+            "injection": "fail" if status == "reject_injection" else "pass",
             "scope": "fail" if status == "reject_scope" else "pass",
         },
         "limits": {

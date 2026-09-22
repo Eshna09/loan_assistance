@@ -352,12 +352,33 @@ export default function RAGDemo({ backendStatus, onQueryComplete, onEmbeddingRec
                       <span className="text-xs text-[#34d399]">✓ Response received</span>
                     </div>
                     <div className={`p-4 rounded-lg border ${
-                      result.answer?.includes('not available in my knowledge base')
-                        ? 'border-red-500/40 bg-red-500/10'
-                        : 'border-teal-500/30 bg-teal-500/5'
+                      result.numeric_fidelity?.status === 'fail'
+                        ? 'border-red-500/50 bg-red-500/10'
+                        : result.answer?.includes('not available in my knowledge base')
+                          ? 'border-red-500/40 bg-red-500/10'
+                          : 'border-teal-500/30 bg-teal-500/5'
                     }`}>
                       <p className="text-sm text-white leading-relaxed">{result.answer}</p>
                     </div>
+                    {/* A figure the sources do not support must never render
+                        with a clean green tick. */}
+                    {result.numeric_fidelity?.status === 'fail' && (
+                      <div className="mt-2 p-3 rounded-lg border border-red-500/40 bg-red-500/8">
+                        <p className="text-xs font-semibold text-red-300 mb-1">
+                          ✕ Numeric fidelity failed — this answer is not trustworthy
+                        </p>
+                        <p className="text-xs text-red-200 leading-relaxed">
+                          {result.numeric_fidelity.reason}
+                        </p>
+                        <p className="mt-1.5 text-[11px] text-[#6b7683]">
+                          The word-overlap grounding check scored this
+                          <span className="font-mono text-[#a5b0bd]"> {result.grounding?.status}</span>
+                          {result.grounding?.groundedness != null &&
+                            <span className="font-mono text-[#a5b0bd]"> ({Math.round(result.grounding.groundedness * 100)}%)</span>}
+                          , because it discards digits before comparing.
+                        </p>
+                      </div>
+                    )}
                     {result.sources?.length > 0 && (
                       <p className="mt-2 text-xs text-[#6b7683]">
                         Sources:{result.sources.map(s => (
@@ -430,6 +451,7 @@ function GuardrailBanner({ result }) {
       reject_scope: '🚫 Out of scope',
       reject_empty: '🚫 Empty input',
       reject_length: '🚫 Input too long',
+      reject_injection: '🛡 Prompt injection blocked',
     }[g.input_check] || '🚫 Blocked'
     return (
       <div className="mt-4 p-4 rounded-lg border border-red-500/40 bg-red-500/8">
@@ -462,6 +484,27 @@ function GuardrailBanner({ result }) {
             : 'border-yellow-500/30 bg-yellow-500/8 text-yellow-400'
         }`}>
           output: {ovCheck}
+        </span>
+      )}
+      {/* Document-level injection scan: only interesting when it acted. */}
+      {g.context_injection === 'sanitised' && (
+        <span className="px-2 py-0.5 border border-orange-500/40 bg-orange-500/10 text-orange-300 rounded font-mono">
+          ⚠ injection: {g.context_chunks_removed} chunk
+          {g.context_chunks_removed === 1 ? '' : 's'} removed
+        </span>
+      )}
+      {g.context_injection === 'pass' && (
+        <span className="px-2 py-0.5 border border-emerald-500/30 bg-emerald-500/8 text-emerald-400 rounded font-mono">
+          ✓ injection: clean
+        </span>
+      )}
+      {g.numeric_fidelity && g.numeric_fidelity !== 'n/a' && (
+        <span className={`px-2 py-0.5 border rounded font-mono ${
+          g.numeric_fidelity === 'pass'
+            ? 'border-emerald-500/30 bg-emerald-500/8 text-emerald-400'
+            : 'border-red-500/40 bg-red-500/10 text-red-300'
+        }`}>
+          {g.numeric_fidelity === 'pass' ? '✓' : '✕'} numbers: {g.numeric_fidelity}
         </span>
       )}
       <span className="px-2 py-0.5 border border-indigo-500/30 bg-indigo-500/8 text-indigo-400 rounded font-mono">
