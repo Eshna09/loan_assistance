@@ -27,6 +27,7 @@ from typing import List, Optional
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 
 from services.common.chunking import CHUNK_SIZE, OVERLAP, chunk_text
+from services.common.injection import scan_text
 from services.data_service.metadata_store import (
     delete_metadata,
     load_metadata,
@@ -303,6 +304,20 @@ async def upload_documents(
                 raise DocumentError(
                     f"No readable text found in '{upload.filename}'. "
                     "Scanned or image-only PDFs are not supported."
+                )
+
+            # Prompt-injection screen. Retrieved chunks are pasted into the
+            # model's prompt verbatim, where a sentence like "ignore previous
+            # instructions" carries the same weight as the real instructions.
+            # The question-level guardrails cannot see this, because the
+            # attack arrives through the document rather than the question.
+            verdict = scan_text(text)
+            if verdict["blocking"]:
+                top = verdict["matches"][0]
+                raise DocumentError(
+                    f"'{upload.filename}' was rejected: it contains text that "
+                    f"attempts to override the assistant's instructions "
+                    f"({top['description']} \u2014 matched \"{top['matched_text']}\")."
                 )
 
             with _lock:
