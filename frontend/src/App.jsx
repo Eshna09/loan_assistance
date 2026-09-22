@@ -15,6 +15,7 @@ import ModelPlayground from './components/ModelPlayground'
 import EvaluationDashboard from './components/EvaluationDashboard'
 import RAGAnalysis from './components/RAGAnalysis'
 import RepositoryAnalysis from './components/RepositoryAnalysis'
+import GuardrailsPage from './components/GuardrailsPage'
 import { useBackendStatus } from './hooks/useBackendStatus'
 
 // ── Navigation config ──────────────────────────────────────────────────────
@@ -24,6 +25,7 @@ const PAGES = [
   { id: 'evaluation',  label: '📊 LLM Evaluation',      description: 'Quantitative model comparison' },
   { id: 'rag-analysis',label: '🔍 RAG Analysis',        description: 'How retrieval affects generation' },
   { id: 'repo',        label: '💻 Repository Analysis', description: 'Multi-file codebase understanding' },
+  { id: 'guardrails',  label: '🛡 Guardrails',          description: 'Test each guardrail independently' },
 ]
 
 function GroupHeading({ label, hint }) {
@@ -150,6 +152,7 @@ export default function App() {
         {page === 'evaluation'   && <EvaluationDashboard />}
         {page === 'rag-analysis' && <RAGAnalysis />}
         {page === 'repo'         && <RepositoryAnalysis />}
+        {page === 'guardrails'   && <GuardrailsPage />}
       </main>
 
       <footer className="border-t border-white/10 mt-16">

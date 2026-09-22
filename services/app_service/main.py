@@ -36,6 +36,7 @@ from services.app_service.guardrails import (
     build_guardrail_block,
     classify_intent,
     MAX_INPUT_LENGTH,
+    MAX_EVIDENCE_DISTANCE,
 )
 from services.app_service.evidence import (
     EVIDENCE_TOP_K,
@@ -1061,3 +1062,302 @@ def delete_document(filename: str):
 
     _trigger_reindex()
     return {"deleted": result["deleted"], "kb": _kb_info()}
+
+
+# ── Guardrail inspection endpoints ──────────────────────────────────────────
+
+class GuardrailInputRequest(BaseModel):
+    question: str
+
+
+@app.post("/guardrails/check-input")
+def guardrail_check_input(data: GuardrailInputRequest):
+    """
+    Run ONLY the input validation guardrail (check_input).
+    Returns the raw status, reason, length, and whether it passed.
+    No retrieval or LLM is called.
+    """
+    question = data.question
+    status, reason = check_input(question)
+    return {
+        "input": question,
+        "input_length": len(question.strip()) if question else 0,
+        "status": status,
+        "passed": status == "pass",
+        "reason": reason,
+        "action": "allow" if status == "pass" else "rejected",
+        "checks": {
+            "empty": "fail" if status == "reject_empty" else "pass",
+            "length": "fail" if status == "reject_length" else "pass",
+            "scope": "fail" if status == "reject_scope" else "pass",
+        },
+        "limits": {
+            "max_input_length": MAX_INPUT_LENGTH,
+        },
+    }
+
+
+@app.post("/guardrails/check-scope")
+def guardrail_check_scope(data: GuardrailInputRequest):
+    """
+    Run input validation + intent classification.
+    Returns the domain, category, and scope decision.
+    No retrieval or LLM is called.
+    """
+    question = data.question
+    input_status, input_reason = check_input(question)
+
+    if input_status in ("reject_empty", "reject_length"):
+        return {
+            "input": question,
+            "status": input_status,
+            "passed": False,
+            "domain": None,
+            "category": None,
+            "reason": input_reason,
+            "action": "rejected",
+            "llm_called": False,
+        }
+
+    domain, category = classify_intent(question)
+    passed = domain != "OUT_OF_SCOPE"
+
+    return {
+        "input": question,
+        "status": "pass" if passed else "reject_scope",
+        "passed": passed,
+        "domain": domain,
+        "category": category,
+        "reason": None if passed else input_reason,
+        "action": "allow" if passed else "rejected",
+        "llm_called": False,
+        "scope_status": "PASS" if passed else "FAIL",
+    }
+
+
+@app.post("/guardrails/check-evidence")
+def guardrail_check_evidence(data: GuardrailInputRequest):
+    """
+    Run input validation + retrieval + evidence sufficiency check.
+    Does NOT call the LLM. Returns retrieval results and evidence decision.
+    """
+    question = data.question
+    trace = Trace()
+
+    # Input check first
+    input_status, input_reason = check_input(question)
+    if input_status != "pass":
+        return {
+            "input": question,
+            "status": input_status,
+            "passed": False,
+            "reason": input_reason,
+            "action": "rejected",
+            "llm_called": False,
+            "retrieved_chunks": 0,
+            "best_distance": None,
+            "evidence_status": "blocked_by_input",
+            "threshold": MAX_EVIDENCE_DISTANCE,
+        }
+
+    domain, category = classify_intent(question)
+    if domain == "OUT_OF_SCOPE":
+        return {
+            "input": question,
+            "status": "reject_scope",
+            "passed": False,
+            "domain": domain,
+            "reason": "Question is out of scope.",
+            "action": "rejected",
+            "llm_called": False,
+            "retrieved_chunks": 0,
+            "best_distance": None,
+            "evidence_status": "blocked_by_scope",
+            "threshold": MAX_EVIDENCE_DISTANCE,
+        }
+
+    if domain == "CODEBASE":
+        return {
+            "input": question,
+            "status": "pass",
+            "passed": True,
+            "domain": domain,
+            "category": category,
+            "reason": "Codebase questions use repository analysis — no FAISS retrieval.",
+            "action": "allow",
+            "llm_called": False,
+            "retrieved_chunks": 0,
+            "best_distance": None,
+            "evidence_status": "codebase_route",
+            "threshold": MAX_EVIDENCE_DISTANCE,
+        }
+
+    # LOAN domain — run retrieval
+    try:
+        retrieval = call_service(
+            "POST",
+            f"{RETRIEVAL_SERVICE_URL}/retrieve",
+            service="Retrieval Service",
+            step="retrieve",
+            trace=trace,
+            json={"question": question, "top_k": DEFAULT_TOP_K},
+        )
+    except HTTPException as exc:
+        return {
+            "input": question,
+            "status": "error",
+            "passed": False,
+            "reason": str(exc.detail),
+            "action": "error",
+            "llm_called": False,
+            "retrieved_chunks": 0,
+            "best_distance": None,
+            "evidence_status": "retrieval_error",
+            "threshold": MAX_EVIDENCE_DISTANCE,
+        }
+
+    chunks = retrieval["chunks"]
+    distances = retrieval.get("distances", [])
+    best_distance = distances[0] if distances else None
+
+    ev_sufficient, ev_reason = check_evidence_sufficiency(question, chunks, distances)
+
+    return {
+        "input": question,
+        "status": "pass" if ev_sufficient else "insufficient_evidence",
+        "passed": ev_sufficient,
+        "domain": domain,
+        "category": category,
+        "retrieved_chunks": len(chunks),
+        "best_distance": round(best_distance, 4) if best_distance is not None else None,
+        "threshold": MAX_EVIDENCE_DISTANCE,
+        "evidence_status": "sufficient" if ev_sufficient else "insufficient",
+        "reason": ev_reason if not ev_sufficient else None,
+        "action": "allow" if ev_sufficient else "abstained",
+        "llm_called": False,
+        "chunks_preview": [
+            {"source": c.get("source", ""), "text": c.get("text", "")[:120]}
+            for c in chunks[:3]
+        ],
+        "trace": trace.steps,
+    }
+
+
+@app.post("/guardrails/check-output")
+def guardrail_check_output(data: GuardrailInputRequest):
+    """
+    Run the full pipeline including LLM, then validate the output.
+    Returns the output_validation result from validate_output().
+    """
+    question = data.question
+    trace = Trace()
+
+    input_status, input_reason = check_input(question)
+    if input_status != "pass":
+        return {
+            "input": question,
+            "status": input_status,
+            "passed": False,
+            "reason": input_reason,
+            "action": "rejected",
+            "answer": None,
+            "output_validation": None,
+        }
+
+    domain, category = classify_intent(question)
+    if domain == "OUT_OF_SCOPE":
+        return {
+            "input": question,
+            "status": "reject_scope",
+            "passed": False,
+            "domain": domain,
+            "reason": "Out of scope — no answer generated.",
+            "action": "rejected",
+            "answer": None,
+            "output_validation": None,
+        }
+
+    # CODEBASE route
+    if domain == "CODEBASE":
+        from services.app_service.repo_analysis import get_repo_context, build_repo_prompt
+        repo = get_repo_context(question)
+        context = repo["context"]
+        if not repo["sufficient"]:
+            return {
+                "input": question,
+                "status": "insufficient_evidence",
+                "passed": False,
+                "domain": domain,
+                "reason": "Insufficient repository context.",
+                "action": "abstained",
+                "answer": None,
+                "output_validation": None,
+            }
+        prompt = build_repo_prompt(context, question)
+    else:
+        retrieval = call_service(
+            "POST",
+            f"{RETRIEVAL_SERVICE_URL}/retrieve",
+            service="Retrieval Service",
+            step="retrieve",
+            trace=trace,
+            json={"question": question, "top_k": DEFAULT_TOP_K},
+        )
+        chunks = retrieval["chunks"]
+        distances = retrieval.get("distances", [])
+        ev_sufficient, ev_reason = check_evidence_sufficiency(question, chunks, distances)
+        if not ev_sufficient:
+            return {
+                "input": question,
+                "status": "insufficient_evidence",
+                "passed": False,
+                "domain": domain,
+                "reason": ev_reason,
+                "action": "abstained",
+                "answer": None,
+                "output_validation": None,
+            }
+        context = "\n".join(c["text"] for c in chunks)
+        from services.common.prompts import build_rag_prompt as _build_rag_prompt
+        prompt = _build_rag_prompt(context, question)
+
+    answer = None
+    llm_error = None
+    try:
+        generation = call_service(
+            "POST",
+            f"{LLM_SERVICE_URL}/generate",
+            service="LLM Service",
+            step="generate",
+            trace=trace,
+            json={"prompt": prompt},
+            timeout=310,
+        )
+        answer = generation["answer"]
+    except HTTPException as exc:
+        llm_error = exc.detail
+
+    if not answer:
+        return {
+            "input": question,
+            "status": "llm_error",
+            "passed": False,
+            "domain": domain,
+            "reason": llm_error or "LLM returned no answer.",
+            "action": "error",
+            "answer": None,
+            "output_validation": None,
+        }
+
+    output_validation = validate_output(answer, question, context)
+
+    return {
+        "input": question,
+        "status": "pass" if output_validation["overall"] == "pass" else "fail",
+        "passed": output_validation["overall"] == "pass",
+        "domain": domain,
+        "answer": answer,
+        "action": "accepted" if output_validation["overall"] == "pass" else "flagged",
+        "output_validation": output_validation,
+        "trace": trace.steps,
+    }
