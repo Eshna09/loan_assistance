@@ -1116,6 +1116,95 @@ def playground_ask(data: PlaygroundRequest):
     }
 
 
+@app.get("/eval/category-breakdown")
+def eval_category_breakdown():
+    """
+    Read evaluation/results/summary.json and aggregate per_question results
+    by model × category for each metric.
+    Returns category-level breakdown for the frontend.
+    """
+    import json, os, statistics
+
+    summary_path = os.path.join(
+        os.path.dirname(__file__), "..", "..", "evaluation", "results", "summary.json"
+    )
+    summary_path = os.path.normpath(summary_path)
+
+    if not os.path.exists(summary_path):
+        raise HTTPException(status_code=404, detail="summary.json not found")
+
+    with open(summary_path, "r") as f:
+        summary = json.load(f)
+
+    models_data = summary.get("models", {})
+    result = {"models": {}, "retrieval_quality": summary.get("retrieval_quality", {})}
+
+    for model_name, model_data in models_data.items():
+        per_q = model_data.get("per_question", [])
+
+        # Group by category
+        by_cat = {}
+        for q in per_q:
+            cat = q.get("category", "unknown")
+            by_cat.setdefault(cat, []).append(q)
+
+        cat_results = {}
+        for cat, questions in by_cat.items():
+            # Accuracy: only for knowledge questions (not out_of_kb)
+            knowledge_qs = [q for q in questions if "correct" in q]
+            accuracy = (sum(1 for q in knowledge_qs if q.get("correct")) / len(knowledge_qs)) if knowledge_qs else None
+
+            # Relevance: mean of relevance scores where available
+            rel_scores = [q["relevance"] for q in questions if "relevance" in q and q["relevance"] is not None]
+            relevance = statistics.mean(rel_scores) if rel_scores else None
+
+            # Hallucination rate: for out_of_kb questions
+            hall_qs = [q for q in questions if "fabricated" in q]
+            hallucination_rate = (sum(1 for q in hall_qs if q.get("fabricated")) / len(hall_qs)) if hall_qs else None
+
+            # Test pass rate: for code_generation
+            code_qs = [q for q in questions if "passed" in q and "total" in q and q["total"] > 0]
+            if code_qs:
+                total_passed = sum(q["passed"] for q in code_qs)
+                total_tests = sum(q["total"] for q in code_qs)
+                test_pass_rate = total_passed / total_tests if total_tests > 0 else None
+            else:
+                test_pass_rate = None
+
+            # Latency
+            latencies = [q["latency_ms"] for q in questions if "latency_ms" in q]
+            mean_latency = statistics.mean(latencies) if latencies else None
+
+            # Token usage
+            prompt_tokens = sum(q.get("prompt_tokens", 0) for q in questions)
+            output_tokens = sum(q.get("output_tokens", 0) for q in questions)
+            question_count = len(questions)
+
+            cat_results[cat] = {
+                "question_count": question_count,
+                "accuracy": round(accuracy, 4) if accuracy is not None else None,
+                "relevance": round(relevance, 4) if relevance is not None else None,
+                "hallucination_rate": round(hallucination_rate, 4) if hallucination_rate is not None else None,
+                "test_pass_rate": round(test_pass_rate, 4) if test_pass_rate is not None else None,
+                "mean_latency_ms": round(mean_latency, 1) if mean_latency is not None else None,
+                "total_prompt_tokens": prompt_tokens,
+                "total_output_tokens": output_tokens,
+            }
+
+        result["models"][model_name] = {
+            "categories": cat_results,
+            "overall": {
+                "quality": model_data.get("quality", {}),
+                "hallucination": model_data.get("hallucination", {}),
+                "code": model_data.get("code", {}),
+                "performance": model_data.get("performance", {}),
+                "resources": model_data.get("resources", {}),
+            }
+        }
+
+    return result
+
+
 @app.delete("/kb/documents/{filename}")
 def delete_document(filename: str):
     """Forward the delete to the Data Service, then rebuild the vector index."""
